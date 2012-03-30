@@ -28,17 +28,17 @@ public class LoginInfoField implements DBField {
 			return false;
 		if (where.length == 0) return false;
 		boolean u = false, p = false;
-		if (where[0].Name() == "username" && where[0].Type() == DBValueType.DBString) 
-			u = (username == (String)values[0]);
-		else if (where[0].Name() == "passwordHash" && where[0].Type() == DBValueType.DBInt) 
+		if (where[0].Name().equals("username") && where[0].Type() == DBValueType.DBString) 
+			u = (username.equals((String)values[0]));
+		else if (where[0].Name().equals("passwordHash") && where[0].Type() == DBValueType.DBInt) 
 			p = (passwordHash == (int)values[0]);
 		if (where.length == 1 || !(u || p)) return u || p;
 		if (u) {
-			if (where[1].Name() == "passwordHash" && where[0].Type() == DBValueType.DBInt) 
+			if (where[1].Name().equals("passwordHash") && where[0].Type() == DBValueType.DBInt) 
 				p = (passwordHash == (int)values[0]);
 		} else {
-			if (where[1].Name() == "username" && where[0].Type() == DBValueType.DBString)
-				u = (username == (String)values[0]);
+			if (where[1].Name().equals("username") && where[0].Type() == DBValueType.DBString)
+				u = (username.equals((String)values[0]));
 		}
 		return u && p;
 	}
