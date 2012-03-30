@@ -29,6 +29,14 @@ public class EntryPoint {
 			
 			
 			oos.writeObject(new RequestFlag(RequestFlags.loginRequest));
+			oos.writeObject(new LoginInfoPackage("fail", "badPASS".hashCode()));
+			oos.flush();
+			
+			flag = (AcknowledgeFlag) ois.readObject();
+			if (flag.flag == AcknowledgeFlags.loginRefused)
+				System.out.println("Login Refused");
+		     
+			oos.writeObject(new RequestFlag(RequestFlags.loginRequest));
 			oos.writeObject(new LoginInfoPackage("test", "pass".hashCode()));
 			oos.flush();
 			 
@@ -39,14 +47,7 @@ public class EntryPoint {
 				System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
 			}
 			
-			oos.writeObject(new RequestFlag(RequestFlags.loginRequest));
-			oos.writeObject(new LoginInfoPackage("fail", "badPASS".hashCode()));
-			oos.flush();
 			
-			flag = (AcknowledgeFlag) ois.readObject();
-			if (flag.flag == AcknowledgeFlags.loginRefused)
-				System.out.println("Login Refused");
-		     
 			ois.close();
 			oos.close();
 			socket.close();
