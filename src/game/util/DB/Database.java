@@ -2,6 +2,7 @@ package game.util.DB;
 
 import game.util.DB.Fields.DBField;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -64,14 +65,19 @@ public class Database {
 
 	synchronized public void save(String fileRef) {
 		try {
+			File file = new File(fileRef);
+			if (file.exists())
+				file.delete();
+			file.createNewFile();
 			FileOutputStream fout = new FileOutputStream(fileRef);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
-		     oos.writeObject(tables);
-		     oos.close();
+		    oos.writeObject(tables);
+		    oos.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	@SuppressWarnings("unchecked")
 	synchronized public void load(String fileRef) {
 		try {
