@@ -20,6 +20,12 @@ public class Database {
 	
 	synchronized public void addTable(DBTable table) {
 		tables.put(table, new ArrayList<DBField>());
+	}	
+	synchronized public boolean containsField(DBTable table, DBField field) throws Exception {
+		ArrayList<DBField> fields = tables.get(table);
+		if (fields == null)
+			throw new Exception();
+		return fields.contains(field);
 	}
 	
 	synchronized public void addField(DBTable table, DBField field) throws Exception {

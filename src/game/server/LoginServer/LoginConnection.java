@@ -27,6 +27,7 @@ public class LoginConnection implements Runnable {
 	private boolean running = false;
 	private RequestFlags flag;
 	private ObjectInputStream ois;
+	ObjectOutputStream oos;
 	
 	public LoginConnection(Database loginDB, Socket client, GameServerInfoPackage gsip) {
 		this.loginDB = loginDB;
@@ -44,6 +45,15 @@ public class LoginConnection implements Runnable {
 			
 			e.printStackTrace();
 		}
+
+		try {
+			oos = new ObjectOutputStream(client.getOutputStream());
+			ois = new ObjectInputStream(client.getInputStream());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		while (running && !client.isClosed()) {
 			if (Listen())
 				Respond();
@@ -51,6 +61,11 @@ public class LoginConnection implements Runnable {
 				Poke();
 		}
 		try {
+			if (oos != null)
+				oos.close();
+			if (ois != null)
+				ois.close();
+			
 			client.close();
 			System.out.println("Closing Connection: " + client.getInetAddress());
 		} catch (IOException e) {
@@ -61,13 +76,10 @@ public class LoginConnection implements Runnable {
 
 	private void Poke() {
 		try {
-			ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
 			oos.writeObject(new RequestFlag(RequestFlags.poke));
-			oos.close();
-
-			ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+			oos.flush();
+			
 			AcknowledgeFlag flag = (AcknowledgeFlag) ois.readObject();
-			ois.close();
 			if (flag.flag != AcknowledgeFlags.pokeback)
 				running = false;
 		} catch (Exception e) {
@@ -77,37 +89,38 @@ public class LoginConnection implements Runnable {
 	}
 
 	private void Respond() {
-		if (this.flag == RequestFlags.loginRequest) {
-			try {
+		try {
+			if (this.flag == RequestFlags.loginRequest) {
 				LoginInfoPackage lip = (LoginInfoPackage) ois.readObject();
-				ois.close();
+				
 				LoginInfoField  lif = (LoginInfoField)loginDB.getField(DBTable.loginTable, 
 																	   new DBValue[]{ new DBValue(DBString, "username") }, 
 																	   new Object[]{ lip.username });
 				if (lif != null) {
 					if (lif.passwordHash == lip.passwordHash) {
-						ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
 						oos.writeObject(new AcknowledgeFlag(AcknowledgeFlags.loginGranted));
 						oos.writeObject(gsip);
-						oos.close();
+						oos.flush();
 						running = false;
 						return;
 					}
 				}
-				ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
 				oos.writeObject(new AcknowledgeFlag(AcknowledgeFlags.loginRefused));
-				oos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				running = false;
+				oos.flush();
+			} else {
+				oos.writeObject(new AcknowledgeFlag(AcknowledgeFlags.unkownRequest));
+				oos.flush();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			running = false;
 		}
 	}
 
 	private boolean Listen() {
 		try {
-			this.ois = new ObjectInputStream(client.getInputStream());
-			this.flag = (RequestFlags) this.ois.readObject();
+			RequestFlag rf = (RequestFlag) ois.readObject();
+			flag = rf.flag;
 		} catch (SocketTimeoutException e) {
 			return false;
 		} catch (Exception e) {

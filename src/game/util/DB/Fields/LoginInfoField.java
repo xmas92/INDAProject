@@ -5,6 +5,10 @@ import game.util.DB.DBValueType;
 
 public class LoginInfoField implements DBField {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1558692619563370784L;
 	public String username;
 	public int passwordHash;
 
@@ -42,6 +46,16 @@ public class LoginInfoField implements DBField {
 	@Override
 	public DBField create() {
 		return new LoginInfoField(username, passwordHash);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null)
+			return false;
+		if (o instanceof LoginInfoField) 
+			return (((LoginInfoField)o).username.equals(username) &&
+					((LoginInfoField)o).passwordHash == passwordHash);
+		return false;
 	}
 
 }

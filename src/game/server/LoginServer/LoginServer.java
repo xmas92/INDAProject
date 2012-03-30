@@ -9,6 +9,7 @@ import java.net.SocketTimeoutException;
 
 import game.util.DB.DBTable;
 import game.util.DB.Database;
+import game.util.DB.Fields.LoginInfoField;
 import game.util.IO.Packages.GameServerInfoPackage;
 import static game.util.DB.DBInfo.*;
 
@@ -25,17 +26,23 @@ public class LoginServer implements Runnable {
 			loginDB.save(_LOGINDB);
 		}
 		try {
+			if (!loginDB.containsField(DBTable.loginTable,  new LoginInfoField("test", "pass".hashCode())))
+				loginDB.addField(DBTable.loginTable, new LoginInfoField("test", "pass".hashCode()));
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		try {
 			String l;
 			BufferedReader reader = new BufferedReader(new FileReader("LoginServer.ini"));
 			int gsPort = 0;
 			String gsIP = "";
 			while ((l = reader.readLine()) != null) {
-				if (l.startsWith("port="))
-					port = Integer.parseInt(l.substring(("port=").length()));
+				if (l.startsWith("listeningport="))
+					port = Integer.parseInt(l.substring(("listeningport=").length()));
 				else if (l.startsWith("gameserver="))
 					gsIP = l.substring(("gameserver=").length());
 				else if (l.startsWith("gameserverport="))
-					port = Integer.parseInt(l.substring(("gameserverport=").length()));
+					gsPort = Integer.parseInt(l.substring(("gameserverport=").length()));
 			}
 			gsip = new GameServerInfoPackage(gsIP, gsPort);
 		} catch (Exception e) {
@@ -50,6 +57,7 @@ public class LoginServer implements Runnable {
 		running = true;
 		try {
 			ss = new ServerSocket(port);
+			System.out.println("Binding: " + ss.getInetAddress() + ":" + ss.getLocalPort());
 			ss.setSoTimeout(30000);
 			while(!ss.isClosed() && running) {
 				try {
@@ -61,7 +69,14 @@ public class LoginServer implements Runnable {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
+		if (ss != null)
+			try {
+				ss.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		loginDB.save(_LOGINDB);
 		System.out.println("Stopping LoginServer");
 	}
 	
