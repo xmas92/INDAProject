@@ -1,14 +1,16 @@
 package game.util.UI;
 
+import org.newdawn.slick.Input;
+
 
 public class KeyState {
-	public KeyState(int key, int type) {
+	public KeyState(Input input, int key, int type) {
 		
 	}
-	public KeyState(int key, int type, String s1) {
+	public KeyState(Input input, int key, int type, String string) {
 		
 	}
-	public KeyState(int key, int type, String string, String altString) {
+	public KeyState(Input input, int key, int type, String string, String altString) {
 		
 	}
 }
