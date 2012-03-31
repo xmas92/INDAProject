@@ -1,4 +1,4 @@
-package game.util.UI;
+package game.util.IO;
 
 public interface EventListner {
 	void Invoke(Object sender, Event e);

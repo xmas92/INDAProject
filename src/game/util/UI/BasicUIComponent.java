@@ -1,5 +1,7 @@
 package game.util.UI;
 
+import game.util.IO.EventListner;
+
 import org.newdawn.slick.GameContainer;
 
 public abstract class BasicUIComponent implements UIComponent {

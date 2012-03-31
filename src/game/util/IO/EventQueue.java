@@ -1,4 +1,4 @@
-package game.util.UI;
+package game.util.IO;
 
 import java.util.Iterator;
 import java.util.LinkedList;
