@@ -49,7 +49,7 @@ public class ButtonUITest {
 						
 						@Override
 						public void Invoke(Object sender, Event e) {
-							container.exit();
+							//container.exit();
 						}
 					});
 				}
