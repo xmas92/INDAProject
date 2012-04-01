@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 
 import game.util.IO.InputState;
+import game.util.IO.Event.Event;
+import game.util.IO.Event.EventListner;
 import game.util.UI.Button;
 
 import org.newdawn.slick.AppGameContainer;
@@ -11,7 +13,6 @@ import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class ButtonUITest {
@@ -38,12 +39,19 @@ public class ButtonUITest {
 				}
 				
 				@Override
-				public void init(GameContainer container) throws SlickException {
+				public void init(final GameContainer container) throws SlickException {
 					btn = new Button(new Image("data/normal.bmp"), 
 									 new Image("data/over.bmp"), 
 									 new Image("data/down.bmp"));
 					btn.setLocation(new Point(20,20));
 					btn.setDimension(new Dimension(300, 50));
+					btn.addMouseUpEventListner(new EventListner() {
+						
+						@Override
+						public void Invoke(Object sender, Event e) {
+							container.exit();
+						}
+					});
 				}
 				
 				@Override
