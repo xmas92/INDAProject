@@ -123,22 +123,23 @@ public abstract class BasicUIComponent implements UIComponent {
 		middleB &= cm;
 		boolean resetFocusChanged = focusChanged;
 		if (r.contains(cp)) {
-			if (mouseDown != null) {
-				if (!lr && cr) {
-					gainFocus();
+			if (!lr && cr) {
+				gainFocus();
+				if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.RIGHT));
-					rightB = true;
-				}
-				if (!ll && cl) {
-					gainFocus();
+				rightB = true;
+			if (!ll && cl) {
+				gainFocus();
+				if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.LEFT));
-					leftB = true;
-				}
-				if (!lm && cm) {
-					gainFocus();
+				leftB = true;
+			}
+			if (!lm && cm) {
+				gainFocus();
+				if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.MIDDLE));
-					middleB = true;
-				}
+				middleB = true;
+			}
 			}
 			if (mouseUp != null) {
 				if (!cr && lr) {
