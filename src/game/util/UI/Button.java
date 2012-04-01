@@ -1,13 +1,10 @@
 package game.util.UI;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import game.util.IO.Event.Event;
 import game.util.IO.Event.EventListner;
 
-import org.lwjgl.opengl.Drawable;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
