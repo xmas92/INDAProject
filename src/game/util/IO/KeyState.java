@@ -13,7 +13,7 @@ public class KeyState {
 		state = key.isDown(gc.getInput());
 	}
 	
-	public boolean state() {
+	public boolean Down() {
 		return state;
 	}
 }

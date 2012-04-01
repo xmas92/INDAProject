@@ -1,4 +1,5 @@
-package game.util.IO;
+package game.util.IO.Event;
+
 
 import java.util.Iterator;
 import java.util.LinkedList;

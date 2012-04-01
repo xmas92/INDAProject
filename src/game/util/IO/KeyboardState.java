@@ -9,8 +9,9 @@ public class KeyboardState {
 	private Hashtable<Integer, KeyState> keys;
 	public KeyboardState () {
 		keys = new Hashtable<>();
-		for (int i = 0; i < Keys.Keys.length; i++)
+		for (int i = 0; i < Keys.Keys.length; i++) {
 			keys.put(Keys.Keys[i].VALUE, new KeyState(Keys.Keys[i]));
+		}
 	}
 	public void Update(GameContainer gc) {
 		Enumeration<KeyState> en = keys.elements();
@@ -19,6 +20,9 @@ public class KeyboardState {
 	}
 	public Enumeration<KeyState> GetKeyStates() {
 		return keys.elements();
+	}
+	public KeyState GetKeyState(Key key) {
+		return keys.get(key.VALUE);
 	}
 	public KeyState GetKeyState(int key) {
 		return keys.get(key);
