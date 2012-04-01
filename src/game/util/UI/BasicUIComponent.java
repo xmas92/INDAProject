@@ -79,6 +79,8 @@ public abstract class BasicUIComponent implements UIComponent {
 	public void removeFocus() { 
 		if (lostFocus != null)
 			lostFocus.Invoke(this, new NullEvent());
+		currentFocus = null;
+		lockFocus = false;
 	}
 	
 	@Override
@@ -114,7 +116,7 @@ public abstract class BasicUIComponent implements UIComponent {
 		}
 		if (mouseLeave != null) {
 			if (r.contains(lp) && !r.contains(cp))
-				mouseEnter.Invoke(this, new MouseEvent(cp));
+				mouseLeave.Invoke(this, new MouseEvent(cp));
 		}
 		rightB &= cr;
 		leftB &= cl;
@@ -173,9 +175,10 @@ public abstract class BasicUIComponent implements UIComponent {
 			}
 			
 		}
-		for (BasicUIComponent child : children) {
-			child.update(container);
-		}
+		if (children != null)
+			for (BasicUIComponent child : children) {
+				child.update(container);
+			}
 		focusChanged = resetFocusChanged;
 		
 		boolean focused = (currentFocus == this);
@@ -217,7 +220,8 @@ public abstract class BasicUIComponent implements UIComponent {
 			currentFocus = this;
 		} else {
 			lastFocus = currentFocus;
-			lastFocus.removeFocus();
+			if (lastFocus != null)
+				lastFocus.removeFocus();
 			currentFocus = this;
 			focusChanged = true;
 		}
