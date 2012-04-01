@@ -32,5 +32,11 @@ public class Keys {
 		new Key(KEY_X, CharacterKey, "x", "X"),
 		new Key(KEY_Y, CharacterKey, "y", "Y"),
 		new Key(KEY_Z, CharacterKey, "z", "Z"),
+		
+		new Key(KEY_LSHIFT, ModifierKey),
+
+		new Key(KEY_BACK, MiscKey),
+		new Key(KEY_ENTER, MiscKey),
+		
 		};
 }
