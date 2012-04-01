@@ -12,10 +12,10 @@ import game.util.DB.DBValue;
 import static game.util.DB.DBValueType.*;
 import game.util.DB.Database;
 import game.util.DB.Fields.LoginInfoField;
-import game.util.IO.AcknowledgeFlag;
-import game.util.IO.AcknowledgeFlags;
-import game.util.IO.RequestFlag;
-import game.util.IO.RequestFlags;
+import game.util.IO.Net.AcknowledgeFlag;
+import game.util.IO.Net.AcknowledgeFlags;
+import game.util.IO.Net.RequestFlag;
+import game.util.IO.Net.RequestFlags;
 import game.util.IO.Packages.GameServerInfoPackage;
 import game.util.IO.Packages.LoginInfoPackage;
 
