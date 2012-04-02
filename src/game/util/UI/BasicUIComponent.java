@@ -236,6 +236,8 @@ public abstract class BasicUIComponent implements UIComponent {
 	}
 	
 	private void gainFocus() {
+		if (currentFocus == this)
+			return;
 		if (focusChanged) {
 			currentFocus = this;
 		} else {
