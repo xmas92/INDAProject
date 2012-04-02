@@ -18,6 +18,7 @@ import game.util.IO.Event.MouseEvent;
 import game.util.IO.Event.NullEvent;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 
 public abstract class BasicUIComponent implements UIComponent {
 	
@@ -82,6 +83,9 @@ public abstract class BasicUIComponent implements UIComponent {
 		currentFocus = null;
 		lockFocus = false;
 	}
+	public boolean hasFocus() {
+		return currentFocus == this;
+	}
 	
 	@Override
 	public void update(GameContainer container) {
@@ -128,6 +132,7 @@ public abstract class BasicUIComponent implements UIComponent {
 				if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.RIGHT));
 				rightB = true;
+			}
 			if (!ll && cl) {
 				gainFocus();
 				if (mouseDown != null)
@@ -139,7 +144,6 @@ public abstract class BasicUIComponent implements UIComponent {
 				if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.MIDDLE));
 				middleB = true;
-			}
 			}
 			if (mouseUp != null) {
 				if (!cr && lr) {
@@ -176,10 +180,15 @@ public abstract class BasicUIComponent implements UIComponent {
 			}
 			
 		}
+		if (validate != null)
+			validate.Invoke(this, new NullEvent());
+		
 		if (children != null)
 			for (BasicUIComponent child : children) {
 				child.update(container);
 			}
+
+		
 		focusChanged = resetFocusChanged;
 		
 		boolean focused = (currentFocus == this);
@@ -214,6 +223,16 @@ public abstract class BasicUIComponent implements UIComponent {
 		}
 		if (updated != null)
 			updated.Invoke(this, new NullEvent());
+	}
+	
+	@Override
+	public void render(GameContainer container, Graphics g) {
+		if (rendered != null)
+			rendered.Invoke(this, new NullEvent());
+		if (children != null)
+			for (BasicUIComponent child : children) {
+				child.update(container);
+			}
 	}
 	
 	private void gainFocus() {
@@ -260,7 +279,7 @@ public abstract class BasicUIComponent implements UIComponent {
 	}
 
 	
-	private EventListner updated, rendered;
+	private EventListner updated, rendered, validate;
 	
 	public void addUpdateEventListner(EventListner delegate) {
 		if (updated == null)
@@ -269,6 +288,10 @@ public abstract class BasicUIComponent implements UIComponent {
 	public void addRenderEventListner(EventListner delegate) {
 		if (rendered == null)
 			rendered = delegate;
+	}
+	public void addValidateEventListner(EventListner delegate) {
+		if (validate == null)
+			validate = delegate;
 	}
 	
 	private EventListner lostFocus, gainedFocus;

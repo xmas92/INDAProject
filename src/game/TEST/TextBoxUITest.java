@@ -1,9 +1,6 @@
 package game.TEST;
 
 import game.util.IO.InputState;
-import game.util.IO.Event.Event;
-import game.util.IO.Event.EventListner;
-import game.util.UI.Button;
 import game.util.UI.TextBox;
 
 import java.awt.Dimension;

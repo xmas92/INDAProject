@@ -33,34 +33,33 @@ public class TextBox extends BasicUIComponent {
 	
 	private void setupEventListners() {
 		super.addKeyDownEventListner(new EventListner() {
-		
-		@Override
-		public void Invoke(Object sender, Event e) {
-			Key key = ((KeyEvent)e).Key;
-			try {
-				if (key.VALUE == Input.KEY_ENTER) {
-					System.out.println(sb.toString());
-				} else if (key.VALUE == Input.KEY_BACK) {
-					if (pos > 0)
-						sb.deleteCharAt(--pos);
-				} else if (key.VALUE == Input.KEY_ESCAPE) {
-					removeFocus();
-				} else if (InputState.Get().KeyboardState.GetKeyState(Input.KEY_LSHIFT).Down()) {
-					if (key.ALTCHARACTER != null)
-						sb.insert(pos++, key.ALTCHARACTER);
-					else if (key.CHARACTER != null)
-						sb.insert(pos++, key.CHARACTER);
-				} else {
-					if (key.CHARACTER != null)
-						sb.insert(pos++, key.CHARACTER);
+			@Override
+			public void Invoke(Object sender, Event e) {
+				Key key = ((KeyEvent)e).Key;
+				try {
+					if (key.VALUE == Input.KEY_ENTER) {
+						System.out.println(sb.toString());
+					} else if (key.VALUE == Input.KEY_BACK) {
+						if (pos > 0)
+							sb.deleteCharAt(--pos);
+					} else if (key.VALUE == Input.KEY_ESCAPE) {
+						removeFocus();
+					} else if (InputState.Get().KeyboardState.GetKeyState(Input.KEY_LSHIFT).Down()) {
+						if (key.ALTCHARACTER != null)
+							sb.insert(pos++, key.ALTCHARACTER);
+						else if (key.CHARACTER != null)
+							sb.insert(pos++, key.CHARACTER);
+					} else {
+						if (key.CHARACTER != null)
+							sb.insert(pos++, key.CHARACTER);
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
+				if (keyDown != null)
+					keyDown.Invoke(sender, e);
 			}
-			if (keyDown != null)
-				keyDown.Invoke(sender, e);
-		}
-	});
+		});
 	}
 
 	@Override
@@ -75,6 +74,11 @@ public class TextBox extends BasicUIComponent {
 		g.setColor(c);
 		if (rec.height - 2 * margin >= f.getLineHeight()) {
 			g.drawString(sb.toString(), rec.x + margin, rec.y + margin);
+		}
+		if (hasFocus()) {
+			float a = rec.x + f.getWidth(sb.toString()) + 4,
+				  b = rec.y + f.getLineHeight();
+			g.drawLine(a, b, a+10, b);
 		}
 	}
 	
