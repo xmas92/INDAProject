@@ -6,8 +6,8 @@ public class NetIOQueue {
 	private LinkedList<Package> InQueue, OutQueue;
 	private int pollCount = -1;
 	public NetIOQueue() {
-		InQueue = new LinkedList<>();
-		OutQueue = new LinkedList<>();
+		InQueue = new LinkedList<Package>();
+		OutQueue = new LinkedList<Package>();
 	}
 	
 	public synchronized void addInPackage(Package pkg) {

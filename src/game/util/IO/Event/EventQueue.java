@@ -8,7 +8,7 @@ import org.newdawn.slick.GameContainer;
 
 public class EventQueue {
 	
-	LinkedList<Event> queue = new LinkedList<>();
+	LinkedList<Event> queue = new LinkedList<Event>();
 	Iterator<Event> it;
 	
 	public void Update(GameContainer gc) {

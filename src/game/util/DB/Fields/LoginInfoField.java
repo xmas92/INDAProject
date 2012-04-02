@@ -31,11 +31,11 @@ public class LoginInfoField implements DBField {
 		if (where[0].Name().equals("username") && where[0].Type() == DBValueType.DBString) 
 			u = (username.equals((String)values[0]));
 		else if (where[0].Name().equals("passwordHash") && where[0].Type() == DBValueType.DBInt) 
-			p = (passwordHash == (int)values[0]);
+			p = (passwordHash == (Integer)values[0]);
 		if (where.length == 1 || !(u || p)) return u || p;
 		if (u) {
 			if (where[1].Name().equals("passwordHash") && where[0].Type() == DBValueType.DBInt) 
-				p = (passwordHash == (int)values[0]);
+				p = (passwordHash == (Integer)values[0]);
 		} else {
 			if (where[1].Name().equals("username") && where[0].Type() == DBValueType.DBString)
 				u = (username.equals((String)values[0]));

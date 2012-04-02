@@ -15,7 +15,7 @@ public class Database {
 	Hashtable<DBTable,ArrayList<DBField>> tables;
 	
 	public Database() {
-		tables = new Hashtable<>();
+		tables = new Hashtable<DBTable, ArrayList<DBField>>();
 	}
 	
 	synchronized public void addTable(DBTable table) {
