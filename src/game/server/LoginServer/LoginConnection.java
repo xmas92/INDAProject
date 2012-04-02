@@ -50,7 +50,7 @@ public class LoginConnection implements Runnable {
 			oos = new ObjectOutputStream(client.getOutputStream());
 			ois = new ObjectInputStream(client.getInputStream());
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		}
 		
@@ -101,11 +101,11 @@ public class LoginConnection implements Runnable {
 						oos.writeObject(gsip);
 						oos.flush();
 						running = false;
-						return;
 					}
+				} else {
+					oos.writeObject(new EmptyPackage(PackageFlag.loginRefused));
+					oos.flush();
 				}
-				oos.writeObject(new EmptyPackage(PackageFlag.loginRefused));
-				oos.flush();
 			} else {
 				oos.writeObject(new EmptyPackage(PackageFlag.unknown));
 				oos.flush();

@@ -1,15 +1,9 @@
 package game.client;
 
-import game.util.IO.Packages.Package;
-import game.util.IO.Packages.GameServerInfoPackage;
-import game.util.IO.Packages.LoginInfoPackage;
-import game.util.IO.Packages.PackageFlag;
+import game.client.Login.LoginScreen;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.SlickException;
 
 public class EntryPoint {
 
@@ -19,44 +13,14 @@ public class EntryPoint {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Socket socket;
+		
 		try {
-			socket = new Socket("81.229.86.19", 12345);
-		 
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			Package pkg;
-			
-			oos.writeObject(new LoginInfoPackage("fail", "badPASS".hashCode(),PackageFlag.loginRequest));
-			oos.flush();
-			
-			pkg = (Package) ois.readObject();
-			if (pkg.Flag() == PackageFlag.loginRefused)
-				System.out.println("Login Refused");
-		     
-			oos.writeObject(new LoginInfoPackage("test", "pass".hashCode(), PackageFlag.loginRequest));
-			oos.flush();
-			 
-			pkg = (Package) ois.readObject();
-			if (pkg.Flag() == PackageFlag.loginGranted) {
-				System.out.println("Login Granted");
-				GameServerInfoPackage gsip = (GameServerInfoPackage) pkg;
-				System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
-			}
-			
-			
-			ois.close();
-			oos.close();
-			socket.close();
-	   } catch (UnknownHostException e) {
-		   	e.printStackTrace();
-	   } catch  (IOException e) {
-		   	e.printStackTrace();
-	   } catch (ClassNotFoundException e) {
-			e.printStackTrace();
-	   } catch (Exception e) {
-			e.printStackTrace();
-	   }
+			AppGameContainer apc = new AppGameContainer(new LoginScreen());
+			apc.setDisplayMode(540, 280, false);
+			apc.start();
+		} catch (SlickException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 }
