@@ -4,5 +4,4 @@ data
 /login.db
 /LoginServer.ini
 .DS_Store
-
 .settings/org.eclipse.jdt.core.prefs
