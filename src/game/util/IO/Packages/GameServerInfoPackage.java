@@ -1,8 +1,6 @@
 package game.util.IO.Packages;
 
-import java.io.Serializable;
-
-public class GameServerInfoPackage implements Serializable {
+public class GameServerInfoPackage implements Package {
 
 	/**
 	 * 
@@ -11,9 +9,21 @@ public class GameServerInfoPackage implements Serializable {
 
 	public final String ip;
 	public final int port;
+	public PackageFlag flag;
 
 	public GameServerInfoPackage(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
+		this.flag = PackageFlag.unknown;
+	}
+
+	@Override
+	public PackageFlag Flag() {
+		return flag;
+	}
+
+	@Override
+	public PackageType Type() {
+		return PackageType.GameServerInfoPackage;
 	}
 }
