@@ -5,10 +5,12 @@ public enum PackageFlag {
 	pokeback,
 	loginGranted,
 	loginRefused,
+	closeConnectionAcknowledged,
 	
 	// Requests
 	poke,
 	loginRequest,
+	closeConnectionRequest,
 	
 	// Unknown
 	unknown,

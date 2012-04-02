@@ -2,6 +2,7 @@ package game.client.Login;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -9,6 +10,7 @@ import java.net.Socket;
 import game.util.IO.InputState;
 import game.util.IO.Event.Event;
 import game.util.IO.Event.EventListner;
+import game.util.IO.Packages.EmptyPackage;
 import game.util.IO.Packages.GameServerInfoPackage;
 import game.util.IO.Packages.LoginInfoPackage;
 import game.util.IO.Packages.Package;
@@ -64,7 +66,7 @@ public class LoginScreen implements Game{
 			}
 
 			private void doLogin() {
-				Socket socket;
+				Socket socket = null;
 				try {
 					socket = new Socket("81.229.86.19", 12345);
 				 
@@ -81,11 +83,23 @@ public class LoginScreen implements Game{
 						GameServerInfoPackage gsip = (GameServerInfoPackage) pkg;
 						System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
 					}
+					oos.writeObject(new EmptyPackage(PackageFlag.closeConnectionRequest));
+					oos.flush();
+					pkg = (Package) ois.readObject();
+					if (pkg.Flag() != PackageFlag.closeConnectionAcknowledged)
+						throw new Exception();
 					ois.close();
 					oos.close();
 					socket.close();
 			   } catch (Exception e) {
 					e.printStackTrace();
+			   } finally {
+					try {
+						if (socket != null)
+							socket.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 			   }
 
 			}

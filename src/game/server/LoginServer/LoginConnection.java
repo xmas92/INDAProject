@@ -100,12 +100,15 @@ public class LoginConnection implements Runnable {
 					if (lif.passwordHash == lip.passwordHash) {
 						oos.writeObject(gsip);
 						oos.flush();
-						running = false;
+						return;
 					}
-				} else {
-					oos.writeObject(new EmptyPackage(PackageFlag.loginRefused));
-					oos.flush();
 				}
+				oos.writeObject(new EmptyPackage(PackageFlag.loginRefused));
+				oos.flush();
+			} else if (pkg.Flag() == PackageFlag.closeConnectionRequest) {
+				oos.writeObject(new EmptyPackage(PackageFlag.closeConnectionAcknowledged));
+				oos.flush();
+				running = false;
 			} else {
 				oos.writeObject(new EmptyPackage(PackageFlag.unknown));
 				oos.flush();
