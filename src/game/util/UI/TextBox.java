@@ -64,7 +64,7 @@ public class TextBox extends BasicUIComponent {
 
 	@Override
 	public void render(GameContainer container, Graphics g) {
-		Font f = g.getFont();;
+		Font f = g.getFont();
 		if (font != null)
 			f = font;
 		Rectangle rec = getRectangle();

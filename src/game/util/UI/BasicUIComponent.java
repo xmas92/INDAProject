@@ -118,13 +118,13 @@ public abstract class BasicUIComponent implements UIComponent {
 			if (r.contains(cp))
 				mouseOver.Invoke(this, new MouseEvent(cp));
 		}
-		if (mouseLeave != null) {
-			if (r.contains(lp) && !r.contains(cp))
+		if (r.contains(lp) && !r.contains(cp)) {
+			if (mouseLeave != null)
 				mouseLeave.Invoke(this, new MouseEvent(cp));
+			rightB = false;
+			leftB = false;
+			middleB = false;
 		}
-		rightB &= cr;
-		leftB &= cl;
-		middleB &= cm;
 		boolean resetFocusChanged = focusChanged;
 		if (r.contains(cp)) {
 			if (!lr && cr) {
