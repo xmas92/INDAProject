@@ -3,3 +3,4 @@ data
 .classpath
 /login.db
 /LoginServer.ini
+.DS_Store
