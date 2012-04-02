@@ -1,11 +1,9 @@
 package game.client;
 
-import game.util.IO.Net.AcknowledgeFlag;
-import game.util.IO.Net.AcknowledgeFlags;
-import game.util.IO.Net.RequestFlag;
-import game.util.IO.Net.RequestFlags;
+import game.util.IO.Packages.Package;
 import game.util.IO.Packages.GameServerInfoPackage;
 import game.util.IO.Packages.LoginInfoPackage;
+import game.util.IO.Packages.PackageFlag;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,25 +25,22 @@ public class EntryPoint {
 		 
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			AcknowledgeFlag flag;
+			Package pkg;
 			
-			
-			oos.writeObject(new RequestFlag(RequestFlags.loginRequest));
-			oos.writeObject(new LoginInfoPackage("fail", "badPASS".hashCode()));
+			oos.writeObject(new LoginInfoPackage("fail", "badPASS".hashCode(),PackageFlag.loginRequest));
 			oos.flush();
 			
-			flag = (AcknowledgeFlag) ois.readObject();
-			if (flag.flag == AcknowledgeFlags.loginRefused)
+			pkg = (Package) ois.readObject();
+			if (pkg.Flag() == PackageFlag.loginRefused)
 				System.out.println("Login Refused");
 		     
-			oos.writeObject(new RequestFlag(RequestFlags.loginRequest));
-			oos.writeObject(new LoginInfoPackage("test", "pass".hashCode()));
+			oos.writeObject(new LoginInfoPackage("test", "pass".hashCode(), PackageFlag.loginRequest));
 			oos.flush();
 			 
-			flag = (AcknowledgeFlag) ois.readObject();
-			if (flag.flag == AcknowledgeFlags.loginGranted) {
+			pkg = (Package) ois.readObject();
+			if (pkg.Flag() == PackageFlag.loginGranted) {
 				System.out.println("Login Granted");
-				GameServerInfoPackage gsip = (GameServerInfoPackage) ois.readObject();
+				GameServerInfoPackage gsip = (GameServerInfoPackage) pkg;
 				System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
 			}
 			
@@ -58,6 +53,8 @@ public class EntryPoint {
 	   } catch  (IOException e) {
 		   	e.printStackTrace();
 	   } catch (ClassNotFoundException e) {
+			e.printStackTrace();
+	   } catch (Exception e) {
 			e.printStackTrace();
 	   }
 	}

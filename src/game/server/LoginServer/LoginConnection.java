@@ -12,12 +12,11 @@ import game.util.DB.DBValue;
 import static game.util.DB.DBValueType.*;
 import game.util.DB.Database;
 import game.util.DB.Fields.LoginInfoField;
-import game.util.IO.Net.AcknowledgeFlag;
-import game.util.IO.Net.AcknowledgeFlags;
-import game.util.IO.Net.RequestFlag;
-import game.util.IO.Net.RequestFlags;
+import game.util.IO.Packages.EmptyPackage;
+import game.util.IO.Packages.Package;
 import game.util.IO.Packages.GameServerInfoPackage;
 import game.util.IO.Packages.LoginInfoPackage;
+import game.util.IO.Packages.PackageFlag;
 
 public class LoginConnection implements Runnable {
 
@@ -25,14 +24,15 @@ public class LoginConnection implements Runnable {
 	private Socket client;
 	private GameServerInfoPackage gsip;
 	private boolean running = false;
-	private RequestFlags flag;
+	private Package pkg;
 	private ObjectInputStream ois;
 	ObjectOutputStream oos;
 	
 	public LoginConnection(Database loginDB, Socket client, GameServerInfoPackage gsip) {
 		this.loginDB = loginDB;
 		this.client = client;
-		this.gsip = gsip;
+		this.gsip = new GameServerInfoPackage(gsip.ip, gsip.port);
+		this.gsip.flag = PackageFlag.loginGranted;
 	}
 	
 	@Override
@@ -76,11 +76,11 @@ public class LoginConnection implements Runnable {
 
 	private void Poke() {
 		try {
-			oos.writeObject(new RequestFlag(RequestFlags.poke));
+			oos.writeObject(new EmptyPackage(PackageFlag.poke));
 			oos.flush();
 			
-			AcknowledgeFlag flag = (AcknowledgeFlag) ois.readObject();
-			if (flag.flag != AcknowledgeFlags.pokeback)
+			pkg = (Package) ois.readObject();
+			if (pkg.Flag() != PackageFlag.pokeback)
 				running = false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,25 +90,24 @@ public class LoginConnection implements Runnable {
 
 	private void Respond() {
 		try {
-			if (this.flag == RequestFlags.loginRequest) {
-				LoginInfoPackage lip = (LoginInfoPackage) ois.readObject();
+			if (pkg.Flag() == PackageFlag.loginRequest) {
+				LoginInfoPackage lip = (LoginInfoPackage) pkg;
 				
 				LoginInfoField  lif = (LoginInfoField)loginDB.getField(DBTable.loginTable, 
 																	   new DBValue[]{ new DBValue(DBString, "username") }, 
 																	   new Object[]{ lip.username });
 				if (lif != null) {
 					if (lif.passwordHash == lip.passwordHash) {
-						oos.writeObject(new AcknowledgeFlag(AcknowledgeFlags.loginGranted));
 						oos.writeObject(gsip);
 						oos.flush();
 						running = false;
 						return;
 					}
 				}
-				oos.writeObject(new AcknowledgeFlag(AcknowledgeFlags.loginRefused));
+				oos.writeObject(new EmptyPackage(PackageFlag.loginRefused));
 				oos.flush();
 			} else {
-				oos.writeObject(new AcknowledgeFlag(AcknowledgeFlags.unkownRequest));
+				oos.writeObject(new EmptyPackage(PackageFlag.unknown));
 				oos.flush();
 			}
 		} catch (Exception e) {
@@ -119,8 +118,7 @@ public class LoginConnection implements Runnable {
 
 	private boolean Listen() {
 		try {
-			RequestFlag rf = (RequestFlag) ois.readObject();
-			flag = rf.flag;
+			pkg = (Package) ois.readObject();
 		} catch (SocketTimeoutException e) {
 			return false;
 		} catch (Exception e) {
