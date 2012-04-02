@@ -48,13 +48,14 @@ public abstract class BasicUIComponent implements UIComponent {
 	}
 	public void addChild(BasicUIComponent child, int layer) {
 		if (children == null)
-			children = new LinkedList<>();
+			children = new LinkedList<BasicUIComponent>();
 		children.add(child);
 		child.setParent(this);
 		Collections.sort(children, new Comparator<BasicUIComponent>() {
 			@Override
 			public int compare(BasicUIComponent arg0, BasicUIComponent arg1) {
-				return Integer.compare(arg0.getLayer(), arg1.getLayer());
+				//return Integer.compare(arg0.getLayer(), arg1.getLayer());
+				return arg0.getLayer() - arg1.getLayer(); // TODO Danger, unexpected behavior with big and small values
 			}
 		});
 	}
