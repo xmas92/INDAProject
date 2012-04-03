@@ -16,6 +16,7 @@ import game.util.IO.Packages.LoginInfoPackage;
 import game.util.IO.Packages.Package;
 import game.util.IO.Packages.PackageFlag;
 
+import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -23,11 +24,12 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
-public class LoginScreen implements Game{
+public class LoginScreen implements Game {
 	
 	private Image bg;
 	private LoginButton login, quit;
 	private LoginTextField username, password;
+	public GameServerInfoPackage gsip = null;
 	public LoginScreen() {
 		
 	}
@@ -80,7 +82,7 @@ public class LoginScreen implements Game{
 						System.out.println("Login Refused");
 					else if (pkg.Flag() == PackageFlag.loginGranted) {
 						System.out.println("Login Granted");
-						GameServerInfoPackage gsip = (GameServerInfoPackage) pkg;
+						gsip = (GameServerInfoPackage) pkg;
 						System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
 					}
 					oos.writeObject(new EmptyPackage(PackageFlag.closeConnectionRequest));

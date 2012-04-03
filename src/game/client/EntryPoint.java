@@ -1,9 +1,9 @@
 package game.client;
 
+import game.client.Game.MainGame;
 import game.client.Login.LoginScreen;
 
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.SlickException;
 
 public class EntryPoint {
 
@@ -13,12 +13,13 @@ public class EntryPoint {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
 		try {
-			AppGameContainer apc = new AppGameContainer(new LoginScreen());
+			MainGame game = new MainGame();
+			AppGameContainer apc = new AppGameContainer(game);
 			apc.setDisplayMode(540, 280, false);
+			game.apc = apc;
 			apc.start();
-		} catch (SlickException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	}

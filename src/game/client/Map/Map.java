@@ -1,7 +1,5 @@
 package game.client.Map;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
@@ -12,22 +10,23 @@ public class Map extends TiledMap{
 		// TODO Auto-generated constructor stub
 	}
 
-	public void draw(float x, float y, GameContainer gc) {
-		int w = gc.getWidth(), h = gc.getHeight();
+	public void draw(float x, float y, int w, int h) {
 		int cTileX = (int) x / getTileWidth();
 		int cTileY = (int) y / getTileHeight();
 		int numTileX = w / getTileWidth();
 		int numTileY = h / getTileHeight();
+		x -= cTileX * getTileHeight();
+		y -= cTileY * getTileWidth();
 		for (int layer = 0; layer < getLayerCount();layer++) {
 			for (int iY = 0; iY < numTileY; iY++) {
-				if (iY + cTileY < 0 || iY + cTileY >= getHeight())
-					continue;
-				for (int iX = 0; iX < numTileX; iX++) {
-					if (iX + cTileX < 0 || iX + cTileX  >= getWidth())
-						continue;
-					getTileImage(iX + cTileX, iY + cTileY, layer).draw(x+ iX*getTileWidth(), y + iY*getTileHeight());
+				if (iY + cTileY >= 0 && iY + cTileY < getHeight()) {
+					for (int iX = 0; iX < numTileX; iX++) {
+						if (iX + cTileX >= 0 && iX + cTileX  < getWidth()) {
+							getTileImage(iX + cTileX, iY + cTileY, layer).draw(iX*getTileWidth()-x, y + iY*getTileHeight()-y);
+						}
+					}
+					
 				}
-				
 			}
 		}
 	}
