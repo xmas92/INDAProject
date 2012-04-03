@@ -19,18 +19,24 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class ClientConnection implements Runnable {
 	
-	private Database db;
+	private Map<String, CharacterInfo> db;
 	private Socket client;
 	private boolean running;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	private Package pkg;
 	private String playerID;
-	public ClientConnection(Database playerDB, Socket accept) {
-		db = playerDB;
+	public ClientConnection(HashMap<String, CharacterInfo> playerDB, Socket accept) {
+		db = Collections.synchronizedMap(playerDB);
 		client = accept;
 	}
 
@@ -60,7 +66,7 @@ public class ClientConnection implements Runnable {
 				Disconnect();
 		}
 		try {
-			db.deleteField(DBTable.playerTable, new PlayerInfoField(new CharacterInfo(), playerID));
+			db.remove(playerID);
 			if (oos != null)
 				oos.close();
 			if (ois != null)
@@ -101,20 +107,17 @@ public class ClientConnection implements Runnable {
 		try {
 			PlayerInfoPackage pip = (PlayerInfoPackage) pkg;
 			playerID = pip.playerID;
-			PlayerInfoField pif = new PlayerInfoField(pip.ci, pip.playerID);
-			if (!db.containsField(DBTable.playerTable, pif)) {
-				db.addField(DBTable.playerTable, pif);
-			} else {
-				db.changeField(DBTable.playerTable, pif, pif);
-			}
+			db.put(pip.playerID, pip.ci);
+			
 			ArrayList<CharacterInfo> cis = new ArrayList<CharacterInfo>();
 			ArrayList<String> playerIDs = new ArrayList<String>();
-			ArrayList<DBField> pifs = db.getFields(DBTable.playerTable, null, null);
-			for (DBField field : pifs) {
-				PlayerInfoField t = (PlayerInfoField)field;
-				if (!t.playerID.equals(pip.playerID)) {
-					cis.add(t.ci);
-					playerIDs.add(t.playerID);
+			Set<String> s = db.keySet();
+			synchronized (db) {
+				for (String string : s) {
+					if (!string.equals(playerID)) {
+						cis.add(db.get(string));
+						playerIDs.add(string);
+					}
 				}
 			}
 			oos.writeObject(new PlayersInfoPackage(cis, playerIDs, PackageFlag.playersInfoAcknowledged));

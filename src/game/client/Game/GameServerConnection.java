@@ -29,13 +29,16 @@ public class GameServerConnection implements Runnable {
 			Package pkg;
 			boolean connected = true;
 			while (connected) {
-				while ((pkg = NIQQ.pollOutPackage()) != null) { 
+				while ((pkg = NIQQ.pollOutPackage()) != null) {
 					// Write package
+					long time = System.currentTimeMillis();
 					oos.writeObject(pkg);
 					oos.flush();
-					
+					System.out.println("Write: " + (System.currentTimeMillis() - time));
 					// Read package
+					time = System.currentTimeMillis();
 					pkg = (Package) ois.readObject();
+					System.out.println("Read: " + (System.currentTimeMillis() - time));
 					if (pkg.Flag() == PackageFlag.closeConnectionAcknowledged)
 						connected = false;
 					NIQQ.addInPackage(pkg);

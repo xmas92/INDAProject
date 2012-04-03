@@ -1,6 +1,7 @@
 package game.server.GameServer;
 
 import static game.util.DB.DBInfo._PLAYERDB;
+import game.client.Entity.CharacterInfo;
 import game.util.DB.DBTable;
 import game.util.DB.Database;
 
@@ -10,18 +11,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 
 public class GameServer implements Runnable{
 	private int port = 0;
-	private Database playerDB = new Database();
+	private HashMap<String, CharacterInfo> playerDB = new HashMap<String, CharacterInfo>();
 	private boolean running;
 	public GameServer() {
-		if (new File(_PLAYERDB).exists())
-			playerDB.load(_PLAYERDB);
-		else {
-			playerDB.addTable(DBTable.playerTable);
-			playerDB.save(_PLAYERDB);
-		}
 		try {
 			// TODO add players
 		} catch (Exception e1) {
@@ -66,7 +62,6 @@ public class GameServer implements Runnable{
 				e.printStackTrace();
 			}
 		}
-		playerDB.save(_PLAYERDB);
 		System.out.println("Stopping GameServer");
 	}
 	
