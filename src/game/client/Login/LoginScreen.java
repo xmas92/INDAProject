@@ -30,6 +30,7 @@ public class LoginScreen implements Game {
 	private LoginButton login, quit;
 	private LoginTextField username, password;
 	public GameServerInfoPackage gsip = null;
+	public String un;
 	public LoginScreen() {
 		
 	}
@@ -83,6 +84,7 @@ public class LoginScreen implements Game {
 					else if (pkg.Flag() == PackageFlag.loginGranted) {
 						System.out.println("Login Granted");
 						gsip = (GameServerInfoPackage) pkg;
+						un = username.getText();
 						System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
 					}
 					oos.writeObject(new EmptyPackage(PackageFlag.closeConnectionRequest));

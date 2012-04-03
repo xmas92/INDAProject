@@ -26,8 +26,14 @@ public class LoginServer implements Runnable {
 			loginDB.save(_LOGINDB);
 		}
 		try {
+			if (!loginDB.containsField(DBTable.loginTable,  new LoginInfoField("Axel", "pass".hashCode())))
+				loginDB.addField(DBTable.loginTable, new LoginInfoField("Axel", "pass".hashCode()));
+			if (!loginDB.containsField(DBTable.loginTable,  new LoginInfoField("Bonny", "pass".hashCode())))
+				loginDB.addField(DBTable.loginTable, new LoginInfoField("Bonny", "pass".hashCode()));
 			if (!loginDB.containsField(DBTable.loginTable,  new LoginInfoField("test", "pass".hashCode())))
 				loginDB.addField(DBTable.loginTable, new LoginInfoField("test", "pass".hashCode()));
+			if (!loginDB.containsField(DBTable.loginTable,  new LoginInfoField("test2", "pass".hashCode())))
+				loginDB.addField(DBTable.loginTable, new LoginInfoField("test2", "pass".hashCode()));
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

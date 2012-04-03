@@ -1,7 +1,6 @@
 package game.client;
 
 import game.client.Game.MainGame;
-import game.client.Login.LoginScreen;
 
 import org.newdawn.slick.AppGameContainer;
 
@@ -18,6 +17,8 @@ public class EntryPoint {
 			AppGameContainer apc = new AppGameContainer(game);
 			apc.setDisplayMode(540, 280, false);
 			game.apc = apc;
+			apc.setAlwaysRender(true);
+			apc.setUpdateOnlyWhenVisible(false);
 			apc.start();
 		} catch (Exception e1) {
 			e1.printStackTrace();

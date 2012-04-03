@@ -38,7 +38,7 @@ public class LoginConnection implements Runnable {
 	@Override
 	public void run() {
 		running = true;
-		System.out.println("Client connected: " + client.getInetAddress());
+		System.out.println("(LS)Client connected: " + client.getInetAddress());
 		try {
 			client.setSoTimeout(30000);
 		} catch (SocketException e) {
@@ -67,11 +67,10 @@ public class LoginConnection implements Runnable {
 				ois.close();
 			
 			client.close();
-			System.out.println("Closing Connection: " + client.getInetAddress());
+			System.out.println("(LS)Closing Connection: " + client.getInetAddress());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	private void Poke() {

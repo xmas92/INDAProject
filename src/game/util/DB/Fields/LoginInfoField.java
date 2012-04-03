@@ -24,9 +24,11 @@ public class LoginInfoField implements DBField {
 	
 	@Override
 	public boolean contains(DBValue[] where, Object[] values) {
+		if (where == null || values == null)
+			return true;
 		if (where.length > 2 || values.length > 2)
 			return false;
-		if (where.length == 0) return false;
+		if (where.length == 0) return true;
 		boolean u = false, p = false;
 		if (where[0].Name().equals("username") && where[0].Type() == DBValueType.DBString) 
 			u = (username.equals((String)values[0]));

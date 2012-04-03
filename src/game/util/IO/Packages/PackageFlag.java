@@ -6,11 +6,13 @@ public enum PackageFlag {
 	loginGranted,
 	loginRefused,
 	closeConnectionAcknowledged,
+	playersInfoAcknowledged,
 	
 	// Requests
 	poke,
 	loginRequest,
 	closeConnectionRequest,
+	playersInfoRequest,
 	
 	// Unknown
 	unknown,

@@ -4,4 +4,7 @@ public enum PackageType {
 	GameServerInfoPackage,
 	LoginInfoPackage,
 	EmptyPackage,
+	PlayerInfoPackage,
+	CharactersInfoPackage, 
+	PlayersInfoPackage,
 }

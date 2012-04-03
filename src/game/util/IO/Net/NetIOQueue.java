@@ -1,6 +1,7 @@
 package game.util.IO.Net;
 
 import java.util.LinkedList;
+import game.util.IO.Packages.Package;
 
 public class NetIOQueue {
 	private LinkedList<Package> InQueue, OutQueue;

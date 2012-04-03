@@ -40,8 +40,8 @@ public class SlickTest extends BasicGame {
     @Override
     public void init(GameContainer container) throws SlickException {  
     	viewPort = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    	sheet = new SpriteSheet("data/captainsheet.png", 19, 43, transColor);
-    	map = new Map("data/untitled.tmx");
+    	sheet = new SpriteSheet("data/GameAssets/captainsheet.png", 19, 43, transColor);
+    	map = new Map("data/GameAssets/Map/untitled.tmx");
     	
     	playerAnim = new Animation();
 		playerAnim.setAutoUpdate(true);

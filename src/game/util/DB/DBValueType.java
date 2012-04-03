@@ -4,4 +4,5 @@ public enum DBValueType {
 	DBString,
 	DBInt,
 	DBFloat,
+	DBObject,
 }

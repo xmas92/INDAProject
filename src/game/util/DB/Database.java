@@ -35,6 +35,16 @@ public class Database {
 		fields.add(field.create());
 	}
 	
+	synchronized public void changeField(DBTable table,  DBField field, DBField newField) throws Exception {
+		ArrayList<DBField> fields = tables.get(table);
+		if (fields == null)
+			throw new Exception();
+		int i = fields.indexOf(field);
+		if (i != -1) {
+			fields.set(i, newField.create());
+		}
+	}
+	
 	synchronized public void changeField(DBTable table, DBValue[] where, Object[] values, DBField newField) throws Exception {
 		ArrayList<DBField> fields = tables.get(table);
 		if (fields == null)
@@ -57,7 +67,27 @@ public class Database {
 				return fields.get(i).create();
 		return null;
 	}
-	
+ 	
+	synchronized public ArrayList<DBField> getFields(DBTable table, DBValue[] where, Object[] values) throws Exception {
+		ArrayList<DBField> fields = tables.get(table);
+		if (fields == null)
+			throw new Exception();
+		if (where != null && values != null)
+			if (where.length != values.length)
+				throw new Exception();
+		ArrayList<DBField> ret = new ArrayList<DBField>();
+		for (int i = 0; i < fields.size(); i++)
+			if (fields.get(i).contains(where, values))
+				ret.add(fields.get(i).create());
+		return ret;
+	}
+
+	synchronized public void deleteField(DBTable table, DBField field) throws Exception {
+		ArrayList<DBField> fields = tables.get(table);
+		if (fields == null || field == null)
+			throw new Exception();
+		fields.remove(field);
+	}
 	synchronized public void deleteField(DBTable table, DBValue[] where, Object[] values) throws Exception {
 		ArrayList<DBField> fields = tables.get(table);
 		if (fields == null)
