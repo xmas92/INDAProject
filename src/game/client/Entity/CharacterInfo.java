@@ -1,8 +1,11 @@
 package game.client.Entity;
 
-import java.io.Serializable;
+import game.util.IO.Net.Packagble;
 
-public class CharacterInfo implements Serializable{
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+public class CharacterInfo implements Packagble{
 	/**
 	 * 
 	 */
@@ -21,5 +24,41 @@ public class CharacterInfo implements Serializable{
 		ret.speed = speed;
 		ret.imageID = imageID;
 		return ret;
+	}
+
+	@Override
+	public void readFromStream(DataInputStream ois) {
+		try {
+			if (serialVersionUID != ois.readLong())
+				throw new Exception();
+			x = ois.readFloat();
+			y = ois.readFloat();
+			deltaX = ois.readFloat();
+			deltaY = ois.readFloat();
+			angle = ois.readFloat();
+			speed = ois.readFloat();
+			imageID = ois.readUTF();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void writeToStream(DataOutputStream oos) {
+		try {
+			oos.writeLong(serialVersionUID);
+			oos.writeFloat(x);
+			oos.writeFloat(y);
+			oos.writeFloat(deltaX);
+			oos.writeFloat(deltaY);
+			oos.writeFloat(angle);
+			oos.writeFloat(speed);
+			oos.writeUTF(imageID);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

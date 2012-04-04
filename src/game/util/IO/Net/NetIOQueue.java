@@ -1,7 +1,7 @@
 package game.util.IO.Net;
 
 import java.util.LinkedList;
-import game.util.IO.Packages.Package;
+import game.util.IO.Net.Package;
 
 public class NetIOQueue {
 	private LinkedList<Package> InQueue, OutQueue;
@@ -28,5 +28,8 @@ public class NetIOQueue {
 	}
 	public synchronized Package pollOutPackage() {
 		return OutQueue.poll();
+	}
+	public synchronized int outSize() {
+		return OutQueue.size();
 	}
 }

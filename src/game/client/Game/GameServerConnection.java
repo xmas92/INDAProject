@@ -1,14 +1,15 @@
 package game.client.Game;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import game.util.IO.Net.Flags;
 import game.util.IO.Net.NetIOQueue;
+import game.util.IO.Net.PlayersInfoPackage;
 import game.util.IO.Packages.GameServerInfoPackage;
-import game.util.IO.Packages.Package;
-import game.util.IO.Packages.PackageFlag;
+import game.util.IO.Net.Package;
 
 public class GameServerConnection implements Runnable {
 	private final NetIOQueue NIQQ;
@@ -24,29 +25,39 @@ public class GameServerConnection implements Runnable {
 		try {
 			socket = new Socket(gsip.ip, gsip.port);
 		 
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			Package pkg;
 			boolean connected = true;
 			while (connected) {
 				while ((pkg = NIQQ.pollOutPackage()) != null) {
 					// Write package
 					long time = System.currentTimeMillis();
-					oos.writeObject(pkg);
-					oos.flush();
+					dos.writeChar(pkg.Flag());
+					dos.writeChar(pkg.Type());
+					pkg.packload().writeToStream(dos);
+					dos.flush();
 					System.out.println("Write: " + (System.currentTimeMillis() - time));
 					// Read package
 					time = System.currentTimeMillis();
-					pkg = (Package) ois.readObject();
+					char flag = dis.readChar();
+					char type = dis.readChar();
+					pkg = GetPackage(flag, type, dis);
 					System.out.println("Read: " + (System.currentTimeMillis() - time));
-					if (pkg.Flag() == PackageFlag.closeConnectionAcknowledged)
+					if (pkg == null) {
 						connected = false;
+						break;
+					}
+					if (pkg.Flag() == Flags.closeConnectionAcknowledged) {
+						connected = false;
+						break;
+					}
 					NIQQ.addInPackage(pkg);
 				}
 			}
 			
-			ois.close();
-			oos.close();
+			dis.close();
+			dos.close();
 			socket.close();
 	   } catch (Exception e) {
 			e.printStackTrace();
@@ -59,5 +70,14 @@ public class GameServerConnection implements Runnable {
 			}
 	   }
 		
+	}
+
+	private Package GetPackage(char flag, char type, DataInputStream dis) {
+		if (flag == Flags.playersInfoAcknowledged) {
+			PlayersInfoPackage pip = new PlayersInfoPackage(flag);
+			pip.readFromStream(dis);
+			return pip;
+		}
+		return null;
 	}
 }

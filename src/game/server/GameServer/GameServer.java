@@ -1,12 +1,8 @@
 package game.server.GameServer;
 
-import static game.util.DB.DBInfo._PLAYERDB;
 import game.client.Entity.CharacterInfo;
-import game.util.DB.DBTable;
-import game.util.DB.Database;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;

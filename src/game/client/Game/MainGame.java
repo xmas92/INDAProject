@@ -1,7 +1,5 @@
 package game.client.Game;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -11,12 +9,12 @@ import game.client.Entity.Character;
 import game.client.Login.LoginScreen;
 import game.client.Map.Map;
 import game.util.IO.InputState;
+import game.util.IO.Net.Flags;
 import game.util.IO.Net.NetIOQueue;
-import game.util.IO.Packages.Package;
-import game.util.IO.Packages.PackageFlag;
-import game.util.IO.Packages.PackageType;
-import game.util.IO.Packages.PlayerInfoPackage;
-import game.util.IO.Packages.PlayersInfoPackage;
+import game.util.IO.Net.PlayerInfoPackage;
+import game.util.IO.Net.PlayersInfoPackage;
+import game.util.IO.Net.Package;
+import game.util.IO.Net.Types;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
@@ -103,22 +101,22 @@ public class MainGame implements Game {
 			c.update(delta);
 		}
 		player.update(delta);
-		if (container.getTime() - lastUpdateTime > 500) {
+		if (container.getTime() - lastUpdateTime > 200 && NIQQ.outSize() < 2) {
 			lastUpdateTime = container.getTime();
 			SendPlayerUpdate();
 		}
 	}
 
 	private void SendPlayerUpdate() {
-		PlayerInfoPackage pkg = new PlayerInfoPackage(player.getCharacterInfo(), player.getPlayerID(), PackageFlag.playersInfoRequest);
+		PlayerInfoPackage pkg = new PlayerInfoPackage(player.getCharacterInfo(), player.getPlayerID(), Flags.playersInfoRequest);
 		NIQQ.addOutPackage(pkg);
 	}
 
 	private void HandleNetIO(GameContainer container, int delta) {
 		Package pkg;
 		while ((pkg = NIQQ.pollInPackage()) != null) {
-			if (pkg.Flag() == PackageFlag.playersInfoAcknowledged) {
-				if (pkg.Type() == PackageType.PlayersInfoPackage) {
+			if (pkg.Flag() == Flags.playersInfoAcknowledged) {
+				if (pkg.Type() == Types.PlayersInfoPackage) {
 					PlayersInfoPackage pip = (PlayersInfoPackage) pkg;
 					for (int i = 0; i < pip.cis.size() && i < pip.playerIDs.size(); i++) {
 						if (players.containsKey(pip.playerIDs.get(i))) {

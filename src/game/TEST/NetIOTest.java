@@ -1,5 +1,7 @@
 package game.TEST;
 
+import game.util.IO.Packages.PackageFlag;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class NetIOTest {
 					ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
 					while(!client.isClosed()) {
 						try {
-							ois.readInt();++i;
+							ois.readUTF();++i;
 							if (System.currentTimeMillis() - time > 1000) {
 								time = System.currentTimeMillis();
 								System.out.println("Reads/s: " + i);
@@ -63,7 +65,7 @@ public class NetIOTest {
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			while(!s.isClosed()) {
 				try {
-					oos.writeInt(0);++i;
+					oos.writeUTF("Test");++i;
 					if (System.currentTimeMillis() - time > 1000) {
 						time = System.currentTimeMillis();
 						System.out.println("Writes/s: " + i);
