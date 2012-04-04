@@ -1,6 +1,8 @@
 package game.TEST;
 
 import game.client.Map.Map;
+import game.client.Resource.ResourceManager;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
@@ -54,8 +56,7 @@ public class SlickTest extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta)
-            throws SlickException {  
-    	System.out.println(speed);
+            throws SlickException { 
     	if(speed <= 0.1f){
     		playerAnim.stop();
     	} else {

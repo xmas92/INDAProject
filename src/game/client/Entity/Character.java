@@ -1,5 +1,6 @@
 package game.client.Entity;
 
+import game.client.Resource.ResourceManager;
 import game.util.IO.Net.Network.CharacterInfo;
 
 import org.newdawn.slick.Image;
@@ -16,12 +17,8 @@ public class Character {
 		return ci.clone();
 	}
 	public void setCharacterInfo(CharacterInfo ci) {
-		try {
 		if (ci.imageID != this.ci.imageID)
-				graphic = new Image(ci.imageID);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+				graphic = ResourceManager.Manager().getImage(ci.imageID);
 		this.ci = ci.clone();
 	}
 	

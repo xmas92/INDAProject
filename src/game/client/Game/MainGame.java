@@ -7,6 +7,7 @@ import game.client.Entity.Player;
 import game.client.Entity.Character;
 import game.client.Login.LoginScreen;
 import game.client.Map.Map;
+import game.client.Resource.ResourceManager;
 import game.util.IO.InputState;
 import game.util.IO.Net.Network;
 import game.util.IO.Net.Network.CharacterInfo;
@@ -55,7 +56,7 @@ public class MainGame implements Game {
 			return ls.getTitle();
 		return "MainGameWindow";
 	}
-
+	
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		if (ls != null) {
@@ -64,14 +65,15 @@ public class MainGame implements Game {
 			return;
 		}
 		System.out.println("Main Game Init");
+		ResourceManager.Manager().init();
 		CharacterInfo ci = new CharacterInfo();
 		ci.speed = 62;
-		ci.imageID = "data/GameAssets/Player/player.bmp";
+		ci.imageID = "GameAssets:Player:player.bmp";
 		PlayerInfo pi = new PlayerInfo();
 		pi.characterInfo = ci;
 		pi.player = playerID;
 		player = new Player(pi);
-		map = new Map("data/GameAssets/Map/untitled.tmx");
+		map = ResourceManager.Manager().getMap("bonnyMap2:testmap.tmx");
 		players = Collections.synchronizedMap(new HashMap<String, Character>());
 		client = new Client();
 		client.start();
