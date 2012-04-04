@@ -44,7 +44,7 @@ public class LoginScreen implements Game {
 	public String getTitle() {
 		return "MyGameName - LoginScreen";
 	}
-
+	
 	@Override
 	public void init(final GameContainer container) throws SlickException {
 		bg = new Image("data/LoginScreen/BG.png");

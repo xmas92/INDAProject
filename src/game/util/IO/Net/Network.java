@@ -2,6 +2,7 @@ package game.util.IO.Net;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import com.esotericsoftware.minlog.Log;
 
 public class Network {
 
@@ -15,6 +16,7 @@ public class Network {
 		kryo.register(LoginRefused.class);
 		kryo.register(UpdatePlayer.class);
 		kryo.register(RemovePlayer.class);
+		Log.set(Log.LEVEL_ERROR);
 	}
 	
 	static public class Login {

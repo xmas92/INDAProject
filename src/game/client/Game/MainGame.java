@@ -144,7 +144,6 @@ public class MainGame implements Game {
             	}
             }
             public void disconnected (Connection connection) {
-            	
             }
 		}));
 	}

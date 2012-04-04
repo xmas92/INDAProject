@@ -10,7 +10,6 @@ import java.util.HashMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
 
 public class GameServerListener extends Listener {
 
@@ -20,7 +19,6 @@ public class GameServerListener extends Listener {
 	public GameServerListener(HashMap<String, CharacterInfo> playerDB, Server server) {
 		this.playerDB = playerDB;
 		this.server = server;
-		Log.set(Log.LEVEL_DEBUG);
 	}
 	
 	@Override
