@@ -1,5 +1,7 @@
 package game.client.Entity;
 
+import game.util.IO.Net.Network.CharacterInfo;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -7,12 +9,8 @@ public class Character {
 	protected CharacterInfo ci;
 	protected Image graphic = null;
 	public Character (CharacterInfo characterInfo) {
-		ci = characterInfo;
-		try {
-			graphic = new Image(ci.imageID);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+		ci = new CharacterInfo();
+		setCharacterInfo(characterInfo);
 	}
 	public CharacterInfo getCharacterInfo() {
 		return ci.clone();
@@ -22,7 +20,6 @@ public class Character {
 		if (ci.imageID != this.ci.imageID)
 				graphic = new Image(ci.imageID);
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.ci = ci.clone();

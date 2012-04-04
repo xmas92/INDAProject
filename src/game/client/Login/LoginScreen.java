@@ -2,21 +2,16 @@ package game.client.Login;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 import game.util.IO.InputState;
 import game.util.IO.Event.Event;
 import game.util.IO.Event.EventListner;
-import game.util.IO.Packages.EmptyPackage;
-import game.util.IO.Packages.GameServerInfoPackage;
-import game.util.IO.Packages.LoginInfoPackage;
-import game.util.IO.Packages.Package;
-import game.util.IO.Packages.PackageFlag;
+import game.util.IO.Net.Network;
+import game.util.IO.Net.Network.GameServerInfo;
+import game.util.IO.Net.Network.Login;
+import game.util.IO.Net.Network.LoginGranted;
+import game.util.IO.Net.Network.LoginRefused;
 
-import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -24,12 +19,17 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Listener.*;
+
 public class LoginScreen implements Game {
 	
 	private Image bg;
 	private LoginButton login, quit;
 	private LoginTextField username, password;
-	public GameServerInfoPackage gsip = null;
+	public GameServerInfo gsi = null;
 	public String un;
 	public LoginScreen() {
 		
@@ -69,43 +69,36 @@ public class LoginScreen implements Game {
 			}
 
 			private void doLogin() {
-				Socket socket = null;
+				final Client client = new Client();
+				client.start();
+				Network.register(client);
+				
+				client.addListener(new ThreadedListener(new Listener() {
+                    public void connected (Connection connection) {
+                    }
+                    
+                    public void received (Connection connection, Object object) {
+                            if (object instanceof LoginGranted) {
+                            	gsi = ((LoginGranted)object).gsi;
+                            	un = username.getText();
+                            }
+                            if (object instanceof LoginRefused) {
+                            }
+                        	connection.close();
+                    }
+                    public void disconnected (Connection connection) {
+                    	client.close();
+                    }
+				}));
 				try {
-					socket = new Socket("81.229.86.19", 12345);
-				 
-					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-					Package pkg;
-					oos.writeObject(new LoginInfoPackage(username.getText(), password.getText().hashCode(),PackageFlag.loginRequest));
-					oos.flush();
-					pkg = (Package) ois.readObject();
-					if (pkg.Flag() == PackageFlag.loginRefused)
-						System.out.println("Login Refused");
-					else if (pkg.Flag() == PackageFlag.loginGranted) {
-						System.out.println("Login Granted");
-						gsip = (GameServerInfoPackage) pkg;
-						un = username.getText();
-						System.out.println("Gameserver: " + gsip.ip + ":" + gsip.port);
-					}
-					oos.writeObject(new EmptyPackage(PackageFlag.closeConnectionRequest));
-					oos.flush();
-					pkg = (Package) ois.readObject();
-					if (pkg.Flag() != PackageFlag.closeConnectionAcknowledged)
-						throw new Exception();
-					ois.close();
-					oos.close();
-					socket.close();
-			   } catch (Exception e) {
+					client.connect(5000, "81.229.86.19", 12345);
+					Login l = new Login();
+					l.username = username.getText();
+					l.passwordHash = password.getText().hashCode();
+					client.sendTCP(l);
+				} catch (Exception e) {
 					e.printStackTrace();
-			   } finally {
-					try {
-						if (socket != null)
-							socket.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-			   }
-
+				}
 			}
 		});
 		username = new LoginTextField(new SpriteSheet("data/LoginScreen/Username.png", 300, 30));

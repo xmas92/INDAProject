@@ -1,7 +1,7 @@
 package game.util.DB.Fields;
 
-import game.client.Entity.CharacterInfo;
 import game.util.DB.DBValue;
+import game.util.IO.Net.Network.CharacterInfo;
 
 public class PlayerInfoField implements DBField {
 

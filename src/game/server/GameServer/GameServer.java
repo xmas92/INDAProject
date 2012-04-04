@@ -1,22 +1,18 @@
 package game.server.GameServer;
 
-import static game.util.DB.DBInfo._PLAYERDB;
-import game.client.Entity.CharacterInfo;
-import game.util.DB.DBTable;
-import game.util.DB.Database;
+import game.util.IO.Net.Network;
+import game.util.IO.Net.Network.CharacterInfo;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
+
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Server;
 
 public class GameServer implements Runnable{
 	private int port = 0;
 	private HashMap<String, CharacterInfo> playerDB = new HashMap<String, CharacterInfo>();
-	private boolean running;
 	public GameServer() {
 		try {
 			// TODO add players
@@ -36,36 +32,27 @@ public class GameServer implements Runnable{
 		}
 	}
 
+	Server server;
 	@Override
 	public void run() {
-		ServerSocket ss = null;
-		running = true;
 		try {
-			ss = new ServerSocket(port);
-			System.out.println("Binding: " + ss.getInetAddress() + ":" + ss.getLocalPort());
-			ss.setSoTimeout(30000);
-			while(!ss.isClosed() && running) {
-				try {
-					ClientConnection cc = new ClientConnection(playerDB, ss.accept());
-					Thread t = new Thread(cc);
-					t.start();
-				} catch (SocketTimeoutException e) {
-				}
-			}
-		} catch (IOException e) {
+			server = new Server() {
+                protected Connection newConnection () {
+                    // By providing our own connection implementation, we can store per
+                    // connection state without a connection ID to state look up.
+                    return new PlayerConnection();
+                }
+			};
+			Network.register(server);
+			server.addListener(new GameServerListener(playerDB, server));
+			server.start();
+			server.bind(port);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (ss != null) {
-			try {
-				ss.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		System.out.println("Stopping GameServer");
 	}
 	
 	synchronized public void Stop() {
-		running = false;
+		server.stop();
 	}
 }

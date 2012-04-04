@@ -4,7 +4,6 @@ import game.server.GameServer.GameServer;
 import game.server.LoginServer.LoginServer;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class EntryPoint {

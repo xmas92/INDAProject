@@ -3,21 +3,21 @@ package game.server.LoginServer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.SocketTimeoutException;
+
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Server;
 
 import game.util.DB.DBTable;
 import game.util.DB.Database;
 import game.util.DB.Fields.LoginInfoField;
-import game.util.IO.Packages.GameServerInfoPackage;
+import game.util.IO.Net.Network;
+import game.util.IO.Net.Network.GameServerInfo;
 import static game.util.DB.DBInfo.*;
 
 public class LoginServer implements Runnable {
 	private int port = 0;
-	private GameServerInfoPackage gsip = null;
+	private final GameServerInfo gsi = new GameServerInfo();
 	private Database loginDB = new Database();
-	private boolean running;
 	public LoginServer() {
 		if (new File(_LOGINDB).exists())
 			loginDB.load(_LOGINDB);
@@ -50,43 +50,38 @@ public class LoginServer implements Runnable {
 				else if (l.startsWith("gameserverport="))
 					gsPort = Integer.parseInt(l.substring(("gameserverport=").length()));
 			}
-			gsip = new GameServerInfoPackage(gsIP, gsPort);
+			gsi.ip = gsIP;
+			gsi.port = gsPort;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 	}
-
+	private Server server;
+	
 	@Override
 	public void run() {
-		ServerSocket ss = null;
-		running = true;
 		try {
-			ss = new ServerSocket(port);
-			System.out.println("Binding: " + ss.getInetAddress() + ":" + ss.getLocalPort());
-			ss.setSoTimeout(30000);
-			while(!ss.isClosed() && running) {
-				try {
-				 LoginConnection lc = new LoginConnection(loginDB, ss.accept(), gsip);
-				 Thread t = new Thread(lc);
-				 t.start();
-				} catch (SocketTimeoutException e) {
-				}
-			}
-		} catch (IOException e) {
+			server = new Server() {
+                protected Connection newConnection () {
+                    // By providing our own connection implementation, we can store per
+                    // connection state without a connection ID to state look up.
+                    return new LoginConnection();
+                }
+			};
+			Network.register(server);
+			server.addListener(new LoginListener(loginDB, gsi));
+			server.start();
+			server.bind(port);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (ss != null)
-			try {
-				ss.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		loginDB.save(_LOGINDB);
-		System.out.println("Stopping LoginServer");
 	}
 	
 	synchronized public void Stop() {
-		running = false;
+		server.stop();
+	}
+	static public class LoginConnection extends Connection {
+		
 	}
 }

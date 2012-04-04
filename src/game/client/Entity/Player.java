@@ -3,13 +3,13 @@ package game.client.Entity;
 import org.newdawn.slick.Input;
 
 import game.util.IO.InputState;
+import game.util.IO.Net.Network.PlayerInfo;
 
 public class Player extends Character {
-
 	private String playerID;
-	public Player(CharacterInfo characterInfo) {
-		super(characterInfo);
-		// TODO Auto-generated constructor stub
+	public Player(PlayerInfo playerInfo) {
+		super(playerInfo.characterInfo);
+		
 	}
 	
 	public float getPlayerX() {
@@ -58,5 +58,12 @@ public class Player extends Character {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public PlayerInfo getPlayerInfo() {
+		PlayerInfo pi = new PlayerInfo();
+		pi.player = playerID;
+		pi.characterInfo = getCharacterInfo();
+		return pi;
 	}
 }
