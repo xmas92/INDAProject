@@ -11,7 +11,6 @@ import game.util.IO.InputState;
 import game.util.IO.Net.Network;
 import game.util.IO.Net.Network.CharacterInfo;
 import game.util.IO.Net.Network.GameServerInfo;
-import game.util.IO.Net.Network.Login;
 import game.util.IO.Net.Network.PlayerInfo;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
@@ -79,7 +78,7 @@ public class MainGame implements Game {
 		Network.register(client);
 		CreateListener();
 		try {
-			client.connect(5000, gsi.ip, gsi.port);
+			client.connect(5000, gsi.ip, gsi.port, gsi.port + 1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,7 +121,7 @@ public class MainGame implements Game {
 		if (System.currentTimeMillis() - time > 50) {
 			UpdatePlayer up = new UpdatePlayer();
 			up.playerInfo = player.getPlayerInfo();
-			client.sendTCP(up);
+			client.sendUDP(up);
 		}
 	}
 

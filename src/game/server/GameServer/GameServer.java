@@ -46,7 +46,7 @@ public class GameServer implements Runnable{
 			Network.register(server);
 			server.addListener(new GameServerListener(playerDB, server));
 			server.start();
-			server.bind(port);
+			server.bind(port, port+1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
