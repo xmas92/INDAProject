@@ -2,6 +2,8 @@ package game.client.Game;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import game.client.Entity.Player;
 import game.client.Entity.Character;
@@ -94,8 +96,10 @@ public class MainGame implements Game {
 			return;
 		}
 		map.draw(player.getPlayerX() - 400, player.getPlayerY() - 300, 800, 600);
-		for (Character c : players.values()) {
-			c.draw(player.getPlayerX(), player.getPlayerY());
+		synchronized (players) {
+			for (Character c : players.values()) {
+				c.draw(player.getPlayerX(), player.getPlayerY());
+			}
 		}
 		player.Draw();
 	}
@@ -115,10 +119,13 @@ public class MainGame implements Game {
 			return;
 		}
 		InputState.Update(container);
-		
-		for (Character c : players.values()) {
-			c.update(delta);
+
+		synchronized (players) {
+			for (Character c : players.values()) {
+				c.update(delta);
+			}
 		}
+		
 		player.update(delta);
 		if (System.currentTimeMillis() - time > 50) {
 			UpdatePlayer up = new UpdatePlayer();
@@ -135,6 +142,8 @@ public class MainGame implements Game {
             public void received (Connection connection, Object object) {
             	if (object instanceof UpdatePlayer) {
             		UpdatePlayer up = (UpdatePlayer)object;
+            		if (up.playerInfo.player == null)
+            			System.out.println("null player");
             		if (!players.containsKey(up.playerInfo.player)) {
             			players.put(up.playerInfo.player, new Character(up.playerInfo.characterInfo));
             		} else {

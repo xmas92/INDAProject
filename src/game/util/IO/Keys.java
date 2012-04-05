@@ -34,6 +34,7 @@ public class Keys {
 		new Key(KEY_Z, CharacterKey, "z", "Z"),
 		new Key(KEY_SPACE, CharacterKey, " "),
 		new Key(KEY_1, CharacterKey, "1", "!"),
+		new Key(KEY_2, CharacterKey, "2", "\""),
 		new Key(KEY_PERIOD, CharacterKey, ".", ":"),
 		
 		new Key(KEY_LSHIFT, ModifierKey),

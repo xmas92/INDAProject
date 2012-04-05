@@ -9,7 +9,7 @@ public class Player extends Character {
 	private String playerID;
 	public Player(PlayerInfo playerInfo) {
 		super(playerInfo.characterInfo);
-		
+		playerID = playerInfo.player;
 	}
 	
 	public float getPlayerX() {

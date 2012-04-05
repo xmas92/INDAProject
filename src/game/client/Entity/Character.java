@@ -4,7 +4,6 @@ import game.client.Resource.ResourceManager;
 import game.util.IO.Net.Network.CharacterInfo;
 
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 public class Character {
 	protected CharacterInfo ci;
