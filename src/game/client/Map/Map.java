@@ -10,6 +10,10 @@ public class Map extends TiledMap{
 		super(ref);
 		// TODO Auto-generated constructor stub
 	}
+	public Map(String ref, boolean b) throws SlickException {
+		super(ref, b);
+		// TODO Auto-generated constructor stub
+	}
 
 	public void draw(float x, float y, int w, int h) {
 		int cTileX = (int) x / getTileWidth();

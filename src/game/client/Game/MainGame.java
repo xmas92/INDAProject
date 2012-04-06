@@ -2,8 +2,6 @@ package game.client.Game;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import game.client.Entity.Player;
 import game.client.Entity.Character;
@@ -127,7 +125,7 @@ public class MainGame implements Game {
 		}
 		
 		player.update(delta);
-		if (System.currentTimeMillis() - time > 50) {
+		if (System.currentTimeMillis() - time > 100) {
 			UpdatePlayer up = new UpdatePlayer();
 			up.playerInfo = player.getPlayerInfo();
 			client.sendUDP(up);
@@ -143,8 +141,11 @@ public class MainGame implements Game {
             	if (object instanceof UpdatePlayer) {
             		UpdatePlayer up = (UpdatePlayer)object;
             		if (up.playerInfo.player == null)
-            			System.out.println("null player");
-            		if (!players.containsKey(up.playerInfo.player)) {
+            			return;
+            		if (up.playerInfo.player == player.getPlayerID()) {
+						player.setCharacterInfo(up.playerInfo.characterInfo);
+						return;
+            		} else if (!players.containsKey(up.playerInfo.player)) {
             			players.put(up.playerInfo.player, new Character(up.playerInfo.characterInfo));
             		} else {
             			players.get(up.playerInfo.player).setCharacterInfo(up.playerInfo.characterInfo);
