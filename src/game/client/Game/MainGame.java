@@ -9,11 +9,11 @@ import game.client.Login.LoginScreen;
 import game.client.Map.Map;
 import game.client.Resource.ResourceManager;
 import game.util.IO.InputState;
+import game.util.IO.Net.GameClientListeners;
 import game.util.IO.Net.Network;
 import game.util.IO.Net.Network.CharacterInfo;
 import game.util.IO.Net.Network.GameServerInfo;
 import game.util.IO.Net.Network.PlayerInfo;
-import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
 
 import org.newdawn.slick.AppGameContainer;
@@ -23,9 +23,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
 public class MainGame implements Game {
 
@@ -33,10 +30,10 @@ public class MainGame implements Game {
 	private LoginScreen ls;
 	private String playerID;
 	private GameServerInfo gsi;
-	private Player player;
-	private java.util.Map<String, Character> players;
+	public static Player player;
+	public static java.util.Map<String, Character> players;
 	private Map map;
-	private Client client;
+	public static Client client;
 	public MainGame() {
 		ls = new LoginScreen();
 	}
@@ -78,7 +75,7 @@ public class MainGame implements Game {
 		client = new Client();
 		client.start();
 		Network.register(client);
-		CreateListener();
+		GameClientListeners.createListeners();
 		try {
 			client.connect(5000, gsi.ip, gsi.port, gsi.port + 1);
 		} catch (Exception e) {
@@ -131,33 +128,4 @@ public class MainGame implements Game {
 			client.sendUDP(up);
 		}
 	}
-
-	private void CreateListener() {
-		client.addListener(new ThreadedListener(new Listener() {
-            public void connected (Connection connection) {
-            }
-            
-            public void received (Connection connection, Object object) {
-            	if (object instanceof UpdatePlayer) {
-            		UpdatePlayer up = (UpdatePlayer)object;
-            		if (up.playerInfo.player == null)
-            			return;
-            		if (up.playerInfo.player.equals(player.getPlayerID())) {
-						player.setCharacterInfo(up.playerInfo.characterInfo);
-						return;
-            		} else if (!players.containsKey(up.playerInfo.player)) {
-            			players.put(up.playerInfo.player, new Character(up.playerInfo.characterInfo));
-            		} else {
-            			players.get(up.playerInfo.player).setCharacterInfo(up.playerInfo.characterInfo);
-            		}
-            	}
-            	if (object instanceof RemovePlayer) {
-            		players.remove(((RemovePlayer)object).username);
-            	}
-            }
-            public void disconnected (Connection connection) {
-            }
-		}));
-	}
-
 }

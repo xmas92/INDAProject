@@ -64,4 +64,9 @@ public class Network {
 	static public class RemovePlayer {
 		public String username;
 	}
+	
+	static public class ProjectileSpellInfo {
+		public float x, y, deltaX, deltaY, speed;
+		
+	}
 }

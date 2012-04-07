@@ -38,8 +38,6 @@ public class GameServer implements Runnable{
 		try {
 			server = new Server() {
                 protected Connection newConnection () {
-                    // By providing our own connection implementation, we can store per
-                    // connection state without a connection ID to state look up.
                     return new PlayerConnection();
                 }
 			};
