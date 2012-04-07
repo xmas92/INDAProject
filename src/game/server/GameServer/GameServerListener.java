@@ -24,8 +24,8 @@ public class GameServerListener extends Listener {
 	public GameServerListener(HashMap<String, CharacterInfo> playerDB, Server server) {
 		this.playerDB = playerDB;
 		this.server = server;
-		zones = new HashMap<>();
-		playersZone = new HashMap<>();
+		zones = new HashMap<String, Map>();
+		playersZone = new HashMap<String, String>();
 		try {
 			zones.put("WorldHUB", new Map("data/maps/bonnyMap2/testmap.tmx", false));
 		} catch (SlickException e) {
