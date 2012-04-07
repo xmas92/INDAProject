@@ -45,17 +45,35 @@ public class GameServerListener extends Listener {
 			}
 			Map m = zones.get(playersZone.get(pi.player));
 			if (m != null) {
-				int i = 0;
-				i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth(), (int)pi.characterInfo.y / m.getTileHeight(), 3);
-				i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth()+1, (int)pi.characterInfo.y / m.getTileHeight(), 3);
-				i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth(), (int)pi.characterInfo.y / m.getTileHeight()+1, 3);
-				i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth()+1, (int)pi.characterInfo.y / m.getTileHeight()+1, 3);
-				if (i != 0) {
+				int x= 0, y = 0, i = 0;
+				if (pi.characterInfo.x < 0 || pi.characterInfo.x / m.getTileWidth()+1 > m.getWidth() ) {
+					x = 1;
+				} 
+				if (pi.characterInfo.y < 0 || pi.characterInfo.y / m.getTileHeight()+1 > m.getHeight()) {
+					y = 1;
+				} 
+				if (x == 0 && y == 0){
+					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth(), (int)pi.characterInfo.y / m.getTileHeight(), 3);
+					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth()+1, (int)pi.characterInfo.y / m.getTileHeight(), 3);
+					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth(), (int)pi.characterInfo.y / m.getTileHeight()+1, 3);
+					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth()+1, (int)pi.characterInfo.y / m.getTileHeight()+1, 3);
+				}
+				if (x+y+i != 0) {
 					UpdatePlayer up = new UpdatePlayer();
 					up.playerInfo = new PlayerInfo();
 					up.playerInfo.characterInfo = playerDB.get(pi.player);
-					up.playerInfo.characterInfo.deltaX = 0;
-					up.playerInfo.characterInfo.deltaY = 0;
+					if (x == 0 && y == 1) {
+						up.playerInfo.characterInfo.x = pi.characterInfo.x;
+						up.playerInfo.characterInfo.deltaX = 1;
+					} else {
+						up.playerInfo.characterInfo.deltaX = 0;
+					}
+					if (x == 1 && y == 0) {
+						up.playerInfo.characterInfo.y = pi.characterInfo.y;
+						up.playerInfo.characterInfo.deltaY = 1;
+					} else {
+						up.playerInfo.characterInfo.deltaY = 0;
+					}
 					up.playerInfo.player = pi.player;
 					server.sendToTCP(c.getID(), up);
 					return;

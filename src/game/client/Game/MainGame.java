@@ -142,7 +142,7 @@ public class MainGame implements Game {
             		UpdatePlayer up = (UpdatePlayer)object;
             		if (up.playerInfo.player == null)
             			return;
-            		if (up.playerInfo.player == player.getPlayerID()) {
+            		if (up.playerInfo.player.equals(player.getPlayerID())) {
 						player.setCharacterInfo(up.playerInfo.characterInfo);
 						return;
             		} else if (!players.containsKey(up.playerInfo.player)) {
