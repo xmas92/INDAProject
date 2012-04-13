@@ -7,6 +7,7 @@ import game.util.IO.Net.Network.PlayerInfo;
 
 public class Player extends Character {
 	private String playerID;
+	private boolean changed = false;
 	public Player(PlayerInfo playerInfo) {
 		super(playerInfo.characterInfo);
 		playerID = playerInfo.player;
@@ -55,6 +56,7 @@ public class Player extends Character {
 				ci.x += delta * ci.speed / 1000.0f;
 				ci.deltaX += 1;
 			}
+			changed = (ci.deltaX != 0 || ci.deltaY != 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -65,5 +67,10 @@ public class Player extends Character {
 		pi.player = playerID;
 		pi.characterInfo = getCharacterInfo();
 		return pi;
+	}
+	
+	@Override
+	public boolean hasChanged() {
+		return changed;
 	}
 }

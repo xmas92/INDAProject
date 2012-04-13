@@ -1,7 +1,10 @@
 package game.util.IO.Net;
 
 import game.client.Entity.Character;
+import game.client.Entity.ProjectileSpell;
+import game.client.Game.MainGame;
 import static game.client.Game.MainGame.*;
+import game.util.IO.Net.Network.CastProjectileSpell;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
 
@@ -32,6 +35,12 @@ public class GameClientListeners {
             	if (object instanceof RemovePlayer) {
             		players.remove(((RemovePlayer)object).username);
             	}
+
+        		if (object instanceof CastProjectileSpell) {
+        			ProjectileSpell s = new ProjectileSpell(true);
+        			s.setProjectileSpellInfo(((CastProjectileSpell)object).psi);
+        			MainGame.spells.add(s);
+        		}
             }
             public void disconnected (Connection connection) {
             }

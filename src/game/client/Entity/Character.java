@@ -44,4 +44,7 @@ public class Character {
 			ci.x += delta * ci.speed / 1000.0f;
 		}
 	}
+	public boolean hasChanged() {
+		return true;
+	}
 }

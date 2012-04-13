@@ -1,6 +1,7 @@
 package game.server.GameServer;
 
 import game.client.Map.Map;
+import game.util.IO.Net.Network.CastProjectileSpell;
 import game.util.IO.Net.Network.CharacterInfo;
 import game.util.IO.Net.Network.PlayerInfo;
 import game.util.IO.Net.Network.RemovePlayer;
@@ -75,18 +76,29 @@ public class GameServerListener extends Listener {
 						up.playerInfo.characterInfo.deltaY = 0;
 					}
 					up.playerInfo.player = pi.player;
-					server.sendToTCP(c.getID(), up);
+					//server.sendToTCP(c.getID(), up);
+					//server.sendToAllExceptUDP(c.getID(), up);
+					server.sendToAllUDP(up);
 					return;
 				}
 			}
 			playerDB.put(pi.player, pi.characterInfo);
 			server.sendToAllExceptUDP(c.getID(), object);
 		}
+		if (object instanceof CastProjectileSpell) {
+			server.sendToAllExceptTCP(c.getID(), object);
+		}
 	}
 	
 	@Override
 	public void connected(Connection c)  {
-		
+		for (String s : playerDB.keySet()) {
+			UpdatePlayer up = new UpdatePlayer();
+			up.playerInfo = new PlayerInfo();
+			up.playerInfo.characterInfo = playerDB.get(s);
+			up.playerInfo.player = s;
+			server.sendToTCP(c.getID(), up);
+		}
 	}
 	
 	@Override

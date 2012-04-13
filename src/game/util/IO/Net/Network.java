@@ -16,7 +16,9 @@ public class Network {
 		kryo.register(LoginRefused.class);
 		kryo.register(UpdatePlayer.class);
 		kryo.register(RemovePlayer.class);
-		Log.set(Log.LEVEL_ERROR);
+		kryo.register(ProjectileSpellInfo.class);
+		kryo.register(CastProjectileSpell.class);
+		Log.set(Log.LEVEL_DEBUG);
 	}
 	
 	static public class Login {
@@ -67,6 +69,21 @@ public class Network {
 	
 	static public class ProjectileSpellInfo {
 		public float x, y, deltaX, deltaY, speed;
+		public String imageID;
 		
+		public ProjectileSpellInfo clone(){
+			ProjectileSpellInfo ret = new ProjectileSpellInfo();
+			ret.x = x;
+			ret.y = y;
+			ret.deltaX = deltaX;
+			ret.deltaY = deltaY;
+			ret.speed = speed;
+			ret.imageID = imageID;
+			return ret;
+		}
+	}
+	
+	static public class CastProjectileSpell {
+		public ProjectileSpellInfo psi;
 	}
 }

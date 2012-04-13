@@ -2,9 +2,13 @@ package game.client.Game;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import game.client.Entity.Player;
 import game.client.Entity.Character;
+import game.client.Entity.ProjectileSpell;
+import game.client.Entity.Spell;
 import game.client.Login.LoginScreen;
 import game.client.Map.Map;
 import game.client.Resource.ResourceManager;
@@ -14,12 +18,15 @@ import game.util.IO.Net.Network;
 import game.util.IO.Net.Network.CharacterInfo;
 import game.util.IO.Net.Network.GameServerInfo;
 import game.util.IO.Net.Network.PlayerInfo;
+import game.util.IO.Net.Network.ProjectileSpellInfo;
 import game.util.IO.Net.Network.UpdatePlayer;
+import game.util.UI.SpellButton;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import com.esotericsoftware.kryonet.Client;
@@ -32,6 +39,9 @@ public class MainGame implements Game {
 	private GameServerInfo gsi;
 	public static Player player;
 	public static java.util.Map<String, Character> players;
+	public static java.util.Set<Spell> spells;
+	private ProjectileSpell s;
+	private SpellButton spellbtn;
 	private Map map;
 	public static Client client;
 	public MainGame() {
@@ -72,6 +82,11 @@ public class MainGame implements Game {
 		player = new Player(pi);
 		map = ResourceManager.Manager().getMap("bonnyMap2:testmap.tmx");
 		players = Collections.synchronizedMap(new HashMap<String, Character>());
+		spells = Collections.synchronizedSet(new HashSet<Spell>());
+		s = new ProjectileSpell();
+		s.setSpeed(128.0f);
+		spellbtn = new SpellButton(s);
+		spellbtn.key = Input.KEY_1;
 		client = new Client();
 		client.start();
 		Network.register(client);
@@ -90,15 +105,21 @@ public class MainGame implements Game {
 			ls.render(container, g);
 			return;
 		}
-		map.draw(player.getPlayerX() - 400, player.getPlayerY() - 300, 800, 600);
+		map.draw(player.getPlayerX() - GameInfo.Width / 2, player.getPlayerY() - GameInfo.Height / 2, GameInfo.Width, GameInfo.Height);
 		synchronized (players) {
 			for (Character c : players.values()) {
 				c.draw(player.getPlayerX(), player.getPlayerY());
 			}
 		}
+		synchronized (spells) {
+			for (Spell s : spells) {
+				s.draw(player.getPlayerX(), player.getPlayerY());
+			}
+		}
 		player.Draw();
 	}
 	long time = System.currentTimeMillis();
+	boolean ensureStop = false;
 	@Override
 	public void update(GameContainer container, int delta)
 			throws SlickException {
@@ -108,24 +129,47 @@ public class MainGame implements Game {
 				playerID = ls.un;
 				gsi = ls.gsi;
 				ls = null;
-				apc.setDisplayMode(800, 600, false);
+				apc.setDisplayMode(GameInfo.Width, GameInfo.Height, false);
 				container.reinit();
 			}
 			return;
 		}
 		InputState.Update(container);
+		
+		spellbtn.update(container);
+		s.update(delta);
 
 		synchronized (players) {
 			for (Character c : players.values()) {
 				c.update(delta);
 			}
 		}
+		synchronized (spells) {
+			Iterator<Spell> it = spells.iterator();
+			while (it.hasNext()) {
+				Spell s = it.next();
+				s.update(delta);
+				if (s instanceof ProjectileSpell) {
+					ProjectileSpellInfo psi = ((ProjectileSpell)s).getProjectileSpellInfo();
+					if (psi.x < 0 || psi.y < 0 || psi.x > map.getWidth() * map.getTileWidth() || psi.y > map.getHeight() * map.getTileHeight()) 
+						it.remove();
+				}
+			}
+		}
 		
 		player.update(delta);
 		if (System.currentTimeMillis() - time > 100) {
-			UpdatePlayer up = new UpdatePlayer();
-			up.playerInfo = player.getPlayerInfo();
-			client.sendUDP(up);
+			if (player.hasChanged()) {
+				ensureStop = true;
+				UpdatePlayer up = new UpdatePlayer();
+				up.playerInfo = player.getPlayerInfo();
+				client.sendUDP(up);
+			} else if (ensureStop) {
+				ensureStop = false;
+				UpdatePlayer up = new UpdatePlayer();
+				up.playerInfo = player.getPlayerInfo();
+				client.sendTCP(up);
+			} 
 		}
 	}
 }
