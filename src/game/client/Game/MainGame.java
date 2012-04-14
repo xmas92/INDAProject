@@ -119,7 +119,7 @@ public class MainGame implements Game {
 		player.Draw();
 	}
 	long time = System.currentTimeMillis();
-	boolean ensureStop = false;
+	boolean ensureStop = true;
 	@Override
 	public void update(GameContainer container, int delta)
 			throws SlickException {

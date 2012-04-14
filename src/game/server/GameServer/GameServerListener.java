@@ -76,14 +76,20 @@ public class GameServerListener extends Listener {
 						up.playerInfo.characterInfo.deltaY = 0;
 					}
 					up.playerInfo.player = pi.player;
-					//server.sendToTCP(c.getID(), up);
-					//server.sendToAllExceptUDP(c.getID(), up);
-					server.sendToAllUDP(up);
+					
+					if (pc.moving)
+						server.sendToAllExceptTCP(c.getID(), up);
+					pc.moving = false;
+					server.sendToUDP(c.getID(), up);
 					return;
 				}
 			}
+			pc.moving = true;
 			playerDB.put(pi.player, pi.characterInfo);
-			server.sendToAllExceptUDP(c.getID(), object);
+			if (pi.characterInfo.deltaX == 0 && pi.characterInfo.deltaY == 0)
+				server.sendToAllExceptTCP(c.getID(), object);
+			else
+				server.sendToAllExceptUDP(c.getID(), object);
 		}
 		if (object instanceof CastProjectileSpell) {
 			server.sendToAllExceptTCP(c.getID(), object);
