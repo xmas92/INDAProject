@@ -23,6 +23,7 @@ public class TexturedButton extends BasicUIComponent {
 	private Image graphic, normal, over, down, disabled; 
 	
 	public TexturedButton(SpriteSheet ss) {
+		int i = ss.getHorizontalCount(); //used later
 		graphic = ss.getSprite(0, 0);
 		normal = ss.getSprite(0, 0);
 		over = ss.getSprite(0, 1);
@@ -43,6 +44,47 @@ public class TexturedButton extends BasicUIComponent {
 		setupEventListners();
 	}
 	
+	public void setGraphic(Image i){
+		graphic = i;
+	}
+	
+	public Image getGraphic(){
+		return graphic; 
+	}
+	
+	public void setNormal(Image i){
+		normal = i;
+	}
+	
+	public Image getNormal(){
+		return normal; 
+	}
+	
+	public void setOver(Image i){
+		over = i;
+	}
+	
+	public Image getover(){
+		return over; 
+	}
+	
+	public void setDown(Image i){
+		down = i;
+	}
+	
+	public Image getdown(){
+		return down; 
+	}
+	
+	public void setDisabled(Image i){
+		disabled = i;
+	}
+	
+	public Image getdisabled(){
+		return disabled; 
+	}
+	
+	
 	private void setupEventListners() {
 		
 		// On disabled
@@ -50,6 +92,8 @@ public class TexturedButton extends BasicUIComponent {
 			@Override
 			public void Invoke(Object sender, Event e) {
 				graphic = disabled; 
+				if (onDisable != null)
+					onDisable.Invoke(sender, e);
 			}
 		});
 		
@@ -58,6 +102,8 @@ public class TexturedButton extends BasicUIComponent {
 			@Override
 			public void Invoke(Object sender, Event e) {
 				graphic = normal; 
+				if (onEnable != null)
+					onEnable.Invoke(sender, e);
 			}
 		});
 		
