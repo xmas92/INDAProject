@@ -75,8 +75,8 @@ public abstract class BasicUIComponent implements UIComponent {
 	
 	private boolean enabled = true;
 	public boolean isEnabled() { return enabled; }
-	public void Enable() { enabled = true; }
-	public void Disable() { enabled = false; }
+	public void Enable() { enabled = true; onEnable.Invoke(this, new NullEvent()); }
+	public void Disable() { enabled = false; onDisable.Invoke(this, new NullEvent()); }
 	
 	public void removeFocus() { 
 		if (lostFocus != null)
@@ -322,5 +322,16 @@ public abstract class BasicUIComponent implements UIComponent {
 	public void addKeyPressEventListner(EventListner delegate) {
 		if (keyPress == null)
 			keyPress = delegate;
+	}
+	
+	private EventListner onEnable, onDisable;
+	
+	public void addOnEnabledListner(EventListner delegate) {
+		if (onEnable == null)
+			onEnable = delegate;
+	}
+	public void addOnDisabledListner(EventListner delegate) {
+		if (onDisable == null)
+			onDisable = delegate;
 	}
 }
