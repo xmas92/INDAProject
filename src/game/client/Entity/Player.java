@@ -2,6 +2,8 @@ package game.client.Entity;
 
 import org.newdawn.slick.Input;
 
+import game.client.Game.MainGame;
+import game.util.Geom.Rectangle;
 import game.util.IO.InputState;
 import game.util.IO.Net.Network.PlayerInfo;
 
@@ -40,21 +42,30 @@ public class Player extends Character {
 			InputState is = InputState.Get();
 			ci.deltaY = 0;
 			ci.deltaX = 0;
+			
 			if (is.KeyboardState.GetKeyState(Input.KEY_W).Down()) {
-				ci.y -= delta * ci.speed / 1000.0f;
 				ci.deltaY -= 1;
 			}
 			if (is.KeyboardState.GetKeyState(Input.KEY_S).Down()) {
-				ci.y += delta * ci.speed / 1000.0f;
 				ci.deltaY += 1;
 			}
 			if (is.KeyboardState.GetKeyState(Input.KEY_A).Down()) {
-				ci.x -= delta * ci.speed / 1000.0f;
 				ci.deltaX -= 1;
 			}
 			if (is.KeyboardState.GetKeyState(Input.KEY_D).Down()) {
-				ci.x += delta * ci.speed / 1000.0f;
 				ci.deltaX += 1;
+			}
+			changed = (ci.deltaX != 0 || ci.deltaY != 0);
+			if (changed) {
+				float change = (ci.speed * delta / 1000.0f) / (float)Math.sqrt(ci.deltaX*ci.deltaX + ci.deltaY*ci.deltaY);
+				if (!MainGame.map.getCollision(new Rectangle(ci.x, ci.y+ci.deltaY*change, 32,32))) 
+					ci.y += ci.deltaY * change;
+				else
+					ci.deltaY = 0;
+				if (!MainGame.map.getCollision(new Rectangle(ci.x+ci.deltaX*change, ci.y, 32,32))) 
+						ci.x += ci.deltaX * change;
+				else
+					ci.deltaX = 0;
 			}
 			changed = (ci.deltaX != 0 || ci.deltaY != 0);
 		} catch (Exception e) {

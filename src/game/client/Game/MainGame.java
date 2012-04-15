@@ -18,7 +18,6 @@ import game.util.IO.Net.Network;
 import game.util.IO.Net.Network.CharacterInfo;
 import game.util.IO.Net.Network.GameServerInfo;
 import game.util.IO.Net.Network.PlayerInfo;
-import game.util.IO.Net.Network.ProjectileSpellInfo;
 import game.util.IO.Net.Network.UpdatePlayer;
 import game.util.UI.SpellButton;
 
@@ -42,7 +41,7 @@ public class MainGame implements Game {
 	public static java.util.Set<Spell> spells;
 	private ProjectileSpell s;
 	private SpellButton spellbtn;
-	private Map map;
+	public static Map map;
 	public static Client client;
 	public MainGame() {
 		ls = new LoginScreen();
@@ -74,8 +73,10 @@ public class MainGame implements Game {
 		System.out.println("Main Game Init");
 		ResourceManager.Manager().init();
 		CharacterInfo ci = new CharacterInfo();
-		ci.speed = 62;
+		ci.speed = 128;
 		ci.imageID = "GameAssets:Player:player.bmp";
+		ci.x = 62;
+		ci.y = 62;
 		PlayerInfo pi = new PlayerInfo();
 		pi.characterInfo = ci;
 		pi.player = playerID;
@@ -84,7 +85,7 @@ public class MainGame implements Game {
 		players = Collections.synchronizedMap(new HashMap<String, Character>());
 		spells = Collections.synchronizedSet(new HashSet<Spell>());
 		s = new ProjectileSpell();
-		s.setSpeed(128.0f);
+		s.setSpeed(512.0f);
 		spellbtn = new SpellButton(s);
 		spellbtn.key = Input.KEY_1;
 		client = new Client();
@@ -105,7 +106,7 @@ public class MainGame implements Game {
 			ls.render(container, g);
 			return;
 		}
-		map.draw(player.getPlayerX() - GameInfo.Width / 2, player.getPlayerY() - GameInfo.Height / 2, GameInfo.Width, GameInfo.Height);
+		map.drawBG(player.getPlayerX() - GameInfo.Width / 2, player.getPlayerY() - GameInfo.Height / 2, GameInfo.Width, GameInfo.Height);
 		synchronized (players) {
 			for (Character c : players.values()) {
 				c.draw(player.getPlayerX(), player.getPlayerY());
@@ -117,6 +118,7 @@ public class MainGame implements Game {
 			}
 		}
 		player.Draw();
+		map.drawFG(player.getPlayerX() - GameInfo.Width / 2, player.getPlayerY() - GameInfo.Height / 2, GameInfo.Width, GameInfo.Height);
 	}
 	long time = System.currentTimeMillis();
 	boolean ensureStop = true;
@@ -149,11 +151,8 @@ public class MainGame implements Game {
 			while (it.hasNext()) {
 				Spell s = it.next();
 				s.update(delta);
-				if (s instanceof ProjectileSpell) {
-					ProjectileSpellInfo psi = ((ProjectileSpell)s).getProjectileSpellInfo();
-					if (psi.x < 0 || psi.y < 0 || psi.x > map.getWidth() * map.getTileWidth() || psi.y > map.getHeight() * map.getTileHeight()) 
-						it.remove();
-				}
+				if (s.isDead())
+					it.remove();
 			}
 		}
 		

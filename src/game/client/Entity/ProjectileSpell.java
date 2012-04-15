@@ -5,6 +5,7 @@ import org.newdawn.slick.Image;
 import game.client.Game.GameInfo;
 import game.client.Game.MainGame;
 import game.client.Resource.ResourceManager;
+import game.util.Geom.Rectangle;
 import game.util.IO.InputState;
 import game.util.IO.Net.Network.ProjectileSpellInfo;
 
@@ -12,6 +13,7 @@ public class ProjectileSpell implements Spell {
 	
 	private int cooldown, timeSinceLastCast;
 	private final boolean cast;
+	private boolean dead = false, dying = false;
 	private ProjectileSpellInfo info;
 	private Image graphic;
 	
@@ -73,21 +75,35 @@ public class ProjectileSpell implements Spell {
 		if (cast) {
 			info.x += info.deltaX * info.speed * delta / 1000.f;
 			info.y += info.deltaY * info.speed * delta / 1000.f;
+			if (MainGame.map.getCollision(new Rectangle(info.x, info.y, 32, 32)))
+				die();
+			if (dying)
+				dead = true;
 		}
 	}
 
 	@Override
 	public void draw(float x, float y) {
 		if (cast) {
-			float absX = info.x-x+GameInfo.Width/2.0f, absY = info.y-y+GameInfo.Height/2.0f;
-			if (absX > -GameInfo.Width && absX < 2*GameInfo.Width &&
-				absY > -GameInfo.Height && absY < 2*GameInfo.Height) {
-				graphic.draw(absX,absY,32,32);
+			if (!dead) {
+				float absX = info.x-x+GameInfo.Width/2.0f, absY = info.y-y+GameInfo.Height/2.0f;
+				if (absX > -GameInfo.Width && absX < 2*GameInfo.Width &&
+					absY > -GameInfo.Height && absY < 2*GameInfo.Height) {
+					graphic.draw(absX,absY,32,32);
+				}
 			}
 		}
 	}
 	public void setSpeed(float f) {
 		info.speed = f;
+	}
+	@Override
+	public boolean isDead() {
+		return dead;
+	}
+	@Override
+	public void die() {
+		dying = true;
 	}
 
 }

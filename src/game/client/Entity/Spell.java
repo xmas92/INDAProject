@@ -5,4 +5,6 @@ public interface Spell {
 	Spell castSpell();
 	void update(int delta);
 	void draw(float x, float y);
+	boolean isDead();
+	void die();
 }
