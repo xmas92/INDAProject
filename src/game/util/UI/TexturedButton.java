@@ -2,28 +2,25 @@ package game.util.UI;
 
 import java.awt.Rectangle;
 
-import javax.annotation.Resource;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
+import game.client.Resource.ResourceManager;
 import game.util.IO.Event.Event;
 import game.util.IO.Event.EventListner;
-import game.util.IO.Event.NullEvent;
 import game.util.UI.BasicUIComponent;
-import game.client.Resource.ResourceManager;
 
 public class TexturedButton extends BasicUIComponent {
 	
 	private Color filter;
-	private EventListner mouseOver, mouseDown, mouseUp, mouseLeave, onDisable, onEnable;
+	private EventListner mouseOver, mouseDown, mouseUp, mouseLeave, onDisable, onEnable;	
 	private Image graphic, normal, over, down, disabled; 
 	
 	public TexturedButton(SpriteSheet ss) {
-		int i = ss.getHorizontalCount(); //used later
+		//int i = ss.getHorizontalCount(); //TODO (never) lol, used later
 		graphic = ss.getSprite(0, 0);
 		normal = ss.getSprite(0, 0);
 		over = ss.getSprite(0, 1);
@@ -32,8 +29,9 @@ public class TexturedButton extends BasicUIComponent {
 		setupEventListners();
 	}
 	
-	//Axel do help me here!
-	//public TexturedButton(ResourceManager.Manager().getImage(s));
+	public TexturedButton(String s) { 
+		this(ResourceManager.Manager().getImage(s));
+	}
 	
 	public TexturedButton(Image i) {
 		graphic = i; 
@@ -196,7 +194,6 @@ public class TexturedButton extends BasicUIComponent {
 	
 	@Override
 	public void render(GameContainer container, Graphics g) {
-		if (!isEnabled()) return; //super.isEnable
 		if (graphic == null) return;
 		Rectangle rec = getRectangle();
 		if (filter == null) {
