@@ -44,7 +44,7 @@ public class GameClientListeners {
             		players.remove(((RemovePlayer)object).username);
             	}
         		if (object instanceof CastProjectileSpell) {
-        			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true);
+        			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true, ((CastProjectileSpell)object).id);
         			s.setProjectileSpellInfo(((CastProjectileSpell)object).entityInfo);
         			MainGame.spells.add(s);
         		}
