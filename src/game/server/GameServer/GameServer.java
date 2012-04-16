@@ -1,7 +1,8 @@
 package game.server.GameServer;
 
+import game.client.Entity.Player;
+import game.client.Resource.ResourceManager;
 import game.util.IO.Net.Network;
-import game.util.IO.Net.Network.CharacterInfo;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,12 +11,12 @@ import java.util.HashMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
-public class GameServer implements Runnable{
+public class GameServer implements Runnable {
 	private int port = 0;
-	private HashMap<String, CharacterInfo> playerDB = new HashMap<String, CharacterInfo>();
+	private HashMap<String, Player> playerDB = new HashMap<String, Player>();
 	public GameServer() {
 		try {
-			// TODO add players
+			ResourceManager.Manager().init();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -45,6 +46,18 @@ public class GameServer implements Runnable{
 			server.addListener(new GameServerListener(playerDB, server));
 			server.start();
 			server.bind(port, port+1);
+			boolean running = true;
+			long time = System.currentTimeMillis();
+			int i = 0;
+			while (running) {
+				i++;
+				if (System.currentTimeMillis() - time > 1000) {
+					time = System.currentTimeMillis();
+					System.out.println(i + " Ticks / s");
+					i = 0;
+				}
+				Thread.sleep(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

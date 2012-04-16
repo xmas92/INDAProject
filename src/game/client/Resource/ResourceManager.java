@@ -1,5 +1,6 @@
 package game.client.Resource;
 
+import game.client.Game.MainGame;
 import game.client.Map.Map;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class ResourceManager {
 	private ResourceManager () {
 		images = new HashMap<String, Image>();
 		maps = new HashMap<String, Map>();
+		if (MainGame.apc == null) return;
 		try {
 			NOIMAGE = new Image(System.getProperty("user.dir") + File.separator + "data" + File.separator + "noimage.png");
 		} catch (SlickException e) {
@@ -33,7 +35,8 @@ public class ResourceManager {
 		loadImages();
 		loadMaps();
 	}
-	public void loadImages() {
+	private void loadImages() {
+		if (MainGame.apc == null) return;
 		File root = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + "images");
 		loadImages(root, "");
 	}
@@ -51,11 +54,12 @@ public class ResourceManager {
 			}
 		}
 	}
-	public void loadMaps() {
+	private void loadMaps() {
 		File root = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + "maps");
 		loadMaps(root, "");
 	}
 	private void loadMaps(File root, String path) {
+		boolean loadIMG = (MainGame.apc != null);
 		File[] files = root.listFiles();
 		for (File file : files) {
 			if (file.isDirectory())
@@ -63,7 +67,7 @@ public class ResourceManager {
 			else {
 				if (file.getName().endsWith(".tmx")) {
 					try {
-						maps.put(path + file.getName(), new Map(file.getPath()));
+						maps.put(path + file.getName(), new Map(file.getPath(), loadIMG));
 					} catch (Exception e) {
 						System.err.println("Could not load map: " + file.getPath());
 						e.printStackTrace();

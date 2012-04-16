@@ -5,7 +5,7 @@ import game.client.Entity.Spell.ProjectileSpell;
 import game.client.Game.MainGame;
 import static game.client.Game.MainGame.*;
 import game.util.IO.Net.Network.CastProjectileSpell;
-import game.util.IO.Net.Network.CharacterInfo;
+import game.util.IO.Net.Network.EntityInfo;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
 
@@ -25,24 +25,23 @@ public class GameClientListeners {
             		if (up.playerInfo.player == null)
             			return;
             		if (up.playerInfo.player.equals(player.getPlayerID())) {
-						player.setCharacterInfo(up.playerInfo.characterInfo);
+						player.setEntityInfo(up.playerInfo.entityInfo);
 						return;
             		} else if (!players.containsKey(up.playerInfo.player)) {
-            			players.put(up.playerInfo.player, new Character(up.playerInfo.characterInfo));
+            			players.put(up.playerInfo.player, new Character(up.playerInfo.entityInfo));
             		} else {
-            			CharacterInfo ci = players.get(up.playerInfo.player).getCharacterInfo();
-            			if (ci.deltaX != up.playerInfo.characterInfo.deltaX ||
-            				ci.deltaY != up.playerInfo.characterInfo.deltaY)
-            			players.get(up.playerInfo.player).setCharacterInfo(up.playerInfo.characterInfo);
+            			EntityInfo ci = players.get(up.playerInfo.player).getEntityInfo();
+            			if (ci.deltaX != up.playerInfo.entityInfo.deltaX ||
+            				ci.deltaY != up.playerInfo.entityInfo.deltaY)
+            			players.get(up.playerInfo.player).setEntityInfo(up.playerInfo.entityInfo);
             		}
             	}
             	if (object instanceof RemovePlayer) {
             		players.remove(((RemovePlayer)object).username);
             	}
-
         		if (object instanceof CastProjectileSpell) {
         			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true);
-        			s.setProjectileSpellInfo(((CastProjectileSpell)object).psi);
+        			s.setProjectileSpellInfo(((CastProjectileSpell)object).entityInfo);
         			MainGame.spells.add(s);
         		}
             }

@@ -26,7 +26,8 @@ public class SpellButton extends BasicUIComponent {
 				if (spell.isReady() && ((KeyEvent)e).Key.VALUE == key) {
 					Spell s = spell.castSpell();
 					CastProjectileSpell cps = new CastProjectileSpell();
-					cps.psi = ((ProjectileSpell)s).getProjectileSpellInfo();
+					cps.entityInfo = ((ProjectileSpell)s).getEntityInfo();
+					cps.type = ((ProjectileSpell)s).type;
 					MainGame.client.sendTCP(cps);
 					MainGame.spells.add(s);
 				}

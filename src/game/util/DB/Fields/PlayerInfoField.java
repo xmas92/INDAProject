@@ -1,7 +1,7 @@
 package game.util.DB.Fields;
 
 import game.util.DB.DBValue;
-import game.util.IO.Net.Network.CharacterInfo;
+import game.util.IO.Net.Network.EntityInfo;
 
 public class PlayerInfoField implements DBField {
 
@@ -11,9 +11,9 @@ public class PlayerInfoField implements DBField {
 	private static final long serialVersionUID = -8219137319516891347L;
 	
 	public String playerID;
-	public CharacterInfo ci;
+	public EntityInfo ci;
 	
-	public PlayerInfoField(CharacterInfo ci, String playerID) {
+	public PlayerInfoField(EntityInfo ci, String playerID) {
 		this.playerID = playerID;
 		this.ci = ci.clone();
 	}

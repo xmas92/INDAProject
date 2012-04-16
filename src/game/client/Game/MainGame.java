@@ -17,7 +17,7 @@ import game.client.Resource.ResourceManager;
 import game.util.IO.InputState;
 import game.util.IO.Net.GameClientListeners;
 import game.util.IO.Net.Network;
-import game.util.IO.Net.Network.CharacterInfo;
+import game.util.IO.Net.Network.EntityInfo;
 import game.util.IO.Net.Network.GameServerInfo;
 import game.util.IO.Net.Network.PlayerInfo;
 import game.util.IO.Net.Network.UpdatePlayer;
@@ -34,7 +34,7 @@ import com.esotericsoftware.kryonet.Client;
 
 public class MainGame implements Game {
 
-	public AppGameContainer apc;
+	public static AppGameContainer apc;
 	private LoginScreen ls;
 	private String playerID;
 	private GameServerInfo gsi;
@@ -74,13 +74,15 @@ public class MainGame implements Game {
 		}
 		System.out.println("Main Game Init");
 		ResourceManager.Manager().init();
-		CharacterInfo ci = new CharacterInfo();
+		EntityInfo ci = new EntityInfo();
 		ci.speed = 128;
 		ci.imageID = "GameAssets:Player:player.bmp";
 		ci.x = 62;
 		ci.y = 62;
+		ci.h = 32;
+		ci.w = 32;
 		PlayerInfo pi = new PlayerInfo();
-		pi.characterInfo = ci;
+		pi.entityInfo = ci;
 		pi.player = playerID;
 		player = new Player(pi);
 		map = ResourceManager.Manager().getMap("bonnyMap2:testmap.tmx");
