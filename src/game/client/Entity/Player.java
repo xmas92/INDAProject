@@ -2,6 +2,7 @@ package game.client.Entity;
 
 import org.newdawn.slick.Input;
 
+import game.client.Game.GameInfo;
 import game.client.Game.MainGame;
 import game.util.Geom.Rectangle;
 import game.util.IO.InputState;
@@ -30,7 +31,7 @@ public class Player extends Character {
 	public void Draw() {
 		if (graphic == null)
 			return;
-		graphic.draw(400,300);
+		graphic.draw((GameInfo.Width-info.w)*0.5f,(GameInfo.Height-info.h)*0.5f,info.w,info.h);
 	}
 	
 	public void setPlayerID(String playerID) {
@@ -63,14 +64,21 @@ public class Player extends Character {
 			changed = (info.deltaX != 0 || info.deltaY != 0);
 			if (changed) {
 				float change = (info.speed * delta / 1000.0f) / (float)Math.sqrt(info.deltaX*info.deltaX + info.deltaY*info.deltaY);
-				if (!MainGame.map.getCollision(new Rectangle(info.x, info.y+info.deltaY*change, 32,32))) 
+				Rectangle rec = collisionBox();
+				rec.y += info.deltaY*change;
+				if (!MainGame.map.getCollision(rec)) {
+					rec = collisionBox();
 					info.y += info.deltaY * change;
-				else
+				} else {
+					rec = collisionBox();
 					info.deltaY = 0;
-				if (!MainGame.map.getCollision(new Rectangle(info.x+info.deltaX*change, info.y, 32,32))) 
-						info.x += info.deltaX * change;
-				else
+				}
+				rec.x += info.deltaX*change;
+				if (!MainGame.map.getCollision(rec)) {
+					info.x += info.deltaX * change;
+				} else {
 					info.deltaX = 0;
+				}
 			}
 			changed = (info.deltaX != 0 || info.deltaY != 0);
 		} catch (Exception e) {

@@ -1,7 +1,8 @@
 package game.server.GameServer;
 
+import game.client.Entity.Player;
+import game.client.Resource.ResourceManager;
 import game.util.IO.Net.Network;
-import game.util.IO.Net.Network.EntityInfo;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,10 +13,10 @@ import com.esotericsoftware.kryonet.Server;
 
 public class GameServer implements Runnable {
 	private int port = 0;
-	private HashMap<String, EntityInfo> playerDB = new HashMap<String, EntityInfo>();
+	private HashMap<String, Player> playerDB = new HashMap<String, Player>();
 	public GameServer() {
 		try {
-			// TODO add players
+			ResourceManager.Manager().init();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

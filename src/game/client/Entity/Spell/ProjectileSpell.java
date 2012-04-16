@@ -24,16 +24,17 @@ public class ProjectileSpell implements Spell {
 	public final PSType type;
 	
 	public ProjectileSpell(PSType t) {
-		cast = false;
-		info = new EntityInfo();
-		type = t;
-		graphic = ResourceManager.Manager().getImage(info.imageID);
+		this(t, false);
 	}
 	public ProjectileSpell(PSType t, boolean cast) {
 		this.cast = cast;
 		info = new EntityInfo();
 		type = t;
 		graphic = ResourceManager.Manager().getImage(info.imageID);
+		if (graphic != null) {
+			info.w = graphic.getWidth();
+			info.h = graphic.getHeight();
+		}
 	}
 	
 	public void setProjectileSpellInfo(EntityInfo psi) {
@@ -56,9 +57,7 @@ public class ProjectileSpell implements Spell {
 	@Override
 	public Spell castSpell() {
 		ProjectileSpell ps = new ProjectileSpell(type, true);
-		EntityInfo psi = new EntityInfo();
-		psi.imageID = (info==null?"":info.imageID);
-		psi.speed = (info==null?32:info.speed);
+		EntityInfo psi = info.clone();
 		psi.x = MainGame.player.getPlayerX();
 		psi.y = MainGame.player.getPlayerY();
 		try {
@@ -83,7 +82,7 @@ public class ProjectileSpell implements Spell {
 		if (cast) {
 			info.x += info.deltaX * info.speed * delta / 1000.f;
 			info.y += info.deltaY * info.speed * delta / 1000.f;
-			if (MainGame.map.getCollision(new Rectangle(info.x, info.y, 32, 32)))
+			if (MainGame.map.getCollision(collisionBox()))
 				die();
 			if (dying)
 				dead = true;
@@ -94,10 +93,10 @@ public class ProjectileSpell implements Spell {
 	public void draw(float x, float y) {
 		if (cast) {
 			if (!dead) {
-				float absX = info.x-x+GameInfo.Width/2.0f, absY = info.y-y+GameInfo.Height/2.0f;
+				float absX = info.x-x+(GameInfo.Width-info.w)*0.5f, absY = info.y-y+(GameInfo.Height-info.h)*0.5f;
 				if (absX > -GameInfo.Width && absX < 2*GameInfo.Width &&
 					absY > -GameInfo.Height && absY < 2*GameInfo.Height) {
-					graphic.draw(absX,absY,32,32);
+					graphic.draw(absX,absY,info.w,info.h);
 				}
 			}
 		}
@@ -115,7 +114,7 @@ public class ProjectileSpell implements Spell {
 	}
 	@Override
 	public Point2D position() {
-		return new Point2D.Float(info.x, info.y);
+		return new Point2D.Float(info.x - (float)dimension().getWidth() * 0.5f, info.y - (float)dimension().getHeight() * 0.5f);
 	}
 	@Override
 	public Dimension2D dimension() {
@@ -125,7 +124,6 @@ public class ProjectileSpell implements Spell {
 	}
 	@Override
 	public Rectangle collisionBox() {
-		return new Rectangle(info.x, info.y, (float)dimension().getWidth(), (float)dimension().getHeight());
+		return new Rectangle((float)position().getX(), (float)position().getY(), (float)dimension().getWidth(), (float)dimension().getHeight());
 	}
-
 }

@@ -31,9 +31,9 @@ public class Character implements Entity{
 	public void draw(float x, float y) {
 		if (graphic == null)
 			return;
-		float screenX = info.x - x + GameInfo.Width * 0.5f;
-		float screenY = info.y - y + GameInfo.Height * 0.5f;
-		if (screenX < -1000 || screenY < -1000 || screenX > 2000 || screenY > 2000)
+		float screenX = info.x - x + (GameInfo.Width - info.w) * 0.5f;
+		float screenY = info.y - y + (GameInfo.Height - info.h) * 0.5f;
+		if (screenX < -GameInfo.Width || screenY < -GameInfo.Height || screenX > GameInfo.Width * 2 || screenY > GameInfo.Height * 2)
 			return;
 		graphic.draw(screenX, screenY);
 	}
@@ -42,14 +42,21 @@ public class Character implements Entity{
 		changed = (info.deltaX != 0 || info.deltaY != 0);
 		if (changed) {
 			float change = (info.speed * delta / 1000.0f) / (float)Math.sqrt(info.deltaX*info.deltaX + info.deltaY*info.deltaY);
-			if (!MainGame.map.getCollision(new Rectangle(info.x, info.y+info.deltaY*change, 32,32))) 
+			Rectangle rec = collisionBox();
+			rec.y += info.deltaY*change;
+			if (!MainGame.map.getCollision(rec)) {
+				rec = collisionBox();
 				info.y += info.deltaY * change;
-			else
+			} else {
+				rec = collisionBox();
 				info.deltaY = 0;
-			if (!MainGame.map.getCollision(new Rectangle(info.x+info.deltaX*change, info.y, 32,32))) 
-					info.x += info.deltaX * change;
-			else
+			}
+			rec.x += info.deltaX*change;
+			if (!MainGame.map.getCollision(rec)) {
+				info.x += info.deltaX * change;
+			} else {
 				info.deltaX = 0;
+			}
 		}
 		changed = (info.deltaX != 0 || info.deltaY != 0);
 	}
@@ -58,7 +65,7 @@ public class Character implements Entity{
 	}
 	@Override
 	public Point2D position() {
-		return new Point2D.Float(info.x, info.y);
+		return new Point2D.Float(info.x - (float)dimension().getWidth() * 0.5f, info.y - (float)dimension().getHeight() * 0.5f);
 	}
 	@Override
 	public Dimension2D dimension() {
@@ -68,6 +75,6 @@ public class Character implements Entity{
 	}
 	@Override
 	public Rectangle collisionBox() {
-		return new Rectangle(info.x, info.y, (float)dimension().getWidth(), (float)dimension().getHeight());
+		return new Rectangle((float)position().getX(), (float)position().getY(), (float)dimension().getWidth(), (float)dimension().getHeight());
 	}
 }

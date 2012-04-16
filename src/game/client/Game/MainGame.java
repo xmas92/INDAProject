@@ -34,7 +34,7 @@ import com.esotericsoftware.kryonet.Client;
 
 public class MainGame implements Game {
 
-	public AppGameContainer apc;
+	public static AppGameContainer apc;
 	private LoginScreen ls;
 	private String playerID;
 	private GameServerInfo gsi;
@@ -79,6 +79,8 @@ public class MainGame implements Game {
 		ci.imageID = "GameAssets:Player:player.bmp";
 		ci.x = 62;
 		ci.y = 62;
+		ci.h = 32;
+		ci.w = 32;
 		PlayerInfo pi = new PlayerInfo();
 		pi.entityInfo = ci;
 		pi.player = playerID;
