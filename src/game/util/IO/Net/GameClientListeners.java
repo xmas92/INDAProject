@@ -1,11 +1,15 @@
 package game.util.IO.Net;
 
+import java.util.Iterator;
+
 import game.client.Entity.Character;
 import game.client.Entity.Spell.ProjectileSpell;
+import game.client.Entity.Spell.Spell;
 import game.client.Game.MainGame;
 import static game.client.Game.MainGame.*;
 import game.util.IO.Net.Network.CastProjectileSpell;
 import game.util.IO.Net.Network.EntityInfo;
+import game.util.IO.Net.Network.KillSpell;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
 
@@ -43,6 +47,16 @@ public class GameClientListeners {
         			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true);
         			s.setProjectileSpellInfo(((CastProjectileSpell)object).entityInfo);
         			MainGame.spells.add(s);
+        		}
+        		if (object instanceof KillSpell) {
+        			synchronized (spells) {
+        				Iterator<Spell> it = spells.iterator();
+        				while (it.hasNext()) {
+        					Spell s = it.next();
+        					if (s.getId() == ((KillSpell)object).id)
+        						s.die();
+        				}
+        			}
         		}
             }
             public void disconnected (Connection connection) {
