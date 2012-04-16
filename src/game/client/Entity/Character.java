@@ -69,9 +69,7 @@ public class Character implements Entity{
 	}
 	@Override
 	public Dimension2D dimension() {
-		if (graphic != null)
-			return new Dimension(graphic.getWidth(), graphic.getHeight());
-		return new Dimension();
+		return new Dimension((int)info.w, (int)info.h);
 	}
 	@Override
 	public Rectangle collisionBox() {

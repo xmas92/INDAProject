@@ -31,6 +31,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.minlog.Log;
 
 public class MainGame implements Game {
 
@@ -95,6 +96,7 @@ public class MainGame implements Game {
 		client = new Client();
 		client.start();
 		Network.register(client);
+		Log.set(Log.LEVEL_DEBUG);
 		GameClientListeners.createListeners();
 		try {
 			client.connect(5000, gsi.ip, gsi.port, gsi.port + 1);
@@ -155,8 +157,6 @@ public class MainGame implements Game {
 			while (it.hasNext()) {
 				Spell s = it.next();
 				s.update(delta);
-				if (map.getCollision(s.collisionBox()))
-					s.die();
 				if (s.isDead())
 					it.remove();
 			}

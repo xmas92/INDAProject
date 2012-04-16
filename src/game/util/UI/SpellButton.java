@@ -28,6 +28,7 @@ public class SpellButton extends BasicUIComponent {
 					CastProjectileSpell cps = new CastProjectileSpell();
 					cps.entityInfo = ((ProjectileSpell)s).getEntityInfo();
 					cps.type = ((ProjectileSpell)s).type;
+					cps.id = ((ProjectileSpell)s).getId();
 					MainGame.client.sendTCP(cps);
 					MainGame.spells.add(s);
 				}

@@ -22,7 +22,7 @@ import com.esotericsoftware.kryonet.Server;
 public class GameServerListener extends Listener {
 
 	public java.util.Map<String, Player> playerDB;
-	public java.util.Set<Spell> spells;
+	public java.util.Map<Spell, String> spells;
 	public java.util.Map<String, String> playersZone;
 	public java.util.Map<String, Map> zones;
 	private Server server;
@@ -82,7 +82,7 @@ public class GameServerListener extends Listener {
 		if (object instanceof CastProjectileSpell) {
 			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true,((CastProjectileSpell)object).id);
 			s.setProjectileSpellInfo(((CastProjectileSpell)object).entityInfo);
-			spells.add(s);
+			spells.put(s, ((PlayerConnection)pc).username);
 			server.sendToAllExceptTCP(c.getID(), object);
 		}
 	}
