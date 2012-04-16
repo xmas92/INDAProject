@@ -1,7 +1,7 @@
 package game.util.IO.Net;
 
 import game.client.Entity.Character;
-import game.client.Entity.ProjectileSpell;
+import game.client.Entity.Spell.ProjectileSpell;
 import game.client.Game.MainGame;
 import static game.client.Game.MainGame.*;
 import game.util.IO.Net.Network.CastProjectileSpell;
@@ -41,7 +41,7 @@ public class GameClientListeners {
             	}
 
         		if (object instanceof CastProjectileSpell) {
-        			ProjectileSpell s = new ProjectileSpell(true);
+        			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true);
         			s.setProjectileSpellInfo(((CastProjectileSpell)object).psi);
         			MainGame.spells.add(s);
         		}

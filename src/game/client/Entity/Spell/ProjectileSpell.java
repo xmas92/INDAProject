@@ -1,7 +1,8 @@
-package game.client.Entity;
+package game.client.Entity.Spell;
 
 import org.newdawn.slick.Image;
 
+import game.client.Entity.Spell.PSType;
 import game.client.Game.GameInfo;
 import game.client.Game.MainGame;
 import game.client.Resource.ResourceManager;
@@ -16,15 +17,18 @@ public class ProjectileSpell implements Spell {
 	private boolean dead = false, dying = false;
 	private ProjectileSpellInfo info;
 	private Image graphic;
+	public final PSType type;
 	
-	public ProjectileSpell() {
+	public ProjectileSpell(PSType t) {
 		cast = false;
 		info = new ProjectileSpellInfo();
+		type = t;
 		graphic = ResourceManager.Manager().getImage(info.imageID);
 	}
-	public ProjectileSpell(boolean cast) {
+	public ProjectileSpell(PSType t, boolean cast) {
 		this.cast = cast;
 		info = new ProjectileSpellInfo();
+		type = t;
 		graphic = ResourceManager.Manager().getImage(info.imageID);
 	}
 	
@@ -47,7 +51,7 @@ public class ProjectileSpell implements Spell {
 
 	@Override
 	public Spell castSpell() {
-		ProjectileSpell ps = new ProjectileSpell(true);
+		ProjectileSpell ps = new ProjectileSpell(type, true);
 		ProjectileSpellInfo psi = new ProjectileSpellInfo();
 		psi.imageID = (info==null?"":info.imageID);
 		psi.speed = (info==null?32:info.speed);

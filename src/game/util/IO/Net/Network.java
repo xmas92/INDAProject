@@ -1,5 +1,7 @@
 package game.util.IO.Net;
 
+import game.client.Entity.Spell.PSType;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.minlog.Log;
@@ -85,5 +87,6 @@ public class Network {
 	
 	static public class CastProjectileSpell {
 		public ProjectileSpellInfo psi;
+		public PSType type;
 	}
 }

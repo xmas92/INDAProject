@@ -10,10 +10,15 @@ import game.util.IO.Net.Network.PlayerInfo;
 public class Player extends Character {
 	private String playerID;
 	private boolean changed = false;
+	private float health = 100.0f;
+	
 	public Player(PlayerInfo playerInfo) {
 		super(playerInfo.characterInfo);
 		playerID = playerInfo.player;
 	}
+	
+	public float getHealth() { return health; }
+	public void setHealth(float health) { this.health = health; }
 	
 	public float getPlayerX() {
 		return ci.x;

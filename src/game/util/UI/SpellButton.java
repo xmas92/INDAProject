@@ -1,7 +1,7 @@
 package game.util.UI;
 
-import game.client.Entity.ProjectileSpell;
-import game.client.Entity.Spell;
+import game.client.Entity.Spell.ProjectileSpell;
+import game.client.Entity.Spell.Spell;
 import game.client.Game.MainGame;
 import game.util.IO.Event.Event;
 import game.util.IO.Event.EventListner;

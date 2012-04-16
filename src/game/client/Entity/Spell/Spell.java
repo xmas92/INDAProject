@@ -1,4 +1,4 @@
-package game.client.Entity;
+package game.client.Entity.Spell;
 
 public interface Spell {
 	boolean isReady();

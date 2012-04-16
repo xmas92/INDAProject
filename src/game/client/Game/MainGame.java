@@ -8,8 +8,9 @@ import java.util.Iterator;
 import static game.StaticVars.*;
 import game.client.Entity.Player;
 import game.client.Entity.Character;
-import game.client.Entity.ProjectileSpell;
-import game.client.Entity.Spell;
+import game.client.Entity.Spell.PSType;
+import game.client.Entity.Spell.ProjectileSpell;
+import game.client.Entity.Spell.Spell;
 import game.client.Login.LoginScreen;
 import game.client.Map.Map;
 import game.client.Resource.ResourceManager;
@@ -85,7 +86,7 @@ public class MainGame implements Game {
 		map = ResourceManager.Manager().getMap("bonnyMap2:testmap.tmx");
 		players = Collections.synchronizedMap(new HashMap<String, Character>());
 		spells = Collections.synchronizedSet(new HashSet<Spell>());
-		s = new ProjectileSpell();
+		s = new ProjectileSpell(PSType.Fireball);
 		s.setSpeed(512.0f);
 		spellbtn = new SpellButton(s);
 		spellbtn.key = Input.KEY_1;
@@ -158,7 +159,7 @@ public class MainGame implements Game {
 		}
 		
 		player.update(delta);
-		if (System.currentTimeMillis() - time > 100) {
+		if (System.currentTimeMillis() - time > __updateTimeDelayMillis) {
 			time = System.currentTimeMillis();
 			if (player.hasChanged()) {
 				ensureStop = true;
