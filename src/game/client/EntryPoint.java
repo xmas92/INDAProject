@@ -16,7 +16,7 @@ public class EntryPoint {
 			MainGame game = new MainGame();
 			AppGameContainer apc = new AppGameContainer(game);
 			apc.setDisplayMode(540, 280, false);
-			game.apc = apc;
+			MainGame.apc = apc;
 			apc.setAlwaysRender(true);
 			apc.setUpdateOnlyWhenVisible(false);
 			apc.start();
