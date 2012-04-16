@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import static game.StaticVars.*;
 import game.client.Entity.Player;
 import game.client.Entity.Character;
 import game.client.Entity.ProjectileSpell;
@@ -163,7 +164,11 @@ public class MainGame implements Game {
 				ensureStop = true;
 				UpdatePlayer up = new UpdatePlayer();
 				up.playerInfo = player.getPlayerInfo();
-				client.sendUDP(up);
+				if (__updateWithUDP) {
+					client.sendUDP(up);
+				} else {
+					client.sendTCP(up);
+				}
 			} else if (ensureStop) {
 				ensureStop = false;
 				UpdatePlayer up = new UpdatePlayer();

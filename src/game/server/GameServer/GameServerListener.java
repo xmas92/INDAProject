@@ -1,5 +1,6 @@
 package game.server.GameServer;
 
+import static game.StaticVars.*;
 import game.client.Map.Map;
 import game.util.IO.Net.Network.CastProjectileSpell;
 import game.util.IO.Net.Network.CharacterInfo;
@@ -80,16 +81,21 @@ public class GameServerListener extends Listener {
 					if (pc.moving)
 						server.sendToAllExceptTCP(c.getID(), up);
 					pc.moving = false;
-					server.sendToUDP(c.getID(), up);
+					if (__updateWithUDP) {
+						server.sendToUDP(c.getID(), up);
+					} else {
+						server.sendToTCP(c.getID(), up);
+					}
 					return;
 				}
 			}
 			pc.moving = true;
 			playerDB.put(pi.player, pi.characterInfo);
-			if (pi.characterInfo.deltaX == 0 && pi.characterInfo.deltaY == 0)
+			if (pi.characterInfo.deltaX == 0 && pi.characterInfo.deltaY == 0 || !__updateWithUDP) {
 				server.sendToAllExceptTCP(c.getID(), object);
-			else
+			} else {
 				server.sendToAllExceptUDP(c.getID(), object);
+			}
 		}
 		if (object instanceof CastProjectileSpell) {
 			server.sendToAllExceptTCP(c.getID(), object);
