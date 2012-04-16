@@ -12,13 +12,12 @@ public class Network {
 		Kryo kryo = endpoint.getKryo();
 		kryo.register(Login.class);
 		kryo.register(PlayerInfo.class);
-		kryo.register(CharacterInfo.class);
+		kryo.register(EntityInfo.class);
 		kryo.register(GameServerInfo.class);
 		kryo.register(LoginGranted.class);
 		kryo.register(LoginRefused.class);
 		kryo.register(UpdatePlayer.class);
 		kryo.register(RemovePlayer.class);
-		kryo.register(ProjectileSpellInfo.class);
 		kryo.register(CastProjectileSpell.class);
 		kryo.register(PSType.class);
 		Log.set(Log.LEVEL_DEBUG);
@@ -31,22 +30,22 @@ public class Network {
 	
 	static public class PlayerInfo {
 		public String player;
-		public CharacterInfo characterInfo;
+		public EntityInfo entityInfo;
 	}
-	
-	static public class CharacterInfo {
-		public float x, y, deltaX, deltaY, angle, speed;
+	static public class EntityInfo {
+		public float x, y, deltaX, deltaY, speed, w, h;
 		public String imageID;
 		
-		public CharacterInfo clone(){
-			CharacterInfo ret = new CharacterInfo();
+		public EntityInfo clone(){
+			EntityInfo ret = new EntityInfo();
 			ret.x = x;
 			ret.y = y;
 			ret.deltaX = deltaX;
 			ret.deltaY = deltaY;
-			ret.angle = angle;
 			ret.speed = speed;
 			ret.imageID = imageID;
+			ret.w = w;
+			ret.h = h;
 			return ret;
 		}
 	}
@@ -70,24 +69,8 @@ public class Network {
 		public String username;
 	}
 	
-	static public class ProjectileSpellInfo {
-		public float x, y, deltaX, deltaY, speed;
-		public String imageID;
-		
-		public ProjectileSpellInfo clone(){
-			ProjectileSpellInfo ret = new ProjectileSpellInfo();
-			ret.x = x;
-			ret.y = y;
-			ret.deltaX = deltaX;
-			ret.deltaY = deltaY;
-			ret.speed = speed;
-			ret.imageID = imageID;
-			return ret;
-		}
-	}
-	
 	static public class CastProjectileSpell {
-		public ProjectileSpellInfo psi;
+		public EntityInfo entityInfo;
 		public PSType type;
 	}
 	

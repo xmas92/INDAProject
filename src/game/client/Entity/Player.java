@@ -13,7 +13,7 @@ public class Player extends Character {
 	private float health = 100.0f;
 	
 	public Player(PlayerInfo playerInfo) {
-		super(playerInfo.characterInfo);
+		super(playerInfo.entityInfo);
 		playerID = playerInfo.player;
 	}
 	
@@ -21,10 +21,10 @@ public class Player extends Character {
 	public void setHealth(float health) { this.health = health; }
 	
 	public float getPlayerX() {
-		return ci.x;
+		return info.x;
 	}
 	public float getPlayerY() {
-		return ci.y;
+		return info.y;
 	}
 	
 	public void Draw() {
@@ -45,34 +45,34 @@ public class Player extends Character {
 	public void update(int delta) {
 		try {
 			InputState is = InputState.Get();
-			ci.deltaY = 0;
-			ci.deltaX = 0;
+			info.deltaY = 0;
+			info.deltaX = 0;
 			
 			if (is.KeyboardState.GetKeyState(Input.KEY_W).Down()) {
-				ci.deltaY -= 1;
+				info.deltaY -= 1;
 			}
 			if (is.KeyboardState.GetKeyState(Input.KEY_S).Down()) {
-				ci.deltaY += 1;
+				info.deltaY += 1;
 			}
 			if (is.KeyboardState.GetKeyState(Input.KEY_A).Down()) {
-				ci.deltaX -= 1;
+				info.deltaX -= 1;
 			}
 			if (is.KeyboardState.GetKeyState(Input.KEY_D).Down()) {
-				ci.deltaX += 1;
+				info.deltaX += 1;
 			}
-			changed = (ci.deltaX != 0 || ci.deltaY != 0);
+			changed = (info.deltaX != 0 || info.deltaY != 0);
 			if (changed) {
-				float change = (ci.speed * delta / 1000.0f) / (float)Math.sqrt(ci.deltaX*ci.deltaX + ci.deltaY*ci.deltaY);
-				if (!MainGame.map.getCollision(new Rectangle(ci.x, ci.y+ci.deltaY*change, 32,32))) 
-					ci.y += ci.deltaY * change;
+				float change = (info.speed * delta / 1000.0f) / (float)Math.sqrt(info.deltaX*info.deltaX + info.deltaY*info.deltaY);
+				if (!MainGame.map.getCollision(new Rectangle(info.x, info.y+info.deltaY*change, 32,32))) 
+					info.y += info.deltaY * change;
 				else
-					ci.deltaY = 0;
-				if (!MainGame.map.getCollision(new Rectangle(ci.x+ci.deltaX*change, ci.y, 32,32))) 
-						ci.x += ci.deltaX * change;
+					info.deltaY = 0;
+				if (!MainGame.map.getCollision(new Rectangle(info.x+info.deltaX*change, info.y, 32,32))) 
+						info.x += info.deltaX * change;
 				else
-					ci.deltaX = 0;
+					info.deltaX = 0;
 			}
-			changed = (ci.deltaX != 0 || ci.deltaY != 0);
+			changed = (info.deltaX != 0 || info.deltaY != 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,7 +81,7 @@ public class Player extends Character {
 	public PlayerInfo getPlayerInfo() {
 		PlayerInfo pi = new PlayerInfo();
 		pi.player = playerID;
-		pi.characterInfo = getCharacterInfo();
+		pi.entityInfo = getEntityInfo();
 		return pi;
 	}
 	

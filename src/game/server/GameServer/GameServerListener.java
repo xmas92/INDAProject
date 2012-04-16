@@ -3,7 +3,7 @@ package game.server.GameServer;
 import static game.StaticVars.*;
 import game.client.Map.Map;
 import game.util.IO.Net.Network.CastProjectileSpell;
-import game.util.IO.Net.Network.CharacterInfo;
+import game.util.IO.Net.Network.EntityInfo;
 import game.util.IO.Net.Network.PlayerInfo;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
@@ -18,12 +18,12 @@ import com.esotericsoftware.kryonet.Server;
 
 public class GameServerListener extends Listener {
 
-	public HashMap<String, CharacterInfo> playerDB;
+	public HashMap<String, EntityInfo> playerDB;
 	public HashMap<String, String> playersZone;
 	public HashMap<String, Map> zones;
 	private Server server;
 	
-	public GameServerListener(HashMap<String, CharacterInfo> playerDB, Server server) {
+	public GameServerListener(HashMap<String, EntityInfo> playerDB, Server server) {
 		this.playerDB = playerDB;
 		this.server = server;
 		zones = new HashMap<String, Map>();
@@ -48,33 +48,33 @@ public class GameServerListener extends Listener {
 			Map m = zones.get(playersZone.get(pi.player));
 			if (m != null) {
 				int x= 0, y = 0, i = 0;
-				if (pi.characterInfo.x < 0 || pi.characterInfo.x / m.getTileWidth()+1 > m.getWidth() ) {
+				if (pi.entityInfo.x < 0 || pi.entityInfo.x / m.getTileWidth()+1 > m.getWidth() ) {
 					x = 1;
 				} 
-				if (pi.characterInfo.y < 0 || pi.characterInfo.y / m.getTileHeight()+1 > m.getHeight()) {
+				if (pi.entityInfo.y < 0 || pi.entityInfo.y / m.getTileHeight()+1 > m.getHeight()) {
 					y = 1;
 				} 
 				if (x == 0 && y == 0){
-					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth(), (int)pi.characterInfo.y / m.getTileHeight(), 3);
-					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth()+1, (int)pi.characterInfo.y / m.getTileHeight(), 3);
-					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth(), (int)pi.characterInfo.y / m.getTileHeight()+1, 3);
-					i += m.getTileId((int)pi.characterInfo.x / m.getTileWidth()+1, (int)pi.characterInfo.y / m.getTileHeight()+1, 3);
+					i += m.getTileId((int)pi.entityInfo.x / m.getTileWidth(), (int)pi.entityInfo.y / m.getTileHeight(), 3);
+					i += m.getTileId((int)pi.entityInfo.x / m.getTileWidth()+1, (int)pi.entityInfo.y / m.getTileHeight(), 3);
+					i += m.getTileId((int)pi.entityInfo.x / m.getTileWidth(), (int)pi.entityInfo.y / m.getTileHeight()+1, 3);
+					i += m.getTileId((int)pi.entityInfo.x / m.getTileWidth()+1, (int)pi.entityInfo.y / m.getTileHeight()+1, 3);
 				}
 				if (x+y+i != 0) {
 					UpdatePlayer up = new UpdatePlayer();
 					up.playerInfo = new PlayerInfo();
-					up.playerInfo.characterInfo = playerDB.get(pi.player);
+					up.playerInfo.entityInfo = playerDB.get(pi.player);
 					if (x == 0 && y == 1) {
-						up.playerInfo.characterInfo.x = pi.characterInfo.x;
-						up.playerInfo.characterInfo.deltaX = 1;
+						up.playerInfo.entityInfo.x = pi.entityInfo.x;
+						up.playerInfo.entityInfo.deltaX = 1;
 					} else {
-						up.playerInfo.characterInfo.deltaX = 0;
+						up.playerInfo.entityInfo.deltaX = 0;
 					}
 					if (x == 1 && y == 0) {
-						up.playerInfo.characterInfo.y = pi.characterInfo.y;
-						up.playerInfo.characterInfo.deltaY = 1;
+						up.playerInfo.entityInfo.y = pi.entityInfo.y;
+						up.playerInfo.entityInfo.deltaY = 1;
 					} else {
-						up.playerInfo.characterInfo.deltaY = 0;
+						up.playerInfo.entityInfo.deltaY = 0;
 					}
 					up.playerInfo.player = pi.player;
 					
@@ -90,8 +90,8 @@ public class GameServerListener extends Listener {
 				}
 			}
 			pc.moving = true;
-			playerDB.put(pi.player, pi.characterInfo);
-			if (pi.characterInfo.deltaX == 0 && pi.characterInfo.deltaY == 0 || !__updateWithUDP) {
+			playerDB.put(pi.player, pi.entityInfo);
+			if (pi.entityInfo.deltaX == 0 && pi.entityInfo.deltaY == 0 || !__updateWithUDP) {
 				server.sendToAllExceptTCP(c.getID(), object);
 			} else {
 				server.sendToAllExceptUDP(c.getID(), object);
@@ -107,7 +107,7 @@ public class GameServerListener extends Listener {
 		for (String s : playerDB.keySet()) {
 			UpdatePlayer up = new UpdatePlayer();
 			up.playerInfo = new PlayerInfo();
-			up.playerInfo.characterInfo = playerDB.get(s);
+			up.playerInfo.entityInfo = playerDB.get(s);
 			up.playerInfo.player = s;
 			server.sendToTCP(c.getID(), up);
 		}

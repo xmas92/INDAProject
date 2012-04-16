@@ -1,6 +1,8 @@
 package game.client.Entity.Spell;
 
-public interface Spell {
+import game.client.Entity.Entity;
+
+public interface Spell extends Entity {
 	boolean isReady();
 	Spell castSpell();
 	void update(int delta);
