@@ -20,7 +20,8 @@ public class Network {
 		kryo.register(RemovePlayer.class);
 		kryo.register(CastProjectileSpell.class);
 		kryo.register(PSType.class);
-		Log.set(Log.LEVEL_DEBUG);
+		kryo.register(KillSpell.class);
+		Log.set(Log.LEVEL_ERROR);
 	}
 	
 	static public class Login {
@@ -72,6 +73,11 @@ public class Network {
 	static public class CastProjectileSpell {
 		public EntityInfo entityInfo;
 		public PSType type;
+		public int id;
+	}
+	
+	static public class KillSpell {
+		public int id;
 	}
 	
 	static public class UpdatePlayerHealth {

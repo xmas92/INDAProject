@@ -155,6 +155,8 @@ public class MainGame implements Game {
 			while (it.hasNext()) {
 				Spell s = it.next();
 				s.update(delta);
+				if (map.getCollision(s.collisionBox()))
+					s.die();
 				if (s.isDead())
 					it.remove();
 			}

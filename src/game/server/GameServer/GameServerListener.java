@@ -2,12 +2,15 @@ package game.server.GameServer;
 
 import static game.StaticVars.*;
 import game.client.Entity.Player;
+import game.client.Entity.Spell.ProjectileSpell;
+import game.client.Entity.Spell.Spell;
 import game.client.Map.Map;
 import game.util.IO.Net.Network.CastProjectileSpell;
 import game.util.IO.Net.Network.PlayerInfo;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.newdawn.slick.SlickException;
@@ -18,17 +21,19 @@ import com.esotericsoftware.kryonet.Server;
 
 public class GameServerListener extends Listener {
 
-	public HashMap<String, Player> playerDB;
-	public HashMap<String, String> playersZone;
-	public HashMap<String, Map> zones;
+	public java.util.Map<String, Player> playerDB;
+	public java.util.Set<Spell> spells;
+	public java.util.Map<String, String> playersZone;
+	public java.util.Map<String, Map> zones;
 	private Server server;
 	
-	public GameServerListener(HashMap<String, Player> playerDB, Server server) {
+	public GameServerListener(java.util.Map<String, Player> playerDB, Server server) {
 		this.playerDB = playerDB;
 		this.server = server;
-		zones = new HashMap<String, Map>();
-		playersZone = new HashMap<String, String>();
+		zones = Collections.synchronizedMap(new HashMap<String, Map>());
+		playersZone = Collections.synchronizedMap(new HashMap<String, String>());
 		try {
+			// TODO Fix maps.... (zones)
 			zones.put("WorldHUB", new Map("data/maps/bonnyMap2/testmap.tmx", false));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
@@ -75,6 +80,9 @@ public class GameServerListener extends Listener {
 			}
 		}
 		if (object instanceof CastProjectileSpell) {
+			ProjectileSpell s = new ProjectileSpell(((CastProjectileSpell)object).type, true,((CastProjectileSpell)object).id);
+			s.setProjectileSpellInfo(((CastProjectileSpell)object).entityInfo);
+			spells.add(s);
 			server.sendToAllExceptTCP(c.getID(), object);
 		}
 	}

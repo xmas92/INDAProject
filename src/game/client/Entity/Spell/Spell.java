@@ -9,4 +9,5 @@ public interface Spell extends Entity {
 	void draw(float x, float y);
 	boolean isDead();
 	void die();
+	int getId();
 }
