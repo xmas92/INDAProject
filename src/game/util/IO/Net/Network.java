@@ -20,6 +20,7 @@ public class Network {
 		kryo.register(RemovePlayer.class);
 		kryo.register(ProjectileSpellInfo.class);
 		kryo.register(CastProjectileSpell.class);
+		kryo.register(PSType.class);
 		Log.set(Log.LEVEL_DEBUG);
 	}
 	
@@ -88,5 +89,9 @@ public class Network {
 	static public class CastProjectileSpell {
 		public ProjectileSpellInfo psi;
 		public PSType type;
+	}
+	
+	static public class UpdatePlayerHealth {
+		public float health;
 	}
 }
