@@ -12,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -21,7 +20,7 @@ import com.esotericsoftware.kryonet.Server;
 public class GameServer implements Runnable {
 	private int port = 0;
 	private java.util.Map<String, Player> playerDB = Collections.synchronizedMap(new HashMap<String, Player>());
-	private java.util.Set<Spell> spells = Collections.synchronizedSet(new HashSet<Spell>());
+	private java.util.Map<Spell, String> spells = Collections.synchronizedMap(new HashMap<Spell, String>());
 	public GameServer() {
 		try {
 			ResourceManager.Manager().init();
@@ -65,13 +64,13 @@ public class GameServer implements Runnable {
 				i++;
 				if (System.currentTimeMillis() - time > 1000) {
 					time = System.currentTimeMillis();
-					System.out.println(i + " Ticks / s");
+					//System.out.println(i + " Ticks / s");
 					i = 0;
 				}
 				int delta = (int)(System.currentTimeMillis() - tsl);
 				tsl = System.currentTimeMillis();
 				synchronized (spells) {
-					Iterator<Spell> it = spells.iterator();
+					Iterator<Spell> it = spells.keySet().iterator();
 					while (it.hasNext()) {
 						Spell s = it.next();
 						s.update(delta);
@@ -85,9 +84,11 @@ public class GameServer implements Runnable {
 				}	
 				for (Player p : playerDB.values()) {
 					synchronized (spells) {
-						Iterator<Spell> it = spells.iterator();
+						Iterator<Spell> it = spells.keySet().iterator();
 						while (it.hasNext()) {
 							Spell s = it.next();
+							if (spells.get(s).equals(p.getPlayerID()))
+								continue;
 							if (Physics.getCollision(p.collisionBox(), s.collisionBox())) {
 								KillSpell ks = new KillSpell();
 								ks.id = s.getId();
