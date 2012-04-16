@@ -5,6 +5,7 @@ import game.client.Entity.ProjectileSpell;
 import game.client.Game.MainGame;
 import static game.client.Game.MainGame.*;
 import game.util.IO.Net.Network.CastProjectileSpell;
+import game.util.IO.Net.Network.CharacterInfo;
 import game.util.IO.Net.Network.RemovePlayer;
 import game.util.IO.Net.Network.UpdatePlayer;
 
@@ -29,6 +30,9 @@ public class GameClientListeners {
             		} else if (!players.containsKey(up.playerInfo.player)) {
             			players.put(up.playerInfo.player, new Character(up.playerInfo.characterInfo));
             		} else {
+            			CharacterInfo ci = players.get(up.playerInfo.player).getCharacterInfo();
+            			if (ci.deltaX != up.playerInfo.characterInfo.deltaX ||
+            				ci.deltaY != up.playerInfo.characterInfo.deltaY)
             			players.get(up.playerInfo.player).setCharacterInfo(up.playerInfo.characterInfo);
             		}
             	}

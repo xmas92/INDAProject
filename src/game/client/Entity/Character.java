@@ -1,6 +1,8 @@
 package game.client.Entity;
 
+import game.client.Game.MainGame;
 import game.client.Resource.ResourceManager;
+import game.util.Geom.Rectangle;
 import game.util.IO.Net.Network.CharacterInfo;
 
 import org.newdawn.slick.Image;
@@ -30,19 +32,21 @@ public class Character {
 			return;
 		graphic.draw(screenX, screenY);
 	}
+	private boolean changed = false;
 	public void update(int delta) {
-		if (ci.deltaY == -1) {
-			ci.y -= delta * ci.speed / 1000.0f;
+		changed = (ci.deltaX != 0 || ci.deltaY != 0);
+		if (changed) {
+			float change = (ci.speed * delta / 1000.0f) / (float)Math.sqrt(ci.deltaX*ci.deltaX + ci.deltaY*ci.deltaY);
+			if (!MainGame.map.getCollision(new Rectangle(ci.x, ci.y+ci.deltaY*change, 32,32))) 
+				ci.y += ci.deltaY * change;
+			else
+				ci.deltaY = 0;
+			if (!MainGame.map.getCollision(new Rectangle(ci.x+ci.deltaX*change, ci.y, 32,32))) 
+					ci.x += ci.deltaX * change;
+			else
+				ci.deltaX = 0;
 		}
-		if (ci.deltaY == 1) {
-			ci.y += delta * ci.speed / 1000.0f;
-		}
-		if (ci.deltaX == -1) {
-			ci.x -= delta * ci.speed / 1000.0f;
-		}
-		if (ci.deltaX == 1) {
-			ci.x += delta * ci.speed / 1000.0f;
-		}
+		changed = (ci.deltaX != 0 || ci.deltaY != 0);
 	}
 	public boolean hasChanged() {
 		return true;

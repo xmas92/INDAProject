@@ -157,7 +157,7 @@ public class MainGame implements Game {
 		}
 		
 		player.update(delta);
-		if (System.currentTimeMillis() - time > 250) {
+		if (System.currentTimeMillis() - time > 100) {
 			if (player.hasChanged()) {
 				ensureStop = true;
 				UpdatePlayer up = new UpdatePlayer();
