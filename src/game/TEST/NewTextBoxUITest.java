@@ -50,6 +50,7 @@ public class NewTextBoxUITest{
 						
 			}
 		});
+		
 		agc.setDisplayMode(320, 50, false);
 		agc.start();
 	} catch (SlickException e) {

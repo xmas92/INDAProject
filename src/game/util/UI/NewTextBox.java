@@ -22,7 +22,7 @@ public class NewTextBox extends BasicUIComponent{
 	private StringBuilder sb; 
 	private Font font; 
 	private int pos;
-	private int counter = 0; 
+	private int charCounter = 0; 
 	private int margin = 5;
 	private boolean renderStars; 
 	
@@ -45,6 +45,7 @@ public class NewTextBox extends BasicUIComponent{
 		normalEmpty = i; 
 		normalText = i; 
 		overEmpty = i; 
+		overText = i;
 		pos = 0;
 		sb = new StringBuilder();
 		font = null;
@@ -83,16 +84,17 @@ public class NewTextBox extends BasicUIComponent{
 					} else if (InputState.Get().KeyboardState.GetKeyState(Input.KEY_LSHIFT).Down()) {
 						if (key.ALTCHARACTER != null) {
 							sb.insert(pos++, key.ALTCHARACTER);
-							counter++; 
+							charCounter++; 
 						}
 						else if (key.CHARACTER != null) {
 							sb.insert(pos++, key.CHARACTER);
-							counter++; 
+							charCounter++; 
 						}
 					} else {
-						if (key.CHARACTER != null)
+						if (key.CHARACTER != null) {
 							sb.insert(pos++, key.CHARACTER);
-							counter++; 
+							charCounter++; 
+						}
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -126,7 +128,7 @@ public class NewTextBox extends BasicUIComponent{
 								countBack++;
 								lastBack = InputState.Get().Time;
 								sb.deleteCharAt(--pos);
-								counter--;
+								charCounter--;
 							}
 						} catch (Exception e1) {
 							e1.printStackTrace();
@@ -207,7 +209,7 @@ public class NewTextBox extends BasicUIComponent{
 		int charWidth = f.getWidth("a");
 		if (rec.height - 2 * margin >= f.getLineHeight()) {
 			if(w > graphic.getWidth() - 3*margin) {
-				tempString = s.substring(counter - (graphic.getWidth() + 2*margin)/charWidth, s.length()); 
+				tempString = s.substring(charCounter - (int)Math.floor((graphic.getWidth() + 2*margin)/charWidth), s.length()); 
 				g.drawString(tempString, rec.x + 2*margin, rec.y + margin);
 			} else {
 				g.drawString(s, rec.x + 2*margin, rec.y + margin);
