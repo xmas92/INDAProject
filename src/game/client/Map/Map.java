@@ -33,10 +33,15 @@ public class Map extends TiledMap{
 	public boolean getCollision(Point2D p) {
 		if (p.getX() < 0 || p.getY() < 0 || p.getX() > getWidth() * getTileWidth() || p.getY() > getHeight() * getTileHeight())
 			return true;
+		if (collisionLayer < 0 || collisionLayer >= getLayerCount()) {
+			Log.error("Invalid BG layerIDs");
+			return false;
+		}
 		int tileX = (int) p.getX() / getTileWidth(),
 			tileY = (int) p.getY() / getTileHeight();
 		return getTileId(tileX, tileY, collisionLayer) != 0;
 	}
+	
 	
 	public boolean getCollision(Line2D line) {
 		return getCollision(line.getP1()) || getCollision(line.getP2());

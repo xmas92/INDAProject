@@ -40,7 +40,8 @@ public class GameServer implements Runnable {
 		}
 	}
 
-	Server server;
+	private Server server;
+	private int tps = 0;
 	@Override
 	public void run() {
 		try {
@@ -64,7 +65,7 @@ public class GameServer implements Runnable {
 				i++;
 				if (System.currentTimeMillis() - time > 1000) {
 					time = System.currentTimeMillis();
-					//System.out.println(i + " Ticks / s");
+					tps = i;
 					i = 0;
 				}
 				int delta = (int)(System.currentTimeMillis() - tsl);
@@ -98,11 +99,16 @@ public class GameServer implements Runnable {
 						}
 					}
 				}
+				
 				Thread.sleep(1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	synchronized public int TPS() {
+		return tps;
 	}
 	
 	synchronized public void Stop() {
