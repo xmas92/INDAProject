@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 public class Server {
 
 	private static LoginServer ls;
+	private static GameServer gs;
 	
 	/**
 	 * @param args
@@ -18,6 +19,7 @@ public class Server {
 		BufferedReader reader = new BufferedReader(inStream);
 		String line = "";
 		StartLoginServer();
+		StartGameServer();
 		boolean running = true;
 		while (running) {
 			try {
@@ -44,6 +46,10 @@ public class Server {
 					StopLoginServer();
 				} else if (line.toLowerCase().equals("start loginserver")) {
 					StartLoginServer();
+				} else if (line.toLowerCase().equals("stop gameserver")) {
+					StopGameServer();
+				} else if (line.toLowerCase().equals("start gameserver")) {
+					StartGameServer();
 				} else if (line.toLowerCase().equals("exit")) {
 					StopLoginServer();
 					UserDB.Save();
@@ -54,6 +60,25 @@ public class Server {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private static boolean gsStarted = false;
+	private static void StartGameServer() {
+		if (gsStarted)
+			return;
+		System.out.println("Starting Loginserver");
+		gs = new GameServer();
+		Thread t = new Thread(gs);
+		t.start();
+		gsStarted = true;
+	}
+	private static void StopGameServer() {
+		if (!gsStarted)
+			return;
+		System.out.println("Stopping Loginserver");
+		gs.Stop();
+		gs = null;
+		gsStarted = false;
 	}
 
 	private static boolean lsStarted = false;

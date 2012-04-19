@@ -9,7 +9,7 @@ import game.Input.InputState;
 
 public class MainController implements Controller, Model, View {
 	
-	private static String Title = "Test";
+	public static String Title = "Test";
 	
 	private MainGame MainGame;
 	
@@ -18,7 +18,6 @@ public class MainController implements Controller, Model, View {
 		
 		NetworkController.Initialize();
 		MainGame.Initialize();
-		
 		
 		NetworkController.SetCallback(MainGame);
 	}

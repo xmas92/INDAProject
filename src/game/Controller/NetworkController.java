@@ -23,15 +23,16 @@ public class NetworkController implements Controller {
 		kryoReg.Register(client);
 	}
 
-	public static void Connect(String ip, int TCP) {
-		connect(ip, TCP, -1);
+	public static boolean Connect(String ip, int TCP) {
+		return connect(ip, TCP, -1);
 	}
 
-	public static void Connect(String ip, int TCP, int UDP) {
-		connect(ip, TCP, UDP);
+	public static boolean Connect(String ip, int TCP, int UDP) {
+		return connect(ip, TCP, UDP);
 	}
 	
-	private static void connect(String ip, int TCP, int UDP) {
+	private static boolean connect(String ip, int TCP, int UDP) {
+		if (connected) return true;
 		try {
 			if (UDP == -1) {
 				client.connect(5000, ip, TCP);
@@ -40,8 +41,9 @@ public class NetworkController implements Controller {
 			}
 			connected = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.print(e.getMessage());
 		}
+		return connected;
 	}
 	
 	public static void SetCallback(EventCallback callback) {
@@ -52,6 +54,10 @@ public class NetworkController implements Controller {
 		if (!connected) return;
 		client.close();
 		connected = false;
+	}
+	public static void Reset() {
+		init = false;
+		Initialize();
 	}
 
 	public static void Initialize() {

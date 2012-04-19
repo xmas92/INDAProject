@@ -21,11 +21,16 @@ import game.UserInterface.LoginTextField;
 
 public class LoginScreen implements Screen {
 	
+	public static final LoginScreen instance = new LoginScreen();
+	
 	private Image bg;
 	private LoginButton login, quit;
 	private LoginTextField username, password;
 	
 	public String un;
+	public String ip;
+	public int port;
+	public boolean done = false;
 	@Override
 	public void Update(int delta) {
 		login.Update(delta);
@@ -47,13 +52,18 @@ public class LoginScreen implements Screen {
 	public void Callback(Event e) {
 		if (e instanceof NetworkEvent) {
 			NetworkEvent ne = (NetworkEvent)e;
+			boolean tmp = false;
 			if (ne.Package instanceof LoginGranted) {
-				System.out.println("IP: " + ((LoginGranted)ne.Package).IP + " Port: " + ((LoginGranted)ne.Package).Port);
+				ip = ((LoginGranted)ne.Package).IP; 
+				port = ((LoginGranted)ne.Package).Port;
+				tmp = true;
 			}
 			if (ne.Package instanceof LoginRefused) {
 				System.out.println("Reason: " + ((LoginRefused)ne.Package).Reason);
 			}
+			login.Enable();
 			ne.Connection.close();
+			done = tmp;
 		}
 	}
 
@@ -80,15 +90,20 @@ public class LoginScreen implements Screen {
 				
 				@Override
 				public void Invoke(Object sender, Event e) {
+					login.Disable();
+					un = username.getText();
 					doLogin();
 				}
 	
 				private void doLogin() {
-					NetworkController.Connect("81.229.86.19", 12345);
-					LoginRequested ret = new LoginRequested();
-					ret.Username = username.getText();
-					ret.PasswordHash = password.getText().hashCode();
-					NetworkController.SendTCP(ret);
+					if(NetworkController.Connect("81.229.86.19", 12345)) {
+						LoginRequested ret = new LoginRequested();
+						ret.Username = username.getText();
+						ret.PasswordHash = password.getText().hashCode();
+						NetworkController.SendTCP(ret);
+					} else {
+						login.Enable();
+					}
 				}
 			});
 			username = new LoginTextField(new SpriteSheet("data/LoginScreen/Username.png", 300, 30));
@@ -100,7 +115,7 @@ public class LoginScreen implements Screen {
 			password.setDimension(new Dimension(300, 30));
 		} catch (SlickException e) {
 			e.printStackTrace();
-			return;
+			Client.Game.exit();
 		}
 	}
 

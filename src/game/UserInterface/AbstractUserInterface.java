@@ -14,6 +14,8 @@ import game.Controller.Controller;
 import game.Input.InputState;
 import game.Input.KeyState;
 import game.Input.MouseButton;
+import game.Event.DisabledEvent;
+import game.Event.EnabledEvent;
 import game.Event.EventCallback;
 import game.Event.EventListner;
 import game.Event.GainedFocusEvent;
@@ -90,8 +92,20 @@ public class AbstractUserInterface implements View, Controller {
 	
 	private boolean enabled = true;
 	public boolean isEnabled() { return enabled; }
-	public void Enable() { enabled = true; onEnable.Invoke(this, new NullEvent()); }
-	public void Disable() { enabled = false; onDisable.Invoke(this, new NullEvent()); }
+	public void Enable() { 
+		enabled = true; 
+		if (Callback != null)
+			Callback.Callback(new EnabledEvent());
+		else if (onEnable != null)
+			onEnable.Invoke(this, new NullEvent()); 
+	}
+	public void Disable() { 
+		enabled = false; 
+		if (Callback != null)
+			Callback.Callback(new DisabledEvent());
+		else if (onDisable != null)
+			onDisable.Invoke(this, new NullEvent()); 
+	}
 	
 	public void removeFocus() { 
 		if (lostFocus != null)
