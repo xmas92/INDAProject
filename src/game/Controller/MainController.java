@@ -14,8 +14,13 @@ public class MainController implements Controller, Model, View {
 	private MainGame MainGame;
 	
 	public void Initialize() {
-		NetworkController.Initialize();
 		MainGame = new MainGame();
+		
+		NetworkController.Initialize();
+		MainGame.Initialize();
+		
+		
+		NetworkController.SetCallback(MainGame);
 	}
 	
 	@Override

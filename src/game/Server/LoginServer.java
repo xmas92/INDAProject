@@ -1,8 +1,7 @@
 package game.Server;
 
 import game.Network.LoginGranted;
-import game.Network.LoginRefused;
-import game.Network.LoginRequested;
+import game.Network.LoginKryoReg;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -46,9 +45,7 @@ public class LoginServer implements Runnable {
                     return new LoginConnection();
                 }
 			};
-			server.getKryo().register(LoginGranted.class);
-			server.getKryo().register(LoginRequested.class);
-			server.getKryo().register(LoginRefused.class);
+			(new LoginKryoReg()).Register(server);
 			LoginGranted login = new LoginGranted();
 			login.IP = gsIP;
 			login.Port = gsPort;

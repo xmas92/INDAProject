@@ -13,6 +13,7 @@ import game.Event.Event;
 import game.Event.EventListner;
 import game.Event.NetworkEvent;
 import game.Network.LoginGranted;
+import game.Network.LoginKryoReg;
 import game.Network.LoginRefused;
 import game.Network.LoginRequested;
 import game.UserInterface.LoginButton;
@@ -57,11 +58,9 @@ public class LoginScreen implements Screen {
 	}
 
 	@Override
-	public void Initilize() {
+	public void Initialize() {
 		try {
-			NetworkController.Register(LoginRequested.class);
-			NetworkController.Register(LoginGranted.class);
-			NetworkController.Register(LoginRefused.class);
+			NetworkController.Register(new LoginKryoReg());
 			Client.Game.setDisplayMode(540, 280, false);
 			bg = new Image("data/LoginScreen/BG.png");
 			login = new LoginButton(new SpriteSheet("data/LoginScreen/Loginbtn.png", 140, 25));
@@ -99,8 +98,8 @@ public class LoginScreen implements Screen {
 			password.setLocation(new Point(190, 160));
 			username.setDimension(new Dimension(300, 30));
 			password.setDimension(new Dimension(300, 30));
-		} catch (SlickException e1) {
-			e1.printStackTrace();
+		} catch (SlickException e) {
+			e.printStackTrace();
 			return;
 		}
 	}

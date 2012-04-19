@@ -1,10 +1,10 @@
 package game.Controller;
 
+import game.Event.EventCallback;
 import game.Event.NetworkEvent;
+import game.Network.KryoRegister;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -13,36 +13,25 @@ import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
 public class NetworkController implements Controller {
 	
-	private Client client;
-	private boolean init = false;
-	private Queue<NetworkEvent> EventQueue;
-	private boolean connected = false;
-
-	private NetworkController() { }
-	private static NetworkController self;
-	private static NetworkController Singelton() {
-		if (self == null)
-			self = new NetworkController();
-		return self;
-	}
+	private static Client client;
+	private static boolean init = false;
+	private static boolean connected = false;
+	private static EventCallback Callback = null;
 	
-	public static void Register(Class<?> c) {
-		Singelton().register(c);
-	}
-	
-	private void register(Class<?> c) {
-		client.getKryo().register(c);
+	public static void Register(KryoRegister kryoReg) {
+		if (!init) return;
+		kryoReg.Register(client);
 	}
 
 	public static void Connect(String ip, int TCP) {
-		Singelton().connect(ip, TCP, -1);
+		connect(ip, TCP, -1);
 	}
 
 	public static void Connect(String ip, int TCP, int UDP) {
-		Singelton().connect(ip, TCP, UDP);
+		connect(ip, TCP, UDP);
 	}
 	
-	private void connect(String ip, int TCP, int UDP) {
+	private static void connect(String ip, int TCP, int UDP) {
 		try {
 			if (UDP == -1) {
 				client.connect(5000, ip, TCP);
@@ -55,68 +44,43 @@ public class NetworkController implements Controller {
 		}
 	}
 	
+	public static void SetCallback(EventCallback callback) {
+		Callback = callback;
+	}
+	
 	public static void Disconnect() {
-		Singelton().close();
+		if (!connected) return;
+		client.close();
+		connected = false;
 	}
 
 	public static void Initialize() {
-		Singelton().init();
-	}
-	
-	public static NetworkEvent PollEvent() {
-		return Singelton().pollEvent();
-	}
-
-	public static void SendTCP(Object Package) {
-		Singelton().sendTCP(Package);
-	}
-	
-	private void sendTCP(Object Package) {
-		if (!connected) return;
-		client.sendTCP(Package);
-	}
-
-	public static void SendUDP(Object Package) {
-		Singelton().sendUDP(Package);
-	}
-	
-	private void sendUDP(Object Package) {
-		if (!connected) return;
-		client.sendUDP(Package);
-	}
-	
-	private synchronized NetworkEvent pollEvent() {
-		if (!init) return null;
-		return EventQueue.poll();
-	}
-
-	private synchronized void addEvent(NetworkEvent e) {
-		EventQueue.add(e);
-	}
-	
-	private void init() {
 		if (init) return;
 		init = true;
-		EventQueue = new LinkedList<NetworkEvent>();
 		client = new Client();
 		client.start();
 		client.addListener(new ThreadedListener(new Listener() {
             public void connected (Connection connection) {
             }
             public void received (Connection connection, Object object) {
-            	addEvent(new NetworkEvent(connection, object));
+            	if (Callback != null) {
+            		Callback.Callback(new NetworkEvent(connection, object));
+            	}
             }
             public void disconnected (Connection connection) {
-            	close();
+            	Disconnect();
             }
 		}));
 	}
-	
-	private void close() {
-		client.close();
-		EventQueue = null;
-		connected = false;
-		init = false;
+
+	public static void SendTCP(Object Package) {
+		if (!connected) return;
+		client.sendTCP(Package);
+	}
+
+	public static void SendUDP(Object Package) {
+		if (!connected) return;
+		client.sendUDP(Package);
 	}
 	
 	@Override

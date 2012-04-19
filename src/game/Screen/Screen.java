@@ -6,6 +6,5 @@ import game.Controller.Controller;
 import game.Event.EventCallback;
 
 public interface Screen extends Controller, Model, View, EventCallback {
-	void Initilize();
 	void Dispose();
 }

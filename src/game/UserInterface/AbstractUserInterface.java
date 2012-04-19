@@ -9,19 +9,33 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 
 
-import game.Model;
 import game.View;
 import game.Controller.Controller;
 import game.Input.InputState;
 import game.Input.KeyState;
 import game.Input.MouseButton;
+import game.Event.EventCallback;
 import game.Event.EventListner;
+import game.Event.GainedFocusEvent;
+import game.Event.KeyDownEvent;
 import game.Event.KeyEvent;
+import game.Event.KeyPressEvent;
+import game.Event.KeyUpEvent;
+import game.Event.LostFocusEvent;
 import game.Event.MouseButtonEvent;
+import game.Event.MouseClickEvent;
+import game.Event.MouseDownEvent;
+import game.Event.MouseEnterEvent;
 import game.Event.MouseEvent;
+import game.Event.MouseLeaveEvent;
+import game.Event.MouseOverEvent;
+import game.Event.MouseUpEvent;
 import game.Event.NullEvent;
+import game.Event.RenderedEvent;
+import game.Event.UpdatedEvent;
+import game.Event.ValidateEvent;
 
-public class AbstractUserInterface implements Model, View, Controller {
+public class AbstractUserInterface implements View, Controller {
 
 	private boolean ignoreFocus = false;
 	public boolean getIgnoreFocus() { return ignoreFocus; }
@@ -96,7 +110,9 @@ public class AbstractUserInterface implements Model, View, Controller {
 			currentFocus = this;
 		} else {
 			lastFocus = currentFocus;
-			if (lastFocus != null)
+			if (Callback != null)
+				Callback.Callback(new LostFocusEvent());
+			else if (lastFocus != null)
 				lastFocus.removeFocus();
 			currentFocus = this;
 			focusChanged = true;
@@ -188,6 +204,13 @@ public class AbstractUserInterface implements Model, View, Controller {
 			onDisable = delegate;
 	}
 	
+	private EventCallback Callback;
+	
+	public void setEventCallback(EventCallback callback) {
+		Callback = callback;
+	}
+	public void removeCallback() { Callback = null; }
+	
 	@Override
 	public void Update(int delta) {
 		if (!enabled)
@@ -211,16 +234,26 @@ public class AbstractUserInterface implements Model, View, Controller {
 				lm = last.MouseState.isMiddleButtonDown(),
 				cm = current.MouseState.isMiddleButtonDown();
 		
-		if (mouseEnter != null) {
-			if (r.contains(cp) && !r.contains(lp))
-				mouseEnter.Invoke(this, new MouseEvent(cp));
+		if (mouseEnter != null || Callback != null) {
+			if (r.contains(cp) && !r.contains(lp)) {
+				if (Callback != null)
+					Callback.Callback(new MouseEnterEvent(cp));
+				else
+					mouseEnter.Invoke(this, new MouseEvent(cp));
+			}
 		}
-		if (mouseOver != null) {
-			if (r.contains(cp))
-				mouseOver.Invoke(this, new MouseEvent(cp));
+		if (mouseOver != null || Callback != null) {
+			if (r.contains(cp)) {
+				if (Callback != null)
+					Callback.Callback(new MouseOverEvent(cp));
+				else
+					mouseOver.Invoke(this, new MouseEvent(cp));
+			}
 		}
 		if (r.contains(lp) && !r.contains(cp)) {
-			if (mouseLeave != null)
+			if (Callback != null)
+				Callback.Callback(new MouseLeaveEvent(cp));
+			else if (mouseLeave != null)
 				mouseLeave.Invoke(this, new MouseEvent(cp));
 			rightB = false;
 			leftB = false;
@@ -230,58 +263,79 @@ public class AbstractUserInterface implements Model, View, Controller {
 		if (r.contains(cp)) {
 			if (!lr && cr) {
 				gainFocus();
-				if (mouseDown != null)
+				if (Callback != null)
+					Callback.Callback(new MouseDownEvent(MouseButton.RIGHT));
+				else if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.RIGHT));
 				rightB = true;
 			}
 			if (!ll && cl) {
 				gainFocus();
-				if (mouseDown != null)
+				if (Callback != null)
+					Callback.Callback(new MouseDownEvent(MouseButton.LEFT));
+				else if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.LEFT));
 				leftB = true;
 			}
 			if (!lm && cm) {
 				gainFocus();
-				if (mouseDown != null)
+				if (Callback != null)
+					Callback.Callback(new MouseDownEvent(MouseButton.MIDDLE));
+				else if (mouseDown != null)
 					mouseDown.Invoke(this, new MouseButtonEvent(MouseButton.MIDDLE));
 				middleB = true;
 			}
-			if (mouseUp != null) {
-				if (!cr && lr) {
+			if (!cr && lr) {
+				if (Callback != null)
+					Callback.Callback(new MouseUpEvent(MouseButton.RIGHT));
+				else if (mouseUp != null)
 					mouseUp.Invoke(this, new MouseButtonEvent(MouseButton.RIGHT));
-					if (mouseClick != null) {
-						if (rightB)
-							mouseClick.Invoke(this, new MouseButtonEvent(MouseButton.RIGHT));
-					}
-					rightB = false;
+				if (rightB) {
+					if (Callback != null)
+						Callback.Callback(new MouseClickEvent(MouseButton.RIGHT));
+					else if (mouseClick != null)
+						mouseClick.Invoke(this, new MouseButtonEvent(MouseButton.RIGHT));
 				}
-				if (!cl && ll) {
+				rightB = false;
+			}
+			if (!cl && ll) {
+				if (Callback != null)
+					Callback.Callback(new MouseUpEvent(MouseButton.LEFT));
+				else if (mouseUp != null)
 					mouseUp.Invoke(this, new MouseButtonEvent(MouseButton.LEFT));
-					if (mouseClick != null) {
-						if (leftB)
-							mouseClick.Invoke(this, new MouseButtonEvent(MouseButton.LEFT));
-					}
-					leftB = false;
+				if (leftB) {
+					if (Callback != null)
+						Callback.Callback(new MouseClickEvent(MouseButton.LEFT));
+					else if (mouseClick != null)
+						mouseClick.Invoke(this, new MouseButtonEvent(MouseButton.LEFT));
 				}
-				if (!cm && lm) {
+				leftB = false;
+			}
+			if (!cm && lm) {
+				if (Callback != null)
+					Callback.Callback(new MouseUpEvent(MouseButton.MIDDLE));
+				else if (mouseUp != null)
 					mouseUp.Invoke(this, new MouseButtonEvent(MouseButton.MIDDLE));
-					if (mouseClick != null) {
-						if (middleB)
-							mouseClick.Invoke(this, new MouseButtonEvent(MouseButton.MIDDLE));
-					}
-					middleB = false;
+				if (middleB) {
+					if (Callback != null)
+						Callback.Callback(new MouseClickEvent(MouseButton.MIDDLE));
+					else if (mouseClick != null)
+						mouseClick.Invoke(this, new MouseButtonEvent(MouseButton.MIDDLE));
 				}
-				if (mouseMultiClick != null) {
-					try {
-						throw new Exception("Not yet implemented");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				middleB = false;
+			}
+			if (mouseMultiClick != null) {
+				try {
+					throw new Exception("Not yet implemented");
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 			
 		}
-		if (validate != null)
+		if (Callback != null)
+			Callback.Callback(new ValidateEvent());
+		else if (validate != null)
 			validate.Invoke(this, new NullEvent());
 		
 		if (children != null)
@@ -293,11 +347,12 @@ public class AbstractUserInterface implements Model, View, Controller {
 		focusChanged = resetFocusChanged;
 		
 		boolean focused = (currentFocus == this);
-		if (gainedFocus != null) {
-			if (focused && (lastFocus != this)) {
+		if (focused && (lastFocus != this)) {
+			if (Callback != null)
+				Callback.Callback(new GainedFocusEvent());
+			else if (gainedFocus != null) 
 				gainedFocus.Invoke(this, new NullEvent());
-				lockFocus = locksFocus;
-			}
+			lockFocus = locksFocus;
 		}
 		
 		if (focused || (ignoreFocus && !lockFocus)) {
@@ -305,30 +360,43 @@ public class AbstractUserInterface implements Model, View, Controller {
 			while (en.hasMoreElements()) {
 				KeyState ck = en.nextElement();
 				KeyState lk = last.KeyboardState.GetKeyState(ck.key);
-				if (keyDown != null) {
+				if (keyDown != null || Callback != null) {
 					if (ck.Down() && !lk.Down()) {
-						keyDown.Invoke(this, new KeyEvent(ck.key));
+						if (Callback != null)
+							Callback.Callback(new KeyDownEvent(ck.key));
+						else 
+							keyDown.Invoke(this, new KeyEvent(ck.key));
 					}
 				}
-				if (keyPress != null) {
+				if (keyPress != null || Callback != null) {
 					if (ck.Down()) {
-						keyPress.Invoke(this, new KeyEvent(ck.key));
+						if (Callback != null)
+							Callback.Callback(new KeyPressEvent(ck.key));
+						else 
+							keyPress.Invoke(this, new KeyEvent(ck.key));
 					}
 				}
-				if (keyUp != null) {
+				if (keyUp != null || Callback != null) {
 					if (lk.Down() && !ck.Down()) {
-						keyUp.Invoke(this, new KeyEvent(ck.key));
+						if (Callback != null)
+							Callback.Callback(new KeyUpEvent(ck.key));
+						else 
+							keyUp.Invoke(this, new KeyEvent(ck.key));
 					}
 				}
 			}
 		}
-		if (updated != null)
+		if (Callback != null)
+			Callback.Callback(new UpdatedEvent());
+		else if (updated != null)
 			updated.Invoke(this, new NullEvent());
 	}
 
 	@Override
 	public void Draw() {
-		if (rendered != null)
+		if (Callback != null)
+			Callback.Callback(new RenderedEvent());
+		else if (rendered != null)
 			rendered.Invoke(this, new NullEvent());
 		if (children != null)
 			for (AbstractUserInterface child : children) {
