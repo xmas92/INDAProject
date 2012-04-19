@@ -34,13 +34,21 @@ public class NetworkController implements Controller {
 		client.getKryo().register(c);
 	}
 
+	public static void Connect(String ip, int TCP) {
+		Singelton().connect(ip, TCP, -1);
+	}
+
 	public static void Connect(String ip, int TCP, int UDP) {
 		Singelton().connect(ip, TCP, UDP);
 	}
 	
 	private void connect(String ip, int TCP, int UDP) {
 		try {
-			client.connect(8000, ip, TCP, UDP);
+			if (UDP == -1) {
+				client.connect(5000, ip, TCP);
+			} else {
+				client.connect(5000, ip, TCP, UDP);
+			}
 			connected = true;
 		} catch (IOException e) {
 			e.printStackTrace();

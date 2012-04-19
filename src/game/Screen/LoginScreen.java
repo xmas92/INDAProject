@@ -8,8 +8,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import game.Client;
+import game.Controller.NetworkController;
 import game.Event.Event;
 import game.Event.EventListner;
+import game.Event.NetworkEvent;
+import game.Network.LoginGranted;
+import game.Network.LoginRefused;
+import game.Network.LoginRequested;
 import game.UserInterface.LoginButton;
 import game.UserInterface.LoginTextField;
 
@@ -39,13 +44,24 @@ public class LoginScreen implements Screen {
 
 	@Override
 	public void Callback(Event e) {
-		// TODO Auto-generated method stub
-		
+		if (e instanceof NetworkEvent) {
+			NetworkEvent ne = (NetworkEvent)e;
+			if (ne.Package instanceof LoginGranted) {
+				System.out.println("IP: " + ((LoginGranted)ne.Package).IP + " Port: " + ((LoginGranted)ne.Package).Port);
+			}
+			if (ne.Package instanceof LoginRefused) {
+				System.out.println("Reason: " + ((LoginRefused)ne.Package).Reason);
+			}
+			ne.Connection.close();
+		}
 	}
 
 	@Override
 	public void Initilize() {
 		try {
+			NetworkController.Register(LoginRequested.class);
+			NetworkController.Register(LoginGranted.class);
+			NetworkController.Register(LoginRefused.class);
 			Client.Game.setDisplayMode(540, 280, false);
 			bg = new Image("data/LoginScreen/BG.png");
 			login = new LoginButton(new SpriteSheet("data/LoginScreen/Loginbtn.png", 140, 25));
@@ -69,7 +85,11 @@ public class LoginScreen implements Screen {
 				}
 	
 				private void doLogin() {
-					System.out.println("loging");
+					NetworkController.Connect("81.229.86.19", 12345);
+					LoginRequested ret = new LoginRequested();
+					ret.Username = username.getText();
+					ret.PasswordHash = password.getText().hashCode();
+					NetworkController.SendTCP(ret);
 				}
 			});
 			username = new LoginTextField(new SpriteSheet("data/LoginScreen/Username.png", 300, 30));
