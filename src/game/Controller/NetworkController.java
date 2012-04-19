@@ -26,6 +26,14 @@ public class NetworkController implements Controller {
 		return self;
 	}
 	
+	public static void Register(Class<?> c) {
+		Singelton().register(c);
+	}
+	
+	private void register(Class<?> c) {
+		client.getKryo().register(c);
+	}
+
 	public static void Connect(String ip, int TCP, int UDP) {
 		Singelton().connect(ip, TCP, UDP);
 	}

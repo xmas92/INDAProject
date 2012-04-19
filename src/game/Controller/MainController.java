@@ -11,10 +11,11 @@ public class MainController implements Controller, Model, View {
 	
 	private static String Title = "Test";
 	
-	private MainGame MainGame = new MainGame();
+	private MainGame MainGame;
 	
 	public void Initialize() {
 		NetworkController.Initialize();
+		MainGame = new MainGame();
 	}
 	
 	@Override
