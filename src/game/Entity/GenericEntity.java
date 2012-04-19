@@ -39,17 +39,17 @@ public class GenericEntity implements Entity {
 			float movement = (speed * delta / 1000.0f) / (float)Math.sqrt(Math.abs(deltaX)+Math.abs(deltaY));
 			Rectangle rect = collisionBox();
 			rect.y += deltaY * movement;
-			Zone z = Zones.CurrentZone();
+			Zone z = null;//Zones.CurrentZone();
 			if (z != null) {
 				if (z.getZoneMap().getCollision(rect)) {
-					//deltaY = 0;
+					deltaY = 0;
 				}
 			}
 			rect = collisionBox();
 			rect.x += deltaX * movement;
 			if (z != null) {
 				if (z.getZoneMap().getCollision(rect)) {
-					//deltaX = 0;
+					deltaX = 0;
 				}
 			}
 			x += deltaX * movement;
@@ -93,7 +93,7 @@ public class GenericEntity implements Entity {
 			if (ne.Package instanceof GenericEntityMovement) {
 				GenericEntityMovement cem = (GenericEntityMovement)ne.Package;
 				deltaX = cem.deltaX; deltaY = cem.deltaY;
-				MoveCorrection(x - cem.x, y - cem.y);
+				MoveCorrection(cem.x - x,cem.y - y);
 				System.out.println("Update GE");
 			}
 		}
@@ -117,10 +117,9 @@ public class GenericEntity implements Entity {
 	private int timeLeft = 0;
 	private float needToMoveX = 0, needToMoveY = 0;
 	private void MoveCorrection(int delta) {
-		return;/*
 		float ratio = (float)delta / (float)timeLeft;
 		timeLeft -= delta;
-		if (ratio > 0) {
+		if (ratio > 0 && ratio <= 1) {
 			x += needToMoveX * ratio;
 			y += needToMoveY *ratio;
 			needToMoveX -= needToMoveX * ratio;
@@ -130,12 +129,10 @@ public class GenericEntity implements Entity {
 			y += needToMoveY;
 			needToMoveX = 0;
 			needToMoveY = 0;
-		}*/
+		}
 	}
 
 	private void MoveCorrection(float x, float y) {
-		this.x += x;
-		this.y += y;
 		timeLeft = 500;
 		needToMoveX += x;
 		needToMoveY += y;
