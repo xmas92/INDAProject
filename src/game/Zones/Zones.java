@@ -1,17 +1,16 @@
 package game.Zones;
 
 import game.Model;
-import game.View;
 import game.Controller.Controller;
 import game.Event.Event;
 import game.Event.EventCallback;
 
-public class Zones implements EventCallback, Model, Controller, View {
+public class Zones implements EventCallback, Model, Controller {
 
-	@Override
-	public void Draw() {
-		// TODO Auto-generated method stub
-		
+	private static Zone currentzone;
+	
+	public static Zone CurrentZone() {
+		return currentzone;
 	}
 
 	@Override
@@ -22,8 +21,8 @@ public class Zones implements EventCallback, Model, Controller, View {
 
 	@Override
 	public void Initialize() {
-		// TODO Auto-generated method stub
-		
+		currentzone = new HubZone();
+		currentzone.Initialize();
 	}
 
 	@Override

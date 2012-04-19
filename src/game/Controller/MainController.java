@@ -18,6 +18,8 @@ public class MainController implements Controller, Model, View {
 		
 		NetworkController.Initialize();
 		MainGame.Initialize();
+		Client.Game.setAlwaysRender(true);
+		Client.Game.setUpdateOnlyWhenVisible(false);
 		
 		NetworkController.SetCallback(MainGame);
 	}

@@ -37,14 +37,11 @@ public class GameServer implements Runnable {
                 }
 			};
 			(new GameKryoReg()).Register(server);
-			GameServerListener gsl = new GameServerListener();
+			GameServerListener gsl = new GameServerListener(server);
 			server.addListener(gsl);
 			server.start();
 			server.bind(port, port+1);
 			boolean running = true;
-			long time = System.currentTimeMillis(),
-				 tsl = System.currentTimeMillis();
-			int i = 0;
 			while (running) {
 				Thread.sleep(1);
 			}

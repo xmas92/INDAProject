@@ -26,8 +26,14 @@ public class HubZone implements Zone {
 
 	@Override
 	public void Draw() {
-		if (map != null)
-			map.draw(GameScreen.player.x, GameScreen.player.y, GameScreen.w, GameScreen.h);
+		if (map != null) {
+			map.drawBG((float)GameScreen.player.position().getX()-GameScreen.w*0.5f, (float)GameScreen.player.position().getY()-GameScreen.h*0.5f, GameScreen.w, GameScreen.h);
+		}
+	}
+
+	@Override
+	public ZoneMap getZoneMap() {
+		return map;
 	}
 
 }
