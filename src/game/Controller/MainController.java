@@ -5,6 +5,7 @@ import game.MainGame;
 import game.Model;
 import game.View;
 import game.Event.CloseEvent;
+import game.Event.Event;
 import game.Input.InputState;
 
 public class MainController implements Controller, Model, View {
@@ -12,6 +13,10 @@ public class MainController implements Controller, Model, View {
 	public static String Title = "Test";
 	
 	private MainGame MainGame;
+	
+	public void sendCallback(Event e) {
+		MainGame.Callback(e);
+	}
 	
 	public void Initialize() {
 		MainGame = new MainGame();

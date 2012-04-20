@@ -8,9 +8,11 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import game.Client;
 import game.Controller.NetworkController;
 import game.Event.Event;
 import game.Event.NetworkEvent;
+import game.Event.PlayerDrawEvent;
 import game.Geometry.Rectangle;
 import game.Input.InputState;
 import game.Input.Key;
@@ -109,8 +111,10 @@ public class Player implements Entity {
 
 	@Override
 	public void Draw() {
-		if (graphic != null)
+		if (graphic != null) {
 			graphic.draw((GameScreen.w - w) * 0.5f, (GameScreen.h - h) * 0.5f, w, h);
+		}
+		Client.sendCallback(new PlayerDrawEvent());
 	}
 
 	@Override

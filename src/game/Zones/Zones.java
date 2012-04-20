@@ -27,8 +27,8 @@ public class Zones implements EventCallback, Model, Controller {
 
 	@Override
 	public void Callback(Event e) {
-		// TODO Auto-generated method stub
-		
+		if (currentzone != null)
+			currentzone.Callback(e);
 	}
 
 }

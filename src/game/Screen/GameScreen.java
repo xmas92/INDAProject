@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
 	public void Callback(Event e) {
 		player.Callback(e);
 		entities.Callback(e);
+		zones.Callback(e);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package game;
 
 import game.Controller.MainController;
+import game.Event.Event;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
@@ -11,6 +12,12 @@ import org.newdawn.slick.SlickException;
 public class Client {
 	
 	public static final AppGameContainer Game = CreateGame();
+	
+	private static MainController MainCTRL = new MainController();
+	
+	public static void sendCallback(Event e) {
+		MainCTRL.sendCallback(e);
+	}
 	
 	/**
 	 * @param args
@@ -26,8 +33,6 @@ public class Client {
 	private static AppGameContainer CreateGame() {
 		try {
 			return new AppGameContainer(new Game() {
-				
-				private MainController MainCTRL = new MainController();
 				
 				@Override
 				public void update(GameContainer container, int delta)
