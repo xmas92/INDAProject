@@ -34,4 +34,10 @@ public class PlayerDB implements Database {
 			p.Callback(e);
 		}
 	}
+	
+	public synchronized static void updateAll(int delta) {
+		for (ServerPlayer p : players.values()) {
+			p.Update(delta);
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package game.Server;
 
+import game.Database.PlayerDB;
 import game.Network.GameKryoReg;
 
 import java.io.BufferedReader;
@@ -42,7 +43,11 @@ public class GameServer implements Runnable {
 			server.start();
 			server.bind(port, port+1);
 			boolean running = true;
+			long lastTime = System.currentTimeMillis();
 			while (running) {
+				int delta = (int)(System.currentTimeMillis() - lastTime);
+				lastTime = System.currentTimeMillis();
+				PlayerDB.updateAll(delta);
 				Thread.sleep(1);
 			}
 		} catch (Exception e) {
