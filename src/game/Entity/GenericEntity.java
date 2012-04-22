@@ -86,7 +86,8 @@ public class GenericEntity implements Entity {
 			if (ne.Package instanceof CreateGenericEntity) {
 				CreateGenericEntity cge = (CreateGenericEntity)ne.Package;
 				x = cge.x; y = cge.y; speed = cge.speed; h = cge.h; w = cge.w;
-				imageRef = cge.imageRef; LoadImage = true;
+				deltaX = cge.deltaX; deltaY = cge.deltaY;
+				imageRef = cge.imageRef; LoadImage = true; 
 			}
 			if (ne.Package instanceof GenericEntityMovement) {
 				GenericEntityMovement cem = (GenericEntityMovement)ne.Package;

@@ -54,7 +54,7 @@ public class UserDB implements Database {
 	}
 	
 	
-	public static void Save() {
+	public static synchronized void Save() {
 		if (database == null) return;
 		try {
 			File f = new File(file);

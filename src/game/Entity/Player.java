@@ -72,6 +72,7 @@ public class Player implements Entity {
 				if (z != null) {
 					if (z.getZoneMap().getCollision(rect)) {
 						newDY = 0;
+						movement = (speed * delta / 1000.0f) * Math.abs(newDX);
 					}
 				}
 				rect = collisionBox();
@@ -79,6 +80,7 @@ public class Player implements Entity {
 				if (z != null) {
 					if (z.getZoneMap().getCollision(rect)) {
 						newDX = 0;
+						movement = (speed * delta / 1000.0f) * Math.abs(newDY);
 					}
 				}
 				changed = (newDY != deltaY || newDX != deltaX) || changed;

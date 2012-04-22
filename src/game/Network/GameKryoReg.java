@@ -34,7 +34,7 @@ public class GameKryoReg implements KryoRegister {
 	static public class CreateGenericEntity {
 		public long UUIDp1, UUIDp2;
 		public float x, y, speed;
-		public int w, h;
+		public int w, h, deltaX, deltaY;
 		public String imageRef;
 	}
 	
