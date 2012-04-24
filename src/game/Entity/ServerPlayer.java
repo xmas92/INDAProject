@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Server;
 
 import game.Database.LoginDB;
 import game.Database.PlayerDB;
+import game.DrawState.DrawStates;
 import game.Event.Event;
 import game.Event.NetworkEvent;
 import game.Event.PlayerConnectedEvent;
@@ -15,10 +16,10 @@ import game.Network.GameKryoReg.GenericEntityMovement;
 import game.Network.GameKryoReg.PlayerLoginRequest;
 import game.Network.GameKryoReg.PlayerMovement;
 import game.Server.PlayerConnection;
+import game.UpdateState.UpdateStates;
 
 public class ServerPlayer implements ServerEntity {
-
-	private String graphicRef;
+	
 	private float x, y, speed;
 	private int deltaX, deltaY, w, h;
 	private UUID uuid;
@@ -46,8 +47,11 @@ public class ServerPlayer implements ServerEntity {
 
 	private void HandlePlayerConnectedEvent(PlayerConnectedEvent e) {
 		CreateGenericEntity cge = new CreateGenericEntity();
-		cge.h = h; cge.w = w; cge.speed = speed; cge.x = x; cge.y = y; cge.imageRef = graphicRef;
-		cge.UUIDp1 = uuid.getLeastSignificantBits(); cge.UUIDp2 = uuid.getMostSignificantBits();
+		cge.h = h; cge.w = w; cge.speed = speed; cge.x = x; cge.y = y; 
+		cge.drawID = DrawStates.PlayerDrawState.ordinal();
+		cge.updateID = UpdateStates.PlayerUpdateState.ordinal();
+		cge.UUIDp1 = uuid.getLeastSignificantBits(); 
+		cge.UUIDp2 = uuid.getMostSignificantBits();
 		cge.deltaX = deltaX; cge.deltaY = deltaY;
 		e.pc.sendTCP(cge);
 	}
@@ -72,12 +76,15 @@ public class ServerPlayer implements ServerEntity {
 			// TODO check for player in DB instead of reseting everything every time
 			CreatePlayer cp = new CreatePlayer();
 			cp.x = x = 64; cp.y = y = 64; cp.h = h = 32; cp.w = w = 32; cp.speed = speed = 128;
-			cp.imageRef = graphicRef = "data/images/GameAssets/Player/player.bmp";
+			// TODO fix so we only need to send a drawState
+			cp.imageRef = "data/images/GameAssets/Player/player.bmp";
 			pc.sendTCP(cp);
 			CreateGenericEntity cge = new CreateGenericEntity();
 			cge.h = cp.h; cge.w = cp.w; cge.x = cp.x; cge.y = cp.y; cge.speed = cp.speed;
-			cge.imageRef = cp.imageRef;
-			cge.UUIDp1 = pc.uuid.getLeastSignificantBits(); cge.UUIDp2 = pc.uuid.getMostSignificantBits();
+			cge.drawID = DrawStates.PlayerDrawState.ordinal();
+			cge.updateID = UpdateStates.PlayerUpdateState.ordinal();
+			cge.UUIDp1 = pc.uuid.getLeastSignificantBits(); 
+			cge.UUIDp2 = pc.uuid.getMostSignificantBits();
 			((Server)pc.getEndPoint()).sendToAllExceptTCP(pc.getID(), cge);
 			uuid = pc.uuid;
 			PlayerDB.addPlayer(this, pc.uuid);
