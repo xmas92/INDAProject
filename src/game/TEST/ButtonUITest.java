@@ -8,7 +8,6 @@ import game.util.IO.Event.Event;
 import game.util.IO.Event.EventListner;
 import game.util.UI.Button;
 
-import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
