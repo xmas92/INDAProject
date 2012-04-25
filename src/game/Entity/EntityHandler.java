@@ -1,6 +1,7 @@
 package game.Entity;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 import game.Model;
@@ -16,6 +17,8 @@ import game.Network.GameKryoReg.GenericEntityMovement;
 public class EntityHandler implements Model, View, Controller, EventCallback {
 
 	private HashMap<UUID, GenericEntity> entities;
+	private static boolean destroy = false;
+	public static void Destroy() { destroy = true; }
 	
 	@Override
 	public void Callback(Event e) {
@@ -41,8 +44,14 @@ public class EntityHandler implements Model, View, Controller, EventCallback {
 
 	@Override
 	public void Update(int delta) {
-		for (GenericEntity entity : entities.values()) {
-			entity.Update(delta);
+		Iterator<GenericEntity> it = entities.values().iterator();
+		destroy = false;
+		while (it.hasNext()) {
+			it.next().Update(delta);
+			if (destroy) {
+				destroy = false;
+				it.remove();
+			}
 		}
 	}
 

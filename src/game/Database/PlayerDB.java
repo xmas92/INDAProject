@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerDB implements Database {
-	private static HashMap<UUID, ServerPlayer> players = new HashMap<>();
+	private static HashMap<UUID, ServerPlayer> players = new HashMap<UUID, ServerPlayer>();
 	
 	public synchronized static ServerPlayer getPlayer(UUID uuid) {
 		return players.get(uuid);

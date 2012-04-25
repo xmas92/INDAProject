@@ -1,82 +1,40 @@
 package game.Entity;
 
+import game.DrawState.DrawState;
+import game.DrawState.DrawStates;
 import game.Event.Event;
 import game.Event.NetworkEvent;
 import game.Geometry.Rectangle;
 import game.Network.GameKryoReg.CreateGenericEntity;
 import game.Network.GameKryoReg.GenericEntityMovement;
-import game.Screen.GameScreen;
-import game.Zones.Zone;
-import game.Zones.Zones;
+import game.UpdateState.UpdateState;
+import game.UpdateState.UpdateStates;
 
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-
 public class GenericEntity implements Entity {
-	
-	private Image graphic;
-	private float x, y, speed;
-	private int deltaX, deltaY, w, h;
-	private boolean LoadImage = false;
-	private String imageRef;
+	public float x, y, speed;
+	public int deltaX, deltaY, w, h;
+	public UpdateState updateState;
+	public DrawState drawState;
 	
 	@Override
-	public void Update(int delta) {
-		if (LoadImage) {
-			LoadImage = false;
-			Image g = graphic;
-			try {
-				graphic = new Image(imageRef);
-			} catch (SlickException e) {
-				graphic = g;
-			}
-		}
-		if (Math.abs(deltaX)+Math.abs(deltaY) != 0) {
-			float movement = (speed * delta / 1000.0f) / (float)Math.sqrt(Math.abs(deltaX)+Math.abs(deltaY));
-			Rectangle rect = collisionBox();
-			rect.y += deltaY * movement;
-			Zone z = Zones.CurrentZone();
-			if (z != null) {
-				if (z.getZoneMap().getCollision(rect)) {
-					deltaY = 0;
-				}
-			}
-			rect = collisionBox();
-			rect.x += deltaX * movement;
-			if (z != null) {
-				if (z.getZoneMap().getCollision(rect)) {
-					deltaX = 0;
-				}
-			}
-			x += deltaX * movement;
-			y += deltaY * movement;
-		} 
+	public void Update(int delta) { 
+		if (updateState != null)
+			updateState.Update(delta);
 	}
 
 	@Override
 	public void Initialize() {
-		try {
-			graphic = new Image("data/noimage.png");
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
 	@Override
 	public void Draw() {
-		if (graphic != null) {
-			int drawX = (int)(x - GameScreen.player.position().getX() + (GameScreen.w - w) * 0.5f),
-				drawY = (int)(y - GameScreen.player.position().getY() + (GameScreen.h - h) * 0.5f);
-			if (drawX > -GameScreen.w && drawX < GameScreen.w * 2 &&
-				drawY > -GameScreen.h && drawY < GameScreen.w * 2) {
-				graphic.draw(drawX, drawY, w, h);
-			}
-		}
+		if (drawState != null)
+			drawState.Draw();
 	}
 
 	@Override
@@ -87,7 +45,8 @@ public class GenericEntity implements Entity {
 				CreateGenericEntity cge = (CreateGenericEntity)ne.Package;
 				x = cge.x; y = cge.y; speed = cge.speed; h = cge.h; w = cge.w;
 				deltaX = cge.deltaX; deltaY = cge.deltaY;
-				imageRef = cge.imageRef; LoadImage = true; 
+				updateState = UpdateStates.getNewState(cge.drawID, this);
+				drawState = DrawStates.getNewState(cge.drawID, this);
 			}
 			if (ne.Package instanceof GenericEntityMovement) {
 				GenericEntityMovement cem = (GenericEntityMovement)ne.Package;
