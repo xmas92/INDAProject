@@ -12,13 +12,56 @@ import org.newdawn.slick.SpriteSheet;
 
 import game.Client;
 import game.Event.Event;
+import game.Input.InputState;
 import game.Screen.Screen;
 import game.UserInterface.Checkbox;
 
 public class CheckboxTest implements Screen {
 	
-	public static final CheckboxTest instance = new CheckboxTest();
-	private Checkbox cb; 
+	public static void main(String[] args) {
+		AppGameContainer apc;
+		try {
+			apc = new AppGameContainer(new Game() {
+				CheckboxTest cbt = new CheckboxTest();
+				@Override
+				public void update(GameContainer container, int delta)
+						throws SlickException {
+					InputState.Update(container);
+					cbt.Update(delta);
+				}
+				
+				@Override
+				public void render(GameContainer container, Graphics g)
+						throws SlickException {
+					cbt.Draw();
+				}
+				
+				@Override
+				public void init(GameContainer container) throws SlickException {
+					cbt.Initialize();
+				}
+				
+				@Override
+				public String getTitle() {
+					// TODO Auto-generated method stub
+					return "test";
+				}
+				
+				@Override
+				public boolean closeRequested() {
+					// TODO Auto-generated method stub
+					return true;
+				}
+			});
+		apc.setDisplayMode(100, 100, false);
+		apc.start();
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private Checkbox cb;
 	
 	public CheckboxTest() {
 		
@@ -33,10 +76,9 @@ public class CheckboxTest implements Screen {
 	@Override
 	public void Initialize() {
 		try {
-		Client.Game.setDisplayMode(100, 100, false);
-		cb.setLocation(new Point(25,25)); 
-		cb.setDimension(new Dimension(15,15)); 
-		cb = new Checkbox(new SpriteSheet("data/GameAssets/checkboxsprite.png",15, 30)); 
+			cb = new Checkbox(new SpriteSheet("data/GameAssets/checkboxsprite.png",15, 15)); 
+			cb.setLocation(new Point(25,25)); 
+			cb.setDimension(new Dimension(15,15)); 
 		}
 		catch(SlickException e)
 		{

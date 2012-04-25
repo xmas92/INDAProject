@@ -28,9 +28,10 @@ public class Checkbox extends AbstractUserInterface{
 		super.addMouseClickEventListner(new EventListner() {
 			@Override
 			public void Invoke(Object sender, Event e) {
-				graphic = check; 
-				b = true; 
-				if (graphic == check) {
+				if (!b) {
+					graphic = check; 
+					b = true; 
+				} else {
 					graphic = uncheck; 
 					b = false; 
 				}
@@ -50,7 +51,7 @@ public class Checkbox extends AbstractUserInterface{
 		if (!isEnabled()) return;
 		if (graphic == null) return;
 
-		Rectangle rec = new Rectangle();
+		Rectangle rec = getRectangle();
 		graphic.draw(rec.x, rec.y, rec.x + rec.width, rec.y +rec.height,
 					0, 0, graphic.getWidth(), graphic.getHeight());
 		
