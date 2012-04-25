@@ -21,6 +21,7 @@ public class LoginTextField extends AbstractUserInterface {
 	private StringBuilder sb;
 	private int pos;
 	private int margin = 5;
+	private int charCounter = 0; 
 	private Image graphic, normalEmpty, normalText, overEmpty, overText;
 	private boolean renderStars;
 	public LoginTextField(SpriteSheet ss) {
@@ -55,13 +56,19 @@ public class LoginTextField extends AbstractUserInterface {
 					} else if (key.VALUE == Input.KEY_ESCAPE) {
 						removeFocus();
 					} else if (InputState.Get().KeyboardState.GetKeyState(Input.KEY_LSHIFT).Down()) {
-						if (key.ALTCHARACTER != null)
+						if (key.ALTCHARACTER != null) {
 							sb.insert(pos++, key.ALTCHARACTER);
-						else if (key.CHARACTER != null)
+							charCounter++;
+						}
+						else if (key.CHARACTER != null) {
 							sb.insert(pos++, key.CHARACTER);
+							charCounter++;
+						}
 					} else {
-						if (key.CHARACTER != null)
+						if (key.CHARACTER != null) {
 							sb.insert(pos++, key.CHARACTER);
+							charCounter++;
+						}
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -95,6 +102,7 @@ public class LoginTextField extends AbstractUserInterface {
 								countBack++;
 								lastBack = InputState.Get().Time;
 								sb.deleteCharAt(--pos);
+								charCounter--;
 							}
 						} catch (Exception e1) {
 							e1.printStackTrace();
@@ -154,6 +162,8 @@ public class LoginTextField extends AbstractUserInterface {
 		});
 	}
 
+	String tempString = "";
+	
 	@Override
 	public void Draw() {
 		Font f = Client.Game.getGraphics().getFont();
@@ -169,12 +179,20 @@ public class LoginTextField extends AbstractUserInterface {
 		} else {
 			s = sb.toString();
 		}
-		int w = f.getWidth(s);
+		
+		int w = f.getWidth(s); 
+		int charWidth = f.getWidth("a");
+		
 		if (rec.height - 2 * margin >= f.getLineHeight()) {
-			int i = (int) ((rec.width - w) * 0.5f);
-			Client.Game.getGraphics().drawString(s, rec.x + i, rec.y + margin);
+			if(w > graphic.getWidth() - 3*margin) {
+				tempString = s.substring(charCounter - (int)Math.floor((graphic.getWidth() + 2*margin)/charWidth), s.length()); 
+				Client.Game.getGraphics().drawString(tempString, rec.x + 2*margin, rec.y + margin);
+			} else {
+				Client.Game.getGraphics().drawString(s, rec.x + 2*margin, rec.y + margin);	
+			}
 		}
 	}
+	
 	
 	@Override
 	public void addMouseOverEventListner(EventListner delegate) {
