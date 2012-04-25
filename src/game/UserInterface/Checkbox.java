@@ -1,5 +1,7 @@
 package game.UserInterface;
 
+import java.awt.Rectangle;
+
 import game.Event.Event;
 import game.Event.EventListner;
 
@@ -41,6 +43,19 @@ public class Checkbox extends AbstractUserInterface{
 		if (mouseClick == null) {
 			mouseClick = delegate; 
 		}
+	}
+	
+	@Override
+	public void Draw() {
+		if (graphic == null) {
+			return; 
+		} else {
+			Rectangle rec = new Rectangle();
+			graphic.draw(rec.x, rec.y, rec.x + rec.width, rec.y +rec.height,
+					0, 0, graphic.getWidth(), graphic.getHeight());
+		}
+
+		
 	}
 	
 }
