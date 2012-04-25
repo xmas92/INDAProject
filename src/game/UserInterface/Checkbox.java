@@ -47,14 +47,12 @@ public class Checkbox extends AbstractUserInterface{
 	
 	@Override
 	public void Draw() {
-		if (graphic == null) {
-			return; 
-		} else {
-			Rectangle rec = new Rectangle();
-			graphic.draw(rec.x, rec.y, rec.x + rec.width, rec.y +rec.height,
-					0, 0, graphic.getWidth(), graphic.getHeight());
-		}
+		if (!isEnabled()) return;
+		if (graphic == null) return;
 
+		Rectangle rec = new Rectangle();
+		graphic.draw(rec.x, rec.y, rec.x + rec.width, rec.y +rec.height,
+					0, 0, graphic.getWidth(), graphic.getHeight());
 		
 	}
 	
