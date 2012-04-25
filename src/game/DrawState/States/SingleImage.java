@@ -9,7 +9,7 @@ import game.Screen.GameScreen;
 
 public abstract class SingleImage extends DrawState {
 	
-	private Image graphic;
+	protected Image graphic;
 	
 	public SingleImage(GenericEntity entity, String image) {
 		super(entity);

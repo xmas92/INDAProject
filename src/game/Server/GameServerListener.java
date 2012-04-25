@@ -5,8 +5,10 @@ import java.util.UUID;
 import game.Database.LoginDB;
 import game.Database.PlayerDB;
 import game.Entity.ServerPlayer;
+import game.Entity.ServerSpell;
 import game.Event.NetworkEvent;
 import game.Event.PlayerConnectedEvent;
+import game.Network.GameKryoReg.CastProjectileSpell;
 import game.Network.GameKryoReg.DestroyGenerticEntity;
 import game.Network.GameKryoReg.PlayerLoginRequest;
 import game.Network.GameKryoReg.PlayerMovement;
@@ -33,6 +35,9 @@ public class GameServerListener extends Listener {
 			}
 		} else if (object instanceof PlayerMovement) {
 			PlayerDB.sendToAll(new NetworkEvent(pc, object));
+		} else if (object instanceof CastProjectileSpell) {
+			ServerSpell ss = new ServerSpell();
+			ss.Callback(new NetworkEvent(pc, object));
 		}
 	}
 	

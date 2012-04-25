@@ -2,6 +2,7 @@ package game.Entity;
 
 import game.DrawState.DrawState;
 import game.DrawState.DrawStates;
+import game.Event.CreateClientGenericEntityEvent;
 import game.Event.Event;
 import game.Event.NetworkEvent;
 import game.Geometry.Rectangle;
@@ -15,8 +16,8 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
 public class GenericEntity implements Entity {
-	public float x, y, speed;
-	public int deltaX, deltaY, w, h;
+	public float x, y, speed, deltaX, deltaY;
+	public int  w, h;
 	public UpdateState updateState;
 	public DrawState drawState;
 	
@@ -42,11 +43,7 @@ public class GenericEntity implements Entity {
 		if (e instanceof NetworkEvent) {
 			NetworkEvent ne = (NetworkEvent)e;
 			if (ne.Package instanceof CreateGenericEntity) {
-				CreateGenericEntity cge = (CreateGenericEntity)ne.Package;
-				x = cge.x; y = cge.y; speed = cge.speed; h = cge.h; w = cge.w;
-				deltaX = cge.deltaX; deltaY = cge.deltaY;
-				updateState = UpdateStates.getNewState(cge.drawID, this);
-				drawState = DrawStates.getNewState(cge.drawID, this);
+				CreateThis((CreateGenericEntity)ne.Package);
 			}
 			if (ne.Package instanceof GenericEntityMovement) {
 				GenericEntityMovement cem = (GenericEntityMovement)ne.Package;
@@ -54,6 +51,23 @@ public class GenericEntity implements Entity {
 				x = cem.x; y = cem.y;
 			}
 		}
+		if (e instanceof CreateClientGenericEntityEvent) {
+			CreateThis((CreateClientGenericEntityEvent)e);
+		}
+	}
+
+	private void CreateThis(CreateGenericEntity cge) {
+		x = cge.x; y = cge.y; speed = cge.speed; h = cge.h; w = cge.w;
+		deltaX = cge.deltaX; deltaY = cge.deltaY;
+		updateState = UpdateStates.getNewState(cge.updateID, this);
+		drawState = DrawStates.getNewState(cge.drawID, this);
+	}
+
+	private void CreateThis(CreateClientGenericEntityEvent ccgee) {
+		x = ccgee.x; y = ccgee.y; speed = ccgee.speed; h = ccgee.h; w = ccgee.w;
+		deltaX = ccgee.deltaX; deltaY = ccgee.deltaY;
+		updateState = UpdateStates.getNewState(ccgee.us.ordinal(), this);
+		drawState = DrawStates.getNewState(ccgee.ds.ordinal(), this);
 	}
 
 	@Override

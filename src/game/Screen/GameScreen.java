@@ -6,6 +6,7 @@ import game.Client;
 import game.Entity.EntityHandler;
 import game.Entity.Player;
 import game.Event.Event;
+import game.UserInterface.SpellButton;
 import game.Zones.Zones;
 
 public class GameScreen implements Screen {
@@ -18,10 +19,13 @@ public class GameScreen implements Screen {
 	private Zones zones = new Zones();
 	private EntityHandler entities = new EntityHandler();
 	
+	private SpellButton fireBall = new SpellButton();
+	
 	@Override
 	public void Update(int delta) {
 		player.Update(delta);
 		entities.Update(delta);
+		fireBall.Update(delta);
 	}
 
 	@Override
@@ -42,7 +46,7 @@ public class GameScreen implements Screen {
 		Zones.CurrentZone().Draw();
 		entities.Draw();
 		player.Draw();
-
+		fireBall.Draw();
 	}
 
 	@Override

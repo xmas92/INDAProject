@@ -7,6 +7,7 @@ import game.View;
 import game.Event.CloseEvent;
 import game.Event.Event;
 import game.Input.InputState;
+import game.Resources.ResourceManager;
 
 public class MainController implements Controller, Model, View {
 	
@@ -20,6 +21,8 @@ public class MainController implements Controller, Model, View {
 	
 	public void Initialize() {
 		MainGame = new MainGame();
+		
+		ResourceManager.Manager().Initialize();
 		
 		NetworkController.Initialize();
 		MainGame.Initialize();

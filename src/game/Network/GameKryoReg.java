@@ -14,6 +14,7 @@ public class GameKryoReg implements KryoRegister {
 		k.register(CreateGenericEntity.class);
 		k.register(DestroyGenerticEntity.class);
 		k.register(GenericEntityMovement.class);
+		k.register(CastProjectileSpell.class);
 	}
 	
 	static public class PlayerLoginRequest {
@@ -33,8 +34,8 @@ public class GameKryoReg implements KryoRegister {
 	
 	static public class CreateGenericEntity {
 		public long UUIDp1, UUIDp2;
-		public float x, y, speed;
-		public int w, h, deltaX, deltaY;
+		public float x, y, speed, deltaX, deltaY;
+		public int w, h;
 		public int updateID, drawID;
 	}
 	
@@ -46,6 +47,13 @@ public class GameKryoReg implements KryoRegister {
 		public long UUIDp1, UUIDp2;
 		public float x, y, speed;
 		public int deltaX, deltaY;
+	}
+	
+	static public class CastProjectileSpell {
+		public long UUIDp1, UUIDp2;
+		public float x, y, speed, deltaX, deltaY;
+		public int w, h;
+		public int updateID, drawID;
 	}
 
 }
