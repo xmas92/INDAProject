@@ -1,9 +1,11 @@
 package game.Database;
 
+import game.Entity.ServerEntity;
 import game.Entity.ServerPlayer;
 import game.Event.Event;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 public class PlayerDB implements Database {
@@ -39,5 +41,30 @@ public class PlayerDB implements Database {
 		for (ServerPlayer p : players.values()) {
 			p.Update(delta);
 		}
+	}
+
+	public synchronized static boolean anyCollision(ServerEntity entity, UUID[] uuids) {
+		Iterator<UUID> it = players.keySet().iterator();
+		while (it.hasNext()) {
+			UUID t = it.next();
+			boolean cont = false;
+			if (uuids != null) {
+				for (UUID uuid : uuids) {
+					if (uuid.equals(t)) {
+						cont = true;
+						break;
+					}
+				}
+			}
+			if (cont) continue;
+			ServerEntity se = players.get(t);
+			if (se != entity) {
+				if (se.collisionBox().intersects(entity.collisionBox())) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

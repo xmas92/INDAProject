@@ -11,7 +11,7 @@ import org.newdawn.slick.SlickException;
 
 public class Client {
 	
-	public static final AppGameContainer Game = CreateGame();
+	public static AppGameContainer Game;
 	
 	private static MainController MainCTRL = new MainController();
 	
@@ -24,6 +24,7 @@ public class Client {
 	 */
 	public static void main(String[] args) {
 		try {
+			Game = CreateGame();
 			Game.start();
 		} catch (Exception e) {
 			e.printStackTrace();

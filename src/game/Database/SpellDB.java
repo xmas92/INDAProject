@@ -40,11 +40,10 @@ public class SpellDB implements Database {
 	
 	public synchronized static void updateAll(int delta) {
 		Iterator<ServerSpell> it = spells.values().iterator();
-		destroy = false;
 		while (it.hasNext()) {
+			destroy = false;
 			it.next().Update(delta);
 			if (destroy) {
-				destroy = false;
 				it.remove();
 			}
 		}

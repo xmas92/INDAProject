@@ -1,53 +1,62 @@
-package game.UpdateState.States;
+package game.UpdateState.ServerStates;
 
 import java.util.UUID;
 
-import game.Database.GenericEntityDB;
-import game.DrawState.DrawStates;
-import game.Entity.EntityHandler;
+import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
+
+import game.Database.PlayerDB;
+import game.Database.SpellDB;
 import game.Entity.GEType;
-import game.Entity.GenericEntity;
-import game.Screen.GameScreen;
+import game.Entity.ServerEntity;
+import game.Entity.ServerSpell;
+import game.Network.GameKryoReg.DestroyGenerticEntity;
 import game.UpdateState.CollisionIgnore;
-import game.UpdateState.UpdateState;
+import game.UpdateState.ServerUpdateState;
+import game.Zones.HubZone;
 import game.Zones.Zone;
+import game.Zones.ZoneMap;
 import game.Zones.Zones;
 
-public class ProjectileUpdateState extends UpdateState implements CollisionIgnore {
-
+public class ProjectileServerUpdateState extends ServerUpdateState implements CollisionIgnore {
 	private UUID[] uuids;
 	private GEType[] ignoreTypes;
 
 	private boolean dying = false, dead = false;
 	private long dyingTime = 0;
 	private boolean PlayerCollision = true;
-	public ProjectileUpdateState(GenericEntity entity) {
+	public ProjectileServerUpdateState(ServerEntity entity) {
 		super(entity);
 	}
 
+	// TODO fix serverside zones 
+	private static Zone z = new HubZone();
 	@Override
 	public void Update(int delta) {
+		if (!(entity instanceof ServerSpell)) return;
+		ServerSpell entity = (ServerSpell)this.entity;
 		if (dying && !dead) {
-			if (dyingTime > 1000) {
+			if (dyingTime > 1500) {
 				dead = true;
-				//entity.drawState = DrawStates.getNewState(DrawStates.NullDrawState.ordinal(), entity);
-				EntityHandler.Destroy();
+				DestroyGenerticEntity dge = new DestroyGenerticEntity();
+				dge.UUIDp1 = entity.serverUUID.getLeastSignificantBits();
+				dge.UUIDp2 = entity.serverUUID.getMostSignificantBits();
+				((Server)entity.pc.getEndPoint()).sendToAllExceptTCP(entity.pc.getID(), dge);
+				dge.UUIDp1 = entity.clientUUID.getLeastSignificantBits();
+				dge.UUIDp2 = entity.clientUUID.getMostSignificantBits();
+				entity.pc.sendTCP(dge);
+				SpellDB.Destroy();
 			} else {
 				dyingTime += delta;
 			}
 		}
 		if (!dying && !dead) {
-			Zone z = Zones.CurrentZone();
+			if (z.getZoneMap() == null) z.Initialize();
 			if (z.getZoneMap().getCollision(entity.collisionBox())) {
 				Die();
 			}
-			if (GenericEntityDB.anyCollision(entity, uuids, ignoreTypes)) {
+			if (PlayerDB.anyCollision(entity, uuids)) {
 				Die();
-			}
-			if (PlayerCollision) {
-				if (GameScreen.player.collisionBox().intersects(entity.collisionBox())) {
-					Die();
-				}
 			}
 			
 			entity.x += entity.deltaX * entity.speed * delta / 1000.f;
@@ -67,7 +76,6 @@ public class ProjectileUpdateState extends UpdateState implements CollisionIgnor
 	private void Die() {
 		if (dying || dead) return;
 		dying = true;
-		entity.drawState = DrawStates.getNewState(DrawStates.ProjectileDyingDrawState.ordinal(), entity);
 	}
 
 	@Override

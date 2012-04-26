@@ -41,7 +41,9 @@ public class EntityHandler implements Model, View, Controller, EventCallback {
 			}
 			if (ne.Package instanceof DestroyGenerticEntity) {
 				DestroyGenerticEntity dge = (DestroyGenerticEntity)ne.Package;
-				GenericEntityDB.removeEntity(dge.UUIDp1, dge.UUIDp2);
+				if (!GenericEntityDB.removeEntity(dge.UUIDp1, dge.UUIDp2)) {
+					clientEntities.remove(new UUID(dge.UUIDp1, dge.UUIDp2));
+				}
 			}
 		}
 		if (e instanceof CreateClientGenericEntityEvent) {
@@ -57,9 +59,9 @@ public class EntityHandler implements Model, View, Controller, EventCallback {
 		GenericEntityDB.updateAll(delta);
 		Iterator<GenericEntity> it = clientEntities.values().iterator();
 		while (it.hasNext()) {
+			destroy = false;
 			it.next().Update(delta);
 			if (destroy) {
-				destroy = false;
 				it.remove();
 			}
 		}

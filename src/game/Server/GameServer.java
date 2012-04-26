@@ -1,7 +1,9 @@
 package game.Server;
 
 import game.Database.PlayerDB;
+import game.Database.SpellDB;
 import game.Network.GameKryoReg;
+import game.Resources.ResourceManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,6 +34,7 @@ public class GameServer implements Runnable {
 	@Override
 	public void run() {
 		try {
+			ResourceManager.Manager().Initialize();
 			server = new Server() {
                 protected Connection newConnection () {
                     return new PlayerConnection();
@@ -48,6 +51,7 @@ public class GameServer implements Runnable {
 				int delta = (int)(System.currentTimeMillis() - lastTime);
 				lastTime = System.currentTimeMillis();
 				PlayerDB.updateAll(delta);
+				SpellDB.updateAll(delta);
 				Thread.sleep(1);
 			}
 		} catch (Exception e) {

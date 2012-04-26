@@ -7,6 +7,7 @@ import org.newdawn.slick.Input;
 import game.Client;
 import game.Controller.NetworkController;
 import game.DrawState.DrawStates;
+import game.Entity.GEType;
 import game.Event.CreateClientGenericEntityEvent;
 import game.Event.Event;
 import game.Event.EventListner;
@@ -21,6 +22,7 @@ public class SpellButton extends AbstractUserInterface {
 	private int cooldown = 1500;
 	private UpdateStates updateState = UpdateStates.ProjectileUpdateState;
 	private DrawStates drawState = DrawStates.ProjectileLiveDrawState;
+	private GEType type = GEType.ProjectileSpell;
 	private float speed = 256;
 	private int w = 32, h = 32;
 	private int key = Input.KEY_1;
@@ -40,6 +42,8 @@ public class SpellButton extends AbstractUserInterface {
 					CastProjectileSpell cps = new CastProjectileSpell();
 					ccgee.us = updateState; cps.updateID = updateState.ordinal();
 					ccgee.ds = drawState; cps.drawID = drawState.ordinal();
+					ccgee.type = type; 
+					ccgee.ignoreType = new int[] {GEType.Player.ordinal(), GEType.ProjectileSpell.ordinal()};
 					cps.x = ccgee.x = (float)GameScreen.player.position().getX();
 					cps.y = ccgee.y = (float)GameScreen.player.position().getY();
 					cps.w = ccgee.w = w; cps.h = ccgee.h = h;

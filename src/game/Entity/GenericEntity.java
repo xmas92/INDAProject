@@ -6,8 +6,10 @@ import game.Event.CreateClientGenericEntityEvent;
 import game.Event.Event;
 import game.Event.NetworkEvent;
 import game.Geometry.Rectangle;
+import game.Network.GameKryoReg.CGEWithCollisionIgnore;
 import game.Network.GameKryoReg.CreateGenericEntity;
 import game.Network.GameKryoReg.GenericEntityMovement;
+import game.UpdateState.CollisionIgnore;
 import game.UpdateState.UpdateState;
 import game.UpdateState.UpdateStates;
 
@@ -20,6 +22,7 @@ public class GenericEntity implements Entity {
 	public int  w, h;
 	public UpdateState updateState;
 	public DrawState drawState;
+	public GEType type;
 	
 	@Override
 	public void Update(int delta) { 
@@ -61,6 +64,17 @@ public class GenericEntity implements Entity {
 		deltaX = cge.deltaX; deltaY = cge.deltaY;
 		updateState = UpdateStates.getNewState(cge.updateID, this);
 		drawState = DrawStates.getNewState(cge.drawID, this);
+		type = GEType.getType(cge.type);
+		if (cge instanceof CGEWithCollisionIgnore) {
+			HandleCGEWithCollisionIgnore((CGEWithCollisionIgnore)cge);
+		}
+	}
+
+	private void HandleCGEWithCollisionIgnore(CGEWithCollisionIgnore cgewci) {
+		if (updateState instanceof CollisionIgnore) {
+			((CollisionIgnore)updateState).AddIgnore(cgewci.UUID);
+			((CollisionIgnore)updateState).AddIgnoreType(cgewci.Types);
+		}
 	}
 
 	private void CreateThis(CreateClientGenericEntityEvent ccgee) {
@@ -68,6 +82,10 @@ public class GenericEntity implements Entity {
 		deltaX = ccgee.deltaX; deltaY = ccgee.deltaY;
 		updateState = UpdateStates.getNewState(ccgee.us.ordinal(), this);
 		drawState = DrawStates.getNewState(ccgee.ds.ordinal(), this);
+		type = ccgee.type;
+		if (updateState instanceof CollisionIgnore) {
+			((CollisionIgnore)updateState).AddIgnoreType(ccgee.ignoreType);
+		}
 	}
 
 	@Override

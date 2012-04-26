@@ -1,5 +1,8 @@
 package game.Entity;
 
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.util.UUID;
 
 import com.esotericsoftware.kryonet.Server;
@@ -10,6 +13,7 @@ import game.DrawState.DrawStates;
 import game.Event.Event;
 import game.Event.NetworkEvent;
 import game.Event.PlayerConnectedEvent;
+import game.Geometry.Rectangle;
 import game.Network.GameKryoReg.CreateGenericEntity;
 import game.Network.GameKryoReg.CreatePlayer;
 import game.Network.GameKryoReg.GenericEntityMovement;
@@ -53,6 +57,7 @@ public class ServerPlayer implements ServerEntity {
 		cge.UUIDp1 = uuid.getLeastSignificantBits(); 
 		cge.UUIDp2 = uuid.getMostSignificantBits();
 		cge.deltaX = deltaX; cge.deltaY = deltaY;
+		cge.type = GEType.OtherPlayer.ordinal();
 		e.pc.sendTCP(cge);
 	}
 
@@ -89,6 +94,21 @@ public class ServerPlayer implements ServerEntity {
 			uuid = pc.uuid;
 			PlayerDB.addPlayer(this, pc.uuid);
 		}
+	}
+
+	@Override
+	public Point2D position() {
+		return new Point2D.Float(x,y);
+	}
+
+	@Override
+	public Dimension2D dimension() {
+		return new Dimension(w, h);
+	}
+
+	@Override
+	public Rectangle collisionBox() {
+		return new Rectangle(x - w * 0.5f, y - h * 0.5f, w, h);
 	}
 
 }

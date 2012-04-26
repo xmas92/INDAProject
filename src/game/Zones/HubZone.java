@@ -1,5 +1,6 @@
 package game.Zones;
 
+import game.Client;
 import game.Event.Event;
 import game.Event.PlayerDrawEvent;
 import game.Screen.GameScreen;
@@ -13,9 +14,12 @@ public class HubZone implements Zone {
 	@Override
 	public void Initialize() {
 		try {
-			map = new ZoneMap("data/maps/bonnyMap2/testmap.tmx");
+			if (Client.Game == null) {
+				map = new ZoneMap("data/maps/bonnyMap2/testmap.tmx", false);
+			} else {
+				map = new ZoneMap("data/maps/bonnyMap2/testmap.tmx");
+			}
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
