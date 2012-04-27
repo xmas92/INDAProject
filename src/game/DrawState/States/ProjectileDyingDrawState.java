@@ -18,7 +18,7 @@ public class ProjectileDyingDrawState extends SingleImage {
 				drawY = (int)(entity.y - GameScreen.player.position().getY() + (GameScreen.h - entity.h) * 0.5f);
 			if (drawX > -GameScreen.w && drawX < GameScreen.w * 2 &&
 				drawY > -GameScreen.h && drawY < GameScreen.w * 2) {
-				graphic.draw(drawX, drawY, entity.w, entity.h, Color.pink);
+				graphic.drawFlash(drawX, drawY, entity.w, entity.h, Color.pink);
 			}
 		}
 	}

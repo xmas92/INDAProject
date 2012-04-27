@@ -2,6 +2,7 @@ package game.Server;
 
 import game.Database.PlayerDB;
 import game.Database.SpellDB;
+import game.Entity.ServerZombie;
 import game.Network.GameKryoReg;
 import game.Resources.ResourceManager;
 
@@ -28,7 +29,7 @@ public class GameServer implements Runnable {
 	}
 
 
-	
+	public static ServerZombie sz;
 	private Server server;
 	private int tps = 0;
 	@Override
@@ -40,6 +41,8 @@ public class GameServer implements Runnable {
                     return new PlayerConnection();
                 }
 			};
+			sz = new ServerZombie(server);
+			sz.Initialize();
 			(new GameKryoReg()).Register(server);
 			GameServerListener gsl = new GameServerListener(server);
 			server.addListener(gsl);
@@ -52,6 +55,7 @@ public class GameServer implements Runnable {
 				lastTime = System.currentTimeMillis();
 				PlayerDB.updateAll(delta);
 				SpellDB.updateAll(delta);
+				sz.Update(delta);
 				Thread.sleep(1);
 			}
 		} catch (Exception e) {

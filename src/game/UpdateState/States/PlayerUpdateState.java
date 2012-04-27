@@ -31,6 +31,11 @@ public class PlayerUpdateState extends UpdateState{
 					entity.deltaX = 0;
 				}
 			}
+			if (Math.abs(entity.deltaX)+Math.abs(entity.deltaY) != 0) {
+				movement = (entity.speed * delta / 1000.0f) / (float)Math.sqrt(Math.abs(entity.deltaX)+Math.abs(entity.deltaY));
+			} else {
+				movement = 0;
+			}
 			entity.x += entity.deltaX * movement;
 			entity.y += entity.deltaY * movement;
 		}

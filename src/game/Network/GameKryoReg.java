@@ -53,8 +53,7 @@ public class GameKryoReg implements KryoRegister {
 	
 	static public class GenericEntityMovement {
 		public long UUIDp1, UUIDp2;
-		public float x, y, speed;
-		public int deltaX, deltaY;
+		public float x, y, speed, deltaX, deltaY;
 	}
 	
 	static public class CastProjectileSpell {

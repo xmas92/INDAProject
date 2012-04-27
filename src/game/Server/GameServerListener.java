@@ -32,6 +32,7 @@ public class GameServerListener extends Listener {
 			if (pc.username == null) {
 				ServerPlayer newPlayer = new ServerPlayer();
 				newPlayer.Callback(new NetworkEvent(pc, object));
+				GameServer.sz.Callback(new PlayerConnectedEvent(pc));
 			}
 		} else if (object instanceof PlayerMovement) {
 			PlayerDB.sendToAll(new NetworkEvent(pc, object));

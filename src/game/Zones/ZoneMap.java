@@ -48,6 +48,19 @@ public class ZoneMap extends TiledMap {
 	}
 	
 	public boolean getCollision(Rectangle rect) {
+		if (rect.width <= getTileWidth() && rect.height <= getTileHeight())
+			return getCollision(rect.getPoints());
+		float y = rect.y;
+		while (y < rect.y + rect.height) {
+			float x = rect.x;
+			while (x < rect.x + rect.width) {
+				if (getCollision(new Point2D.Float(x, y))) {
+					return true;
+				}
+				x += getTileWidth();
+			}
+			y += getTileHeight();
+		}
 		return getCollision(rect.getPoints());
 	}
 

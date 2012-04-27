@@ -1,11 +1,10 @@
 package game.Zones;
 
-import game.Client;
 import game.Event.Event;
 import game.Event.PlayerDrawEvent;
+import game.Resources.ResourceManager;
 import game.Screen.GameScreen;
 
-import org.newdawn.slick.SlickException;
 
 public class HubZone implements Zone {
 
@@ -14,12 +13,10 @@ public class HubZone implements Zone {
 	@Override
 	public void Initialize() {
 		try {
-			if (Client.Game == null) {
-				map = new ZoneMap("data/maps/bonnyMap2/testmap.tmx", false);
-			} else {
-				map = new ZoneMap("data/maps/bonnyMap2/testmap.tmx");
-			}
-		} catch (SlickException e) {
+			map = ResourceManager.Manager().getMap("bonnyMap2:testmap.tmx");
+			if (map == null)
+				throw new Exception();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

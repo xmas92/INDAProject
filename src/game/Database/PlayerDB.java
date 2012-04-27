@@ -1,5 +1,6 @@
 package game.Database;
 
+import game.Entity.ServerChacer;
 import game.Entity.ServerEntity;
 import game.Entity.ServerPlayer;
 import game.Event.Event;
@@ -41,6 +42,10 @@ public class PlayerDB implements Database {
 		for (ServerPlayer p : players.values()) {
 			p.Update(delta);
 		}
+	}
+	
+	public synchronized static void chaceAll(ServerChacer chacer) {
+		chacer.Chace(players.values());
 	}
 
 	public synchronized static boolean anyCollision(ServerEntity entity, UUID[] uuids) {
