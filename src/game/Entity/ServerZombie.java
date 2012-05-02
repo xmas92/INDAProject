@@ -10,6 +10,7 @@ import game.Network.GameKryoReg.GenericEntityMovement;
 import game.UpdateState.ServerUpdateState;
 import game.UpdateState.UpdateStates;
 import game.UpdateState.ServerStates.PlayerServerUpdateState;
+import game.UpdateState.ServerStates.ZombieServerUpdateState;
 
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
@@ -23,7 +24,7 @@ import com.esotericsoftware.minlog.Log;
 public class ServerZombie implements ServerEntity, ServerChacer {
 	public Server server;
 	public UUID uuid;
-	public ServerUpdateState sus = new PlayerServerUpdateState(this);
+	public ZombieServerUpdateState sus = new ZombieServerUpdateState(this);
 	public float hp = 100;
 	public Point2D spawnPos = new Point2D.Float();
 	public ServerZombie(Server s) {
@@ -52,15 +53,17 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 	}
 	
 	private void HandlePlayerConnectedEvent(PlayerConnectedEvent e) {
-		CreateGenericEntity cge = new CreateGenericEntity();
-		cge.h = h; cge.w = w; cge.speed = speed; cge.x = x; cge.y = y; 
-		cge.drawID = DrawStates.ZombieDrawState.ordinal();
-		cge.updateID = UpdateStates.PlayerUpdateState.ordinal();
-		cge.UUIDp1 = uuid.getLeastSignificantBits(); 
-		cge.UUIDp2 = uuid.getMostSignificantBits();
-		cge.deltaX = deltaX; cge.deltaY = deltaY;
-		cge.type = GEType.OtherPlayer.ordinal();
-		e.pc.sendTCP(cge);
+		if (!sus.dead) {
+			CreateGenericEntity cge = new CreateGenericEntity();
+			cge.h = h; cge.w = w; cge.speed = speed; cge.x = x; cge.y = y; 
+			cge.drawID = DrawStates.ZombieDrawState.ordinal();
+			cge.updateID = UpdateStates.PlayerUpdateState.ordinal();
+			cge.UUIDp1 = uuid.getLeastSignificantBits(); 
+			cge.UUIDp2 = uuid.getMostSignificantBits();
+			cge.deltaX = deltaX; cge.deltaY = deltaY;
+			cge.type = GEType.OtherPlayer.ordinal();
+			e.pc.sendTCP(cge);
+		}
 	}
 
 	@Override
@@ -68,10 +71,12 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 		Point2D chace = null;
 		double last = 320;
 		for (ServerPlayer sp : entities) {
-			if (sp.position().distance(spawnPos) < last) {
+			if (sp.position().distance(position()) < last) {
+				last = sp.position().distance(position());
 				chace = sp.position();
 			}
 		}
+		chace = chace!=null?(chace.distance(spawnPos) > 400?null:chace):chace;
 		if (chace != null) {
 			deltaX = (float)chace.getX() - x;
 			deltaY = (float)chace.getY() - y;
@@ -105,6 +110,11 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 	@Override
 	public Rectangle collisionBox() {
 		return new Rectangle(x - w * 0.5f, y - h * 0.5f, w, h);
+	}
+
+	public void takeDamage(ServerSpell spell) {
+		if (!sus.dead)
+			hp -= spell.damage;
 	}
 
 }

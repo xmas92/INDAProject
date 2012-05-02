@@ -7,6 +7,7 @@ import com.esotericsoftware.minlog.Log;
 
 import game.Database.PlayerDB;
 import game.Database.SpellDB;
+import game.Database.ZombieDB;
 import game.Entity.GEType;
 import game.Entity.ServerEntity;
 import game.Entity.ServerSpell;
@@ -51,6 +52,10 @@ public class ProjectileServerUpdateState extends ServerUpdateState implements Co
 			}
 		}
 		if (!dying && !dead) {
+			entity.x += entity.deltaX * entity.speed * delta / 1000.f;
+			entity.y += entity.deltaY * entity.speed * delta / 1000.f;
+			
+			
 			if (z.getZoneMap() == null) z.Initialize();
 			if (z.getZoneMap().getCollision(entity.collisionBox())) {
 				Die();
@@ -58,9 +63,9 @@ public class ProjectileServerUpdateState extends ServerUpdateState implements Co
 			if (PlayerDB.anyCollision(entity, uuids)) {
 				Die();
 			}
-			
-			entity.x += entity.deltaX * entity.speed * delta / 1000.f;
-			entity.y += entity.deltaY * entity.speed * delta / 1000.f;
+			if (ZombieDB.hitZombie(entity)) {
+				Die();
+			}
 		}
 	}
 

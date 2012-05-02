@@ -59,8 +59,8 @@ public class GameServer implements Runnable {
 				int delta = (int)(System.currentTimeMillis() - lastTime);
 				lastTime = System.currentTimeMillis();
 				PlayerDB.updateAll(delta);
-				SpellDB.updateAll(delta);
 				ZombieDB.updateAll(delta);
+				SpellDB.updateAll(delta);
 				Thread.sleep(1);
 			}
 		} catch (Exception e) {

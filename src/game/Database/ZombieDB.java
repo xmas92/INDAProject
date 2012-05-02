@@ -1,5 +1,6 @@
 package game.Database;
 
+import game.Entity.ServerSpell;
 import game.Entity.ServerZombie;
 import game.Event.Event;
 
@@ -39,5 +40,16 @@ public class ZombieDB {
 		for (ServerZombie p : zombies.values()) {
 			p.Update(delta);
 		}
+	}
+
+	public static boolean hitZombie(ServerSpell spell) {
+		boolean ret = false;
+		for (ServerZombie sz : zombies.values()) {
+			if (sz.collisionBox().intersects(spell.collisionBox())) {
+				sz.takeDamage(spell);
+				ret = true;
+			}
+		}
+		return ret;
 	}
 }

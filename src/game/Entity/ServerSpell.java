@@ -25,6 +25,8 @@ public class ServerSpell implements ServerEntity {
 	
 	public PlayerConnection pc;
 	public UUID clientUUID, serverUUID;
+	
+	public float damage = 50;
 
 	public ServerUpdateState sus;
 
