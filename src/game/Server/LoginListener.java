@@ -11,6 +11,8 @@ import com.esotericsoftware.kryonet.Listener;
 
 public class LoginListener extends Listener {
 
+	private static final String Version = "TEST";
+	
 	private final LoginGranted login;
 	
 	public LoginListener(LoginGranted login) {
@@ -21,7 +23,11 @@ public class LoginListener extends Listener {
 	public void received (Connection c, Object object) {
 		if (object instanceof LoginRequested) {
 			LoginRequested lr = (LoginRequested)object;
-			if (UserDB.ValidUser(lr.Username,lr.PasswordHash)) {
+			if (!lr.Version.equals(Version)) {
+				LoginRefused ret = new LoginRefused();
+				ret.Reason = "Server not running your version: " + lr.Version;
+				c.sendTCP(ret);
+			} else if (UserDB.ValidUser(lr.Username,lr.PasswordHash)) {
 				if (LoginDB.LoggedIn(lr.Username)) {
 					LoginRefused ret = new LoginRefused();
 					ret.Reason = "Already Logged In";

@@ -3,6 +3,7 @@ package game.Entity;
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.esotericsoftware.kryonet.Server;
@@ -19,6 +20,7 @@ import game.Network.GameKryoReg.CreatePlayer;
 import game.Network.GameKryoReg.GenericEntityMovement;
 import game.Network.GameKryoReg.PlayerLoginRequest;
 import game.Network.GameKryoReg.PlayerMovement;
+import game.Server.GameServer;
 import game.Server.PlayerConnection;
 import game.UpdateState.UpdateStates;
 
@@ -80,7 +82,9 @@ public class ServerPlayer implements ServerEntity {
 			if (!LoginDB.LoggedIn(pc.username)) { pc.close(); return; }
 			// TODO check for player in DB instead of reseting everything every time
 			CreatePlayer cp = new CreatePlayer();
-			cp.x = x = 64; cp.y = y = 64; cp.h = h = 32; cp.w = w = 32; cp.speed = speed = 128;
+			cp.x = x = (float) GameServer.PlayerSpawnPoint.getX(); 
+			cp.y = y = (float) GameServer.PlayerSpawnPoint.getY(); 
+			cp.h = h = 32; cp.w = w = 32; cp.speed = speed = 128;
 			// TODO fix so we only need to send a drawState
 			cp.imageRef = "data/images/GameAssets/Player/player.bmp";
 			pc.sendTCP(cp);

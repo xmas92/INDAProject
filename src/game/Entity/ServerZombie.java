@@ -24,6 +24,8 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 	public Server server;
 	public UUID uuid;
 	public ServerUpdateState sus = new PlayerServerUpdateState(this);
+	public float hp = 100;
+	public Point2D spawnPos = new Point2D.Float();
 	public ServerZombie(Server s) {
 		server = s;
 	}
@@ -39,7 +41,8 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 
 	@Override
 	public void Initialize() {
-		x = 600; y = 600; speed = 64; w = 64; h = 64;
+		x = (float) spawnPos.getX();; y = (float) spawnPos.getY();; 
+		speed = 64; w = 64; h = 64;
 		uuid = UUID.randomUUID();
 	}
 
@@ -58,7 +61,6 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 		cge.deltaX = deltaX; cge.deltaY = deltaY;
 		cge.type = GEType.OtherPlayer.ordinal();
 		e.pc.sendTCP(cge);
-		Log.info("Zombie sent to: " + e.pc.username);
 	}
 
 	@Override
@@ -66,7 +68,7 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 		Point2D chace = null;
 		double last = 320;
 		for (ServerPlayer sp : entities) {
-			if (sp.position().distance(position()) < last) {
+			if (sp.position().distance(spawnPos) < last) {
 				chace = sp.position();
 			}
 		}
@@ -77,8 +79,16 @@ public class ServerZombie implements ServerEntity, ServerChacer {
 			deltaX /= lengt;
 			deltaY /= lengt;
 		} else {
-			deltaX = 0;
-			deltaY = 0;
+			if (spawnPos.getX() - x > 2 || spawnPos.getY() - y > 2) {
+				deltaX = (float)spawnPos.getX() - x;
+				deltaY = (float)spawnPos.getY() - y;
+				float lengt = (float)Math.sqrt(deltaX*deltaX+deltaY*deltaY);
+				deltaX /= lengt;
+				deltaY /= lengt;
+			} else {
+				deltaX = 0;
+				deltaY = 0;
+			}
 		}
 	}
 

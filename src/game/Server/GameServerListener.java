@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import game.Database.LoginDB;
 import game.Database.PlayerDB;
+import game.Database.ZombieDB;
 import game.Entity.ServerPlayer;
 import game.Entity.ServerSpell;
 import game.Event.NetworkEvent;
@@ -32,7 +33,7 @@ public class GameServerListener extends Listener {
 			if (pc.username == null) {
 				ServerPlayer newPlayer = new ServerPlayer();
 				newPlayer.Callback(new NetworkEvent(pc, object));
-				GameServer.sz.Callback(new PlayerConnectedEvent(pc));
+				ZombieDB.sendToAll(new PlayerConnectedEvent(pc));
 			}
 		} else if (object instanceof PlayerMovement) {
 			PlayerDB.sendToAll(new NetworkEvent(pc, object));

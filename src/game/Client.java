@@ -10,7 +10,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 public class Client {
-	
+	public static final String Version = "TEST";
 	public static AppGameContainer Game;
 	
 	private static MainController MainCTRL = new MainController();

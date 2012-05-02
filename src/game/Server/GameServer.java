@@ -2,10 +2,14 @@ package game.Server;
 
 import game.Database.PlayerDB;
 import game.Database.SpellDB;
+import game.Database.ZombieDB;
 import game.Entity.ServerZombie;
 import game.Network.GameKryoReg;
 import game.Resources.ResourceManager;
+import game.Zones.HubZone;
+import game.Zones.ZoneMap;
 
+import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -29,7 +33,6 @@ public class GameServer implements Runnable {
 	}
 
 
-	public static ServerZombie sz;
 	private Server server;
 	private int tps = 0;
 	@Override
@@ -41,8 +44,10 @@ public class GameServer implements Runnable {
                     return new PlayerConnection();
                 }
 			};
-			sz = new ServerZombie(server);
-			sz.Initialize();
+			HubZone z = new HubZone();
+			z.Initialize();
+			ZoneMap m = z.getZoneMap();
+			SetupSpawnPoints(m);
 			(new GameKryoReg()).Register(server);
 			GameServerListener gsl = new GameServerListener(server);
 			server.addListener(gsl);
@@ -55,12 +60,37 @@ public class GameServer implements Runnable {
 				lastTime = System.currentTimeMillis();
 				PlayerDB.updateAll(delta);
 				SpellDB.updateAll(delta);
-				sz.Update(delta);
+				ZombieDB.updateAll(delta);
 				Thread.sleep(1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void SetupSpawnPoints(ZoneMap m) {
+		for (int tileX = 0; tileX < m.getWidth(); tileX++) {
+			for (int tileY = 0; tileY < m.getHeight(); tileY++) {
+				if (m.getTileId(tileX, tileY, 5) != 0) {
+					CreateZombie(tileX,tileY); 
+				}
+				if (m.getTileId(tileX, tileY, 6) != 0) {
+					SetSpawnPoint(tileX,tileY);
+				}
+			}
+		}
+	}
+	public static Point2D PlayerSpawnPoint;
+	private void SetSpawnPoint(int tileX, int tileY) {
+		PlayerSpawnPoint = new Point2D.Float((tileX - 0.5f) * 32.0f, (tileY - 0.5f) * 32.0f);
+	}
+
+	private void CreateZombie(int tileX, int tileY) {
+		ServerZombie sz = new ServerZombie(server);
+		sz.spawnPos = new Point2D.Float((tileX - 0.5f) * 32.0f, (tileY - 0.5f) * 32.0f);
+		sz.Initialize();
+		ZombieDB.addZombie(sz, sz.uuid);
+		
 	}
 
 	synchronized public int TPS() {

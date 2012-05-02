@@ -100,6 +100,7 @@ public class LoginScreen implements Screen {
 						LoginRequested ret = new LoginRequested();
 						ret.Username = username.getText();
 						ret.PasswordHash = password.getText().hashCode();
+						ret.Version = Client.Version;
 						NetworkController.SendTCP(ret);
 					} else {
 						login.Enable();
