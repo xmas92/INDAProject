@@ -61,7 +61,6 @@ public class GameServer implements Runnable {
 				PlayerDB.updateAll(delta);
 				ZombieDB.updateAll(delta);
 				SpellDB.updateAll(delta);
-				Thread.sleep(1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

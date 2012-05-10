@@ -65,6 +65,7 @@ public class ProjectileServerUpdateState extends ServerUpdateState implements Co
 			}
 			if (ZombieDB.hitZombie(entity)) {
 				Die();
+				Log.info("Zombie Hit");
 			}
 		}
 	}
