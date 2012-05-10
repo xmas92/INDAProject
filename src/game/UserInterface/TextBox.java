@@ -1,23 +1,22 @@
 package game.UserInterface;
 
 import game.Client;
+import game.TEST.ChatboxTest;
 
 import java.awt.Rectangle;
 
 import org.newdawn.slick.Font;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-/**
- * not finished don't be hating
- * @author bwc
- *
- */
+
 public class TextBox extends AbstractUserInterface {
 	
+	private Graphics g; 
 	private Font font; 
-	public String temp = "";
+	public String temp = "test";
 	private Image graphic;
 	private int lineCount = 0; 
-	private int margin = 10; 
+	private int margin = 5; 
 	
 	
 	public TextBox(Image i) {
@@ -31,24 +30,24 @@ public class TextBox extends AbstractUserInterface {
 		temp = s; 
 	}
 	
+	String test = "abcasjdaösljfalskf";
 	
 	@Override
 	public void Draw(){
-		if (!isEnabled()) return;
-		if (graphic == null) return;
-		
-		Font f = Client.Game.getGraphics().getFont();
+		Font f = ChatboxTest.agc.getGraphics().getFont();
 		if (font != null) 
 			f = font;
 		
 		int charWidth = f.getWidth("A");
+		
 		int charHeight = f.getHeight("A");
 		
 		Rectangle rec = getRectangle();
-		graphic.draw(rec.x, rec.y, rec.x + rec.width, rec.y +rec.height,
+		graphic.draw(rec.x, rec.y, rec.x + rec.width, rec.y + rec.height,
 				0, 0, graphic.getWidth(), graphic.getHeight());
 		
-		Client.Game.getGraphics().drawString(temp, rec.x + margin, rec.y + charHeight*lineCount);
+		ChatboxTest.agc.getGraphics().drawString(test, rec.x + 2*margin, rec.y + margin);	
+		
 	}
 
 }
