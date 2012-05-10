@@ -7,22 +7,27 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import game.Event.Event;
 import game.Input.InputState;
 import game.Screen.Screen;
-import game.UserInterface.Checkbox;
+import game.UserInterface.CopyTextField;
+import game.UserInterface.TextBox;
 
-public class CheckboxTest implements Screen {
+public class ChatboxTest implements Screen {
 	
-	public static void main(String[] args) {
-		AppGameContainer apc;
-		try {
-			apc = new AppGameContainer(new Game() {
-				CheckboxTest cbt = new CheckboxTest();
-				@Override
+	private TextBox tb; 
+	private CopyTextField ltf; 
+	public static AppGameContainer agc; 
+	
+	public static void main(String args[]){
+		try{
+			agc = new AppGameContainer(new Game() {
+				ChatboxTest cbt = new ChatboxTest();
+				
 				public void update(GameContainer container, int delta)
 						throws SlickException {
 					InputState.Update(container);
@@ -43,7 +48,7 @@ public class CheckboxTest implements Screen {
 				@Override
 				public String getTitle() {
 					// TODO Auto-generated method stub
-					return "test";
+					return "Chatbox test";
 				}
 				
 				@Override
@@ -52,44 +57,42 @@ public class CheckboxTest implements Screen {
 					return true;
 				}
 			});
-		apc.setDisplayMode(100, 100, false);
-		apc.start();
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
+			agc.setDisplayMode(800, 600, false);
+			agc.start();
+		}
+		catch (SlickException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private Checkbox cb;
-	
-	public CheckboxTest() {
-		
-	}
-	
+
 	@Override
 	public void Update(int delta) {
-		cb.Update(delta); 
-		
+		// TODO Auto-generated method stub
+		tb.Update(delta);
+		ltf.Update(delta);
 	}
 
 	@Override
 	public void Initialize() {
+		// TODO Auto-generated method stub
 		try {
-			cb = new Checkbox(new SpriteSheet("data/GameAssets/checkboxsprite.png",15, 15)); 
-			cb.setLocation(new Point(25,25)); 
-			cb.setDimension(new Dimension(15,15)); 
-		}
-		catch(SlickException e)
-		{
+			tb = new TextBox(new Image("data/GameAssets/chatbox.png"));
+			ltf = new CopyTextField(new SpriteSheet("data/LoginScreen/Username.png", 300, 30));
+			tb.setLocation(new Point(25,25)); 
+			tb.setDimension(new Dimension(200,300)); 
+			ltf.setLocation(new Point(500,500));
+			ltf.setDimension(new Dimension(300,30));
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.exit(1); 
-		}
+		} 
 	}
 
 	@Override
 	public void Draw() {
-		cb.Draw();
-		
+		// TODO Auto-generated method stub
+		tb.Draw();
+		ltf.Draw();
 	}
 
 	@Override
@@ -103,5 +106,4 @@ public class CheckboxTest implements Screen {
 		// TODO Auto-generated method stub
 		
 	}
-	
 }
