@@ -10,7 +10,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
-import game.Client;
 import game.Event.Event;
 import game.Input.InputState;
 import game.Screen.Screen;

@@ -14,13 +14,13 @@ import org.newdawn.slick.SpriteSheet;
 import game.Event.Event;
 import game.Input.InputState;
 import game.Screen.Screen;
+import game.UserInterface.CopyTextField;
 import game.UserInterface.TextBox;
-import game.UserInterface.LoginTextField;
 
 public class ChatboxTest implements Screen {
 	
 	private TextBox tb; 
-	private LoginTextField ltf; 
+	private CopyTextField ltf; 
 	public static AppGameContainer agc; 
 	
 	public static void main(String args[]){
@@ -69,7 +69,7 @@ public class ChatboxTest implements Screen {
 	public void Update(int delta) {
 		// TODO Auto-generated method stub
 		tb.Update(delta);
-		//ltf.Update(delta);
+		ltf.Update(delta);
 	}
 
 	@Override
@@ -77,11 +77,11 @@ public class ChatboxTest implements Screen {
 		// TODO Auto-generated method stub
 		try {
 			tb = new TextBox(new Image("data/GameAssets/chatbox.png"));
-			//ltf = new LoginTextField(new SpriteSheet("data/LoginScreen/Username.png", 300, 30));
+			ltf = new CopyTextField(new SpriteSheet("data/LoginScreen/Username.png", 300, 30));
 			tb.setLocation(new Point(25,25)); 
 			tb.setDimension(new Dimension(200,300)); 
-			//ltf.setLocation(new Point(500,500));
-			//ltf.setDimension(new Dimension(300,30));
+			ltf.setLocation(new Point(500,500));
+			ltf.setDimension(new Dimension(300,30));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,7 +92,7 @@ public class ChatboxTest implements Screen {
 	public void Draw() {
 		// TODO Auto-generated method stub
 		tb.Draw();
-		//ltf.Draw();
+		ltf.Draw();
 	}
 
 	@Override
