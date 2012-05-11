@@ -10,11 +10,21 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 public class Client {
+	/**
+	 * Version of the client (must be same as serve)
+	 */
 	public static final String Version = "TEST";
+	/**
+	 * The instance of this game
+	 */
 	public static AppGameContainer Game;
 	
 	private static MainController MainCTRL = new MainController();
 	
+	/**
+	 * Send an event callback that ripples through the program
+	 * @param e the event
+	 */
 	public static void sendCallback(Event e) {
 		MainCTRL.sendCallback(e);
 	}

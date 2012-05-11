@@ -10,7 +10,19 @@ import game.Event.EventCallback;
 import game.Geometry.Rectangle;
 
 public interface Entity extends Controller, Model, View, EventCallback {
+	/**
+	 * Get the position
+	 * @return
+	 */
 	public Point2D position();
+	/**
+	 * Get the dimensions
+	 * @return
+	 */
 	public Dimension2D dimension();
+	/**
+	 * Get the bounding collision box.
+	 * @return
+	 */
 	public Rectangle collisionBox();
 }

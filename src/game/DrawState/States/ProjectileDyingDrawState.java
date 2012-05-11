@@ -8,7 +8,7 @@ import game.Screen.GameScreen;
 public class ProjectileDyingDrawState extends SingleImage {
 
 	public ProjectileDyingDrawState(GenericEntity entity) {
-		super(entity, "");
+		super(entity, "GameAssets:spell:boom.bmp");
 	}
 
 	@Override

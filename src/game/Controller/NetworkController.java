@@ -23,10 +23,22 @@ public class NetworkController implements Controller {
 		kryoReg.Register(client);
 	}
 
+	/**
+	 * Connect to an ip over using TCP
+	 * @param ip
+	 * @param TCP
+	 * @return
+	 */
 	public static boolean Connect(String ip, int TCP) {
 		return connect(ip, TCP, -1);
 	}
-
+	/**
+	 * Connect to an ip over using TCP and UDP
+	 * @param ip
+	 * @param TCP
+	 * @param UDP
+	 * @return
+	 */
 	public static boolean Connect(String ip, int TCP, int UDP) {
 		return connect(ip, TCP, UDP);
 	}
@@ -46,10 +58,17 @@ public class NetworkController implements Controller {
 		return connected;
 	}
 	
+	/** 
+	 * Set the handler for network callbacks.
+	 * @param callback
+	 */
 	public static void SetCallback(EventCallback callback) {
 		Callback = callback;
 	}
 	
+	/**
+	 * Disconnect the connected connection.
+	 */
 	public static void Disconnect() {
 		if (!connected) return;
 		client.close();
@@ -79,11 +98,18 @@ public class NetworkController implements Controller {
 		}));
 	}
 
+	/**
+	 * Send package over TCP
+	 * @param Package
+	 */
 	public static void SendTCP(Object Package) {
 		if (!connected) return;
 		client.sendTCP(Package);
 	}
-
+	/**
+	 * Send package over UDP
+	 * @param Package
+	 */
 	public static void SendUDP(Object Package) {
 		if (!connected) return;
 		client.sendUDP(Package);

@@ -20,6 +20,9 @@ public class EntityHandler implements Model, View, Controller, EventCallback {
 	
 	private HashMap<UUID, GenericEntity> clientEntities;
 	private static boolean destroy = false;
+	/**
+	 * Client entities can destroy themself in an update loop
+	 */
 	public static void Destroy() { destroy = true; }
 	
 	@Override
